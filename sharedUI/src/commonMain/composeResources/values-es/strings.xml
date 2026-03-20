@@ -11,4 +11,16 @@
     <string name="enter_text">Introduce el texto a traducir</string>
     <string name="select_language">Seleccionar idioma</string>
     <string name="translate">Traducir</string>
+    <string name="ok">Aceptar</string>
+    <string name="import_failed_title">Error al importar</string>
+    <string name="player_ui_pause">Pausa</string>
+    <string name="player_ui_play">Reproducir</string>
+    <string name="player_ui_initial_time">00:00:00</string>
+
+    <string name="recording_ui_microphone">Micrófono</string>
+    <string name="recording_ui_tap_start_record">Toca para empezar a grabar</string>
+    <string name="recording_ui_tap_stop_record">Toca para detener la grabación</string>
+    <string name="recording_ui_checkmark">Éxito</string>
+    <string name="top_bar_back">Atrás</string>
+    <string name="transcription_icon">Transcripción</string>
 </resources>

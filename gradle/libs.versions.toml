@@ -1,6 +1,6 @@
 [versions]
 # Kotlin & Compose
-kotlin = "2.2.21"
+kotlin = "2.2.0"
 compose-multiplatform = "1.10.3"
 material3 = "1.10.0-alpha05"
 jetbrains-compose-materialIcons = "1.7.3"
@@ -14,22 +14,23 @@ androidWaveRecorder = "2.1.0"
 
 # Coroutines & Networking
 kotlinx-coroutines = "1.10.2"
-ktor = "3.4.1"
+ktor = "3.3.0"
 
 # Lifecycle & Navigation
 androidx-lifecycle = "2.10.0"
 androidx-navigation = "2.9.2"
 
 # Serialization & DI
-kotlinx-serialization = "1.10.0"
-koin = "4.2.0"
+kotlinx-serialization = "1.9.0"
+koin = "4.1.0"
 
 # Others
-coil = "3.4.0"
+coil = "3.3.0"
 kotlinx-datetime = "0.7.1"
 room = "2.8.4"
-ksp = "2.2.21-2.0.5"
+ksp = "2.2.0-2.0.2"
 napier = "2.7.1"
+datastore = "1.2.1"
 
 [libraries]
 # Compose Multiplatform
@@ -92,6 +93,9 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 # Database (Room)
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+
+# Preferences
+datastore-preferences-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "datastore" }
 
 # Others
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }

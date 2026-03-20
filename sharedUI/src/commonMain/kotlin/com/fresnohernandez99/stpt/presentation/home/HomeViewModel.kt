@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.domain.model.Language
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -46,5 +47,15 @@ class HomeViewModel : ViewModel() {
                 ) 
             }
         }
+    }
+
+    fun onUpdateRecordingPath(recordingPath: String) {
+        // TODO
+//        _editorPresentationState.update {
+//            it.copy(
+//                recording = recordingPath(recordingPath)
+//            )
+//        }
+//        onUpdateContent(newContent = _editorPresentationState.value.content)
     }
 }

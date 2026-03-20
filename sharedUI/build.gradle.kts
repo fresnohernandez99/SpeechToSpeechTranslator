@@ -8,10 +8,10 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.compose.multiplatform)
-    alias(libs.plugins.android.kmp.library)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.android.application)
 }
 
 kotlin {
@@ -39,6 +39,7 @@ kotlin {
         )
     }
 
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -51,44 +52,49 @@ kotlin {
             api(libs.compose.resources)
             api(libs.compose.ui.tooling.preview)
             api(libs.compose.material3)
-            implementation(libs.compose.icons.extended)
+            api(libs.compose.icons.extended)
 
             // Coroutines
-            implementation(libs.kotlinx.coroutines.core)
+            api(libs.kotlinx.coroutines.core)
 
             // Ktor Networking
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.serialization)
-            implementation(libs.ktor.serialization.json)
-            implementation(libs.ktor.client.logging)
+            api(libs.ktor.client.core)
+            api(libs.ktor.client.content.negotiation)
+            api(libs.ktor.client.serialization)
+            api(libs.ktor.serialization.json)
+            api(libs.ktor.client.logging)
 
             // Lifecycle
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime)
+            api(libs.androidx.lifecycle.viewmodel)
+            api(libs.androidx.lifecycle.runtime)
 
             // Serialization
-            implementation(libs.kotlinx.serialization.json)
+            api(libs.kotlinx.serialization.json)
 
             // Navigation
-            implementation(libs.androidx.navigation.compose)
+            api(libs.androidx.navigation.compose)
 
             // Dependency Injection (Koin)
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(libs.koin.compose.navigation)
-            implementation(libs.koin.ktor)
+            api(libs.koin.core)
+            api(libs.koin.compose)
+            api(libs.koin.compose.viewmodel)
+            //api(libs.koin.compose.navigation)
+            //api(libs.koin.ktor)
 
             // Image Loading (Coil)
-            implementation(libs.coil)
-            implementation(libs.coil.network.ktor)
+            api(libs.coil)
+            api(libs.coil.network.ktor)
 
             // Utils
-            implementation(libs.kotlinx.datetime)
+            api(libs.kotlinx.datetime)
 
             // Database (Room)
-            implementation(libs.room.runtime)
+            api(libs.room.runtime)
+
+            // Preferences
+            api(libs.datastore.preferences.core)
+
+            implementation(project(":core:audio"))
         }
 
         commonTest.dependencies {
@@ -99,14 +105,14 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(libs.kotlinx.coroutines.android)
-            implementation(libs.ktor.client.okhttp)
+            api(libs.kotlinx.coroutines.android)
+            api(libs.ktor.client.okhttp)
+            implementation(project(":lib"))
         }
 
         iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
+            api(libs.ktor.client.darwin)
         }
-
     }
 
     targets
@@ -120,6 +126,42 @@ kotlin {
                 }
             }
         }
+
+    val whisperFrameworkPath = file("${projectDir}/../iosApp/whisper.xcframework")
+    iosSimulatorArm64 {
+        compilations.getByName("main") {
+            cinterops.create("whisperSimArm64") {
+                defFile(project.file("src/nativeInterop/cinterop/whisper.def"))
+                compilerOpts(
+                    "-I${whisperFrameworkPath}/ios-arm64_x86_64-simulator/whisper.framework/Headers",
+                    "-F${whisperFrameworkPath}"
+                )
+            }
+        }
+    }
+    iosArm64 {
+        compilations.getByName("main") {
+            cinterops.create("whisperArm64") {
+                defFile(project.file("src/nativeInterop/cinterop/whisper.def"))
+                compilerOpts(
+                    "-I${whisperFrameworkPath}/ios-arm64/whisper.framework/Headers",
+                    "-F$whisperFrameworkPath"
+                )
+            }
+        }
+    }
+
+    iosX64 {
+        compilations.getByName("main") {
+            cinterops.create("whisperX64") {
+                defFile(project.file("src/nativeInterop/cinterop/whisper.def"))
+                compilerOpts(
+                    "-I${whisperFrameworkPath}/ios-arm64_x86_64-simulator/whisper.framework/Headers",
+                    "-F$whisperFrameworkPath"
+                )
+            }
+        }
+    }
 }
 
 dependencies {
@@ -129,13 +171,65 @@ dependencies {
 android {
     namespace = "com.fresnohernandez99.stpt"
     compileSdk = 36
+
     defaultConfig {
-        minSdk = 23
+        applicationId = "com.fresnohernandez99.stpt"
+        minSdk = 30
+        targetSdk = 36
+        versionCode = 1
+        versionName = "1.000.000"
     }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "lib/arm64-v8a/libimage_processing_util_jni.so"
+            excludes += "lib/x86_64/libimage_processing_util_jni.so"
+        }
+    }
+//    signingConfigs {
+//        create("release") {
+//            storeFile = file("../DOCS/android/uploadkey.keystore")
+//            storePassword = "12345678"
+//            keyAlias = "key0"
+//            keyPassword = "12345678"
+//        }
+//    }
+//    buildTypes {
+//        getByName("release") {
+//            isMinifyEnabled = true
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//            signingConfig = signingConfigs.getByName("release")
+//            ndk {
+//                // Las opciones son: "FULL", "SYMBOL_TABLE", "NONE"
+//                debugSymbolLevel = "FULL"
+//            }
+//        }
+//        getByName("debug") {
+//            signingConfig = signingConfigs.getByName("release")
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
+//            )
+//            ndk {
+//                // Las opciones son: "FULL", "SYMBOL_TABLE", "NONE"
+//                debugSymbolLevel = "FULL"
+//            }
+//        }
+//    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    lint {
+        disable.add("NullSafeMutableLiveData")
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+    ndkVersion = "29.0.14206865"
 }
 
 room {

@@ -2,14 +2,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.window.ComposeUIViewController
 import com.fresnohernandez99.stpt.App
+import com.fresnohernandez99.stpt.di.init
+import org.koin.compose.KoinApplication
 import platform.UIKit.UIApplication
 import platform.UIKit.UIStatusBarStyleDarkContent
 import platform.UIKit.UIStatusBarStyleLightContent
 import platform.UIKit.UIViewController
 import platform.UIKit.setStatusBarStyle
 
-fun MainViewController(): UIViewController = ComposeUIViewController { 
-    App(onThemeChanged = { ThemeChanged(it) })
+fun MainViewController(): UIViewController = ComposeUIViewController {
+    KoinApplication(application = {
+        init()
+    }) {
+        App(onThemeChanged = { ThemeChanged(it) })
+    }
 }
 
 @Composable

@@ -26,26 +26,26 @@ kotlin {
 		commonMain.dependencies {
 
 			// coroutines
-			implementation(libs.kotlinx.coroutines.core)
+			api(libs.kotlinx.coroutines.core)
 
 			// logging
-			implementation(libs.napier)
+			api(libs.napier)
 //			implementation(libs.logger.kmp)
 
 			// koin
-			implementation(libs.koin.core)
+			api(libs.koin.core)
 		}
 
 		commonTest.dependencies {
-			implementation(kotlin("test"))
+			api(kotlin("test"))
 		}
 
 		androidMain.dependencies {
-			implementation(libs.androidx.appcompat)
-			implementation(libs.androidx.core)
+			api(libs.androidx.appcompat)
+			api(libs.androidx.core)
 
 			// Wav Recorder
-			implementation(libs.android.wave.recorder)
+			api(libs.android.wave.recorder)
 
 			// ffmpeg-kit
 //			implementation(libs.ffmpegkit.kmp.android)

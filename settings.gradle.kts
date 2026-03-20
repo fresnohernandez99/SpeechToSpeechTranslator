@@ -34,6 +34,5 @@ dependencyResolutionManagement {
     }
 }
 include(":sharedUI")
-include(":androidApp")
 include(":lib")
 include(":core:audio")
