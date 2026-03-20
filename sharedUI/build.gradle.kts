@@ -34,7 +34,8 @@ kotlin {
         freeCompilerArgs.addAll(
             listOf(
                 "-Xskip-prerelease-check",
-                "-XXLanguage:+ExplicitBackingFields"
+                "-XXLanguage:+ExplicitBackingFields",
+                "-Xbinary=bundleId=com.fresnohernandez99.stpt.sharedUI"
             )
         )
     }
@@ -179,6 +180,7 @@ android {
         versionCode = 1
         versionName = "1.000.000"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -186,39 +188,39 @@ android {
             excludes += "lib/x86_64/libimage_processing_util_jni.so"
         }
     }
-//    signingConfigs {
-//        create("release") {
-//            storeFile = file("../DOCS/android/uploadkey.keystore")
-//            storePassword = "12345678"
-//            keyAlias = "key0"
-//            keyPassword = "12345678"
-//        }
-//    }
-//    buildTypes {
-//        getByName("release") {
-//            isMinifyEnabled = true
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//            signingConfig = signingConfigs.getByName("release")
-//            ndk {
-//                // Las opciones son: "FULL", "SYMBOL_TABLE", "NONE"
-//                debugSymbolLevel = "FULL"
-//            }
-//        }
-//        getByName("debug") {
-//            signingConfig = signingConfigs.getByName("release")
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro"
-//            )
-//            ndk {
-//                // Las opciones son: "FULL", "SYMBOL_TABLE", "NONE"
-//                debugSymbolLevel = "FULL"
-//            }
-//        }
-//    }
+
+    packaging {
+        // Ensure reproducible packaging
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE*"
+            excludes += "META-INF/NOTICE*"
+            excludes += "META-INF/*.version"
+            excludes += "assets/composeResources/com.module.notelycompose.resources/strings.xml"
+        }
+
+        // Force deterministic file ordering
+        jniLibs {
+            useLegacyPackaging = true
+            // 16KB Page Size Support: Use uncompressed native libraries
+            pickFirsts += listOf("**/libc++_shared.so", "**/libwhisper.so")
+        }
+
+        // Ensure reproducible DEX files
+        dex {
+            useLegacyPackaging = false
+        }
+    }
+
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
+    }
+
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -230,6 +232,12 @@ android {
         buildConfig = true
     }
     ndkVersion = "29.0.14206865"
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 room {

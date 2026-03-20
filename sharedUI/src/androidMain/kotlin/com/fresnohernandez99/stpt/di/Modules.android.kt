@@ -8,6 +8,7 @@ import com.fresnohernandez99.stpt.FileSaverLauncherHolder
 import com.fresnohernandez99.stpt.FolderPickerHandler
 import com.fresnohernandez99.stpt.FolderPickerLauncherHolder
 import com.fresnohernandez99.stpt.platform.AndroidPlatform
+import com.fresnohernandez99.stpt.platform.DATA_STORE_FILE_NAME
 import com.fresnohernandez99.stpt.platform.Downloader
 import com.fresnohernandez99.stpt.platform.PlatformUtils
 import com.fresnohernandez99.stpt.platform.Transcriber
@@ -34,7 +35,7 @@ actual val platformModule: Module = module {
     single<DataStore<Preferences>> {
         val app: Application = get()
         createDataStore(
-            producePath = { app.filesDir.resolve("pfdb").absolutePath }
+            producePath = { app.filesDir.resolve(DATA_STORE_FILE_NAME).absolutePath }
         )
     }
     single { PlatformUtils(get(), get()) }

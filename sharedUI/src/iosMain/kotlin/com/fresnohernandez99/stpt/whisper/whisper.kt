@@ -152,7 +152,7 @@ class WhisperContext constructor(
 
         private fun isRunningOnSimulator(): Boolean {
             memScoped {
-                val utsname = alloc<utsname>()
+                val utsname = alloc<platform.posix.utsname>()
                 if (uname(utsname.ptr) == 0) {
                     val machine = utsname.machine.toKString()
                     return machine == "x86_64" || machine == "i386"
