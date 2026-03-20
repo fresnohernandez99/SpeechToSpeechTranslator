@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.fresnohernandez99.stpt.di.appModule
+import com.fresnohernandez99.stpt.di.viewModelModule
 import com.fresnohernandez99.stpt.presentation.home.HomeScreen
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.theme.AppTheme
@@ -26,7 +27,7 @@ fun App(
     val windowSize = rememberWindowSizeClass()
 
     KoinApplication(
-        configuration = koinConfiguration(declaration = { modules(appModule) }),
+        configuration = koinConfiguration(declaration = { modules(appModule, viewModelModule) }),
         content = {
             NavHost(
                 modifier = Modifier.background(color = MaterialTheme.colorScheme.background)

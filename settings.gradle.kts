@@ -12,6 +12,7 @@ pluginManagement {
         }
         gradlePluginPortal()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 plugins {
@@ -29,8 +30,10 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 include(":sharedUI")
 include(":androidApp")
-
+include(":lib")
+include(":core:audio")
