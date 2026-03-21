@@ -8,5 +8,16 @@ data class HomeUiState(
     val targetLanguage: Language = Language.Spanish,
     val translatedText: String = "",
     val isTranslating: Boolean = false,
-    val isRecording: Boolean = false
+    val isRecording: Boolean = false,
+    val recordTime: String = "00:00:00",
+    val playTime: String = "00:00:00",
+    val duration: String = "00:00:00",
+    val playProgress: Float = 0f,
+    val isPlaying: Boolean = false,
+    val isRecordingPaused: Boolean = false,
+    val isPlayingPaused: Boolean = false,
+    val errorMessage: String? = null,
+    val recordingInfo: String? = null,
+    val meteringLevel: Float = 0f,
+    val playbackSpeed: Float = 1.0f
 )

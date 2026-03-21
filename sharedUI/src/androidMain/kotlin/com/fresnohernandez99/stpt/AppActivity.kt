@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.fresnohernandez99.stpt.di.initKoinApplication
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import io.github.hyochan.audio.initializeAudioRecorderPlayer
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 
@@ -24,6 +25,8 @@ class AppActivity : ComponentActivity() {
             androidContext(this@AppActivity)
             androidLogger()
         }
+        // Initialize audio recorder player with context
+        initializeAudioRecorderPlayer(this)
         setContent { 
             App(onThemeChanged = { ThemeChanged(it) }) 
         }
