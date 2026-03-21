@@ -27,6 +27,7 @@ koin = "4.1.0"
 # Others
 coil = "3.3.0"
 kotlinx-datetime = "0.7.1"
+recordCore = "0.5.0"
 room = "2.8.4"
 ksp = "2.2.0-2.0.2"
 datastore = "1.2.1"
@@ -99,6 +100,7 @@ datastore-preferences-core = { group = "androidx.datastore", name = "datastore-p
 
 # Others
 kmp-audio-recorder-player = { module = "io.github.hyochan:kmp-audio-recorder-player", version.ref = "kmpAudioRecorderPlayer" }
+record-core = { module = "dev.theolm.record:record-core", version.ref = "recordCore" }
 
 [plugins]
 # Kotlin

@@ -3,6 +3,11 @@ package com.fresnohernandez99.stpt.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.domain.model.Language
+import dev.theolm.record.Record
+import dev.theolm.record.config.AudioEncoder
+import dev.theolm.record.config.OutputFormat
+import dev.theolm.record.config.OutputLocation
+import dev.theolm.record.config.RecordConfig
 import io.github.hyochan.audio.AudioRecorderPlayerProperties
 import io.github.hyochan.audio.RecorderAudioSet
 import io.github.hyochan.audio.createAudioRecorderPlayer
@@ -98,45 +103,58 @@ class HomeViewModel : ViewModel() {
 
     fun startRecording() {
         viewModelScope.launch {
-            audioRecorderPlayer.startRecording().fold(
-                onSuccess = { filePath ->
-                    recordedFilePath = filePath
-
-                    println("RecordPath!!!: $filePath")
-
-                    _uiState.update {
-                        it.copy(
-                            isRecording = true,
-                            isRecordingPaused = false,
-                            errorMessage = null
-                        )
-                    }
-                },
-                onFailure = { exception ->
-                    _uiState.update { it.copy(errorMessage = "Recording failed: ${exception.message}") }
-                }
+            Record.setConfig(
+                RecordConfig(
+                    outputLocation = OutputLocation.Cache,
+                    outputFormat = OutputFormat.MPEG_4,
+                    audioEncoder = AudioEncoder.AAC,
+                    sampleRate = 44100
+                )
             )
+            Record.startRecording()
+//            audioRecorderPlayer.startRecording().fold(
+//                onSuccess = { filePath ->
+//                    recordedFilePath = filePath
+//
+//                    println("RecordPath!!!: $filePath")
+//
+//                    _uiState.update {
+//                        it.copy(
+//                            isRecording = true,
+//                            isRecordingPaused = false,
+//                            errorMessage = null
+//                        )
+//                    }
+//                },
+//                onFailure = { exception ->
+//                    _uiState.update { it.copy(errorMessage = "Recording failed: ${exception.message}") }
+//                }
+//            )
         }
     }
 
     fun stopRecording() {
         viewModelScope.launch {
-            audioRecorderPlayer.stopRecording().fold(
-                onSuccess = { filePath ->
-                    recordedFilePath = filePath
-                    _uiState.update {
-                        it.copy(
-                            isRecording = false,
-                            isRecordingPaused = false,
-                            recordTime = "00:00:00"
-                        )
-                    }
-                    loadRecordingInfo()
-                },
-                onFailure = { exception ->
-                    _uiState.update { it.copy(errorMessage = "Stop recording failed: ${exception.message}") }
-                }
-            )
+            Record.stopRecording().also { savedAudioPath: String ->
+                println("Recording stopped. File saved at $savedAudioPath")
+                recordedFilePath = savedAudioPath
+            }
+//            audioRecorderPlayer.stopRecording().fold(
+//                onSuccess = { filePath ->
+//                    recordedFilePath = filePath
+//                    _uiState.update {
+//                        it.copy(
+//                            isRecording = false,
+//                            isRecordingPaused = false,
+//                            recordTime = "00:00:00"
+//                        )
+//                    }
+//                    loadRecordingInfo()
+//                },
+//                onFailure = { exception ->
+//                    _uiState.update { it.copy(errorMessage = "Stop recording failed: ${exception.message}") }
+//                }
+//            )
         }
     }
 

@@ -1,8 +1,6 @@
 package com.fresnohernandez99.stpt.di
 
-import android.app.Application
 import android.content.Context
-import androidx.activity.ComponentActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.fresnohernandez99.stpt.FileSaverHandler
@@ -43,7 +41,10 @@ actual val platformModule: Module = module {
 
     single { Downloader(get(), get()) }
 
-    single { Transcriber(get(), get() as ComponentActivity) }
+    single {
+        val context: Context = get()
+        Transcriber(get())
+    }
 
     single { FolderPickerLauncherHolder() }
     single { FolderPickerHandler(get()) }

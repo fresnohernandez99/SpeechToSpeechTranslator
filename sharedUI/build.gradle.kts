@@ -96,6 +96,7 @@ kotlin {
             api(libs.datastore.preferences.core)
 
             implementation(libs.kmp.audio.recorder.player)
+            implementation(libs.record.core)
         }
 
         commonTest.dependencies {

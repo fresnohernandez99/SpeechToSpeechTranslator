@@ -6,6 +6,7 @@ import com.fresnohernandez99.stpt.domain.repository.GreetingRepository
 import com.fresnohernandez99.stpt.platform.presentation.PlatformViewModel
 import com.fresnohernandez99.stpt.presentation.home.HomeViewModel
 import com.fresnohernandez99.stpt.modelDownloader.ModelDownloaderViewModel
+import com.fresnohernandez99.stpt.modelDownloader.ModelSelection
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionViewModel
 import com.fresnohernandez99.stpt.presentation.settings.SettingsViewModel
 import org.koin.core.module.Module
@@ -16,6 +17,7 @@ import org.koin.dsl.module
 internal expect val platformModule: Module
 
 val appModule = module {
+    factory { ModelSelection(get()) }
 }
 
 val repositoryModule = module {

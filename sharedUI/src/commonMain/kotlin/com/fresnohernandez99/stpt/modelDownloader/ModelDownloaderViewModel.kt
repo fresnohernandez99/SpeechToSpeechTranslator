@@ -36,7 +36,6 @@ class ModelDownloaderViewModel(
     private val _effects = MutableSharedFlow<DownloaderEffect>()
     val effects: SharedFlow<DownloaderEffect> = _effects
 
-
     fun checkTranscriptionAvailability() {
         viewModelScope.launch(Dispatchers.IO) {
             _effects.emit(DownloaderEffect.CheckingEffect())

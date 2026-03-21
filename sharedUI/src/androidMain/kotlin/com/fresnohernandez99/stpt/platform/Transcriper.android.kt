@@ -1,13 +1,9 @@
 package com.fresnohernandez99.stpt.platform
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Environment
-import androidx.activity.ComponentActivity
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.fresnohernandez99.stpt.utils.AudioChunk
 import com.fresnohernandez99.stpt.utils.ChunkTranscriptionResult
@@ -15,23 +11,17 @@ import com.fresnohernandez99.stpt.utils.StreamingAudioChunker
 import com.fresnohernandez99.stpt.utils.TranscriptionSegment
 import com.whispercpp.whisper.WhisperCallback
 import com.whispercpp.whisper.WhisperContext
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
-import kotlin.coroutines.resume
 
 actual class Transcriber(
-    private val context: Context,
-    private val activity: ComponentActivity
+    private val context: Context
 ) {
-    var permissionLauncher: ActivityResultLauncher<Array<String>> = activity.registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()) {}
     private var canTranscribe: Boolean = false
     private var isTranscribing = false
     private val modelsPath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
     private var whisperContext: WhisperContext? = null
     private var permissionContinuation: ((Boolean) -> Unit)? = null
     private val streamingChunker = StreamingAudioChunker()
-
 
     actual fun hasRecordingPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
@@ -40,25 +30,24 @@ actual class Transcriber(
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-
     actual suspend fun requestRecordingPermission(): Boolean {
-        if (hasRecordingPermission()) {
-            return true
-        }
-
-        return suspendCancellableCoroutine { continuation ->
-            permissionContinuation = { isGranted ->
-                continuation.resume(isGranted)
-            }
-
-            permissionLauncher.launch(arrayOf(Manifest.permission.RECORD_AUDIO))
-
-            continuation.invokeOnCancellation {
-                permissionContinuation = null
-            }
-        }
+//        if (hasRecordingPermission()) {
+//            return true
+//        }
+//
+//        return suspendCancellableCoroutine { continuation ->
+//            permissionContinuation = { isGranted ->
+//                continuation.resume(isGranted)
+//            }
+//
+//            permissionLauncher.launch(arrayOf(Manifest.permission.RECORD_AUDIO))
+//
+//            continuation.invokeOnCancellation {
+//                permissionContinuation = null
+//            }
+//        }
+        return true
     }
-
 
     actual suspend fun initialize(modelFileName: String) {
         println { "speech: initialize model" }

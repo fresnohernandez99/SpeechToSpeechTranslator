@@ -38,4 +38,37 @@
     <string name="standard_model_title">Modelo estándar (multilingüe)</string>
     <string name="standard_model_desc">Rendimiento más rápido y menor tamaño de archivo\nSoporta todos los idiomas</string>
     <string name="standard_model_size">142 MB</string>
+
+    <string name="settings_model_selection_text">Acerca de los modelos de transcripción</string>
+    <string name="settings_model_selection_description">Elige el modelo que mejor se adapte a tus necesidades. El modelo optimizado ofrece mayor precisión, mientras que el modelo estándar es más rápido.</string>
+    <string name="question_mark">Ayuda</string>
+
+    <string name="file_model_hindi">Archivos del modelo en hindi</string>
+    <string name="file_model_english">Archivos del modelo en inglés</string>
+    <string name="download_required_for_hindi">Descarga necesaria para hindi</string>
+    <string name="download_required">Descarga necesaria</string>
+    <string name="for_accurate_transcription">Para una transcripción precisa, necesitamos descargar un modelo.</string>
+    <string name="take_few_minutes">Esto puede tardar unos minutos.</string>
+    <string name="file_size_approx">Tamaño aproximado del archivo: %1$s</string>
+    <string name="download">Descargar</string>
+    <string name="cancel">Cancelar</string>
+
+    <string name="download_dialog_error">Error de descarga</string>
+    <string name="confirmation_cancel">Cancelar</string>
+    <string name="downloading_model">Descargando %1$s</string>
+    <string name="stop_recording">Detener grabación</string>
+    <string name="record_audio">Grabar audio</string>
+
+    <string name="preparing">Preparando...</string>
+    <string name="audio_recorder_player">Grabador y reproductor de audio</string>
+    <string name="recording_level">Nivel de grabación</string>
+    <string name="record">Grabar</string>
+    <string name="pause">Pausa</string>
+    <string name="resume">Reanudar</string>
+    <string name="play">Reproducir</string>
+    <string name="playback_speed">Velocidad de reproducción: %1$sx</string>
+
+    <string name="text_to_translate">Texto a traducir</string>
+    <string name="translation_label">Traducción:</string>
+    <string name="translating">Traduciendo...</string>
 </resources>

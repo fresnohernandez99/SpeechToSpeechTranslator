@@ -42,4 +42,33 @@
     <string name="settings_model_selection_text">About Transcription Models</string>
     <string name="settings_model_selection_description">Choose the model that best fits your needs. The optimized model offers better accuracy, while the standard model is faster.</string>
     <string name="question_mark">Help</string>
+
+    <string name="file_model_hindi">Hindi model files</string>
+    <string name="file_model_english">English model files</string>
+    <string name="download_required_for_hindi">Download Required for Hindi</string>
+    <string name="download_required">Download Required</string>
+    <string name="for_accurate_transcription">For accurate transcription, we need to download a model.</string>
+    <string name="take_few_minutes">This may take a few minutes.</string>
+    <string name="file_size_approx">Approximate file size: %1$s</string>
+    <string name="download">Download</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="download_dialog_error">Download Error</string>
+    <string name="confirmation_cancel">Cancel</string>
+    <string name="downloading_model">Downloading %1$s</string>
+    <string name="stop_recording">Stop Recording</string>
+    <string name="record_audio">Record Audio</string>
+
+    <string name="preparing">Preparing...</string>
+    <string name="audio_recorder_player">Audio Recorder Player</string>
+    <string name="recording_level">Recording Level</string>
+    <string name="record">Record</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="play">Play</string>
+    <string name="playback_speed">Playback Speed: %1$sx</string>
+
+    <string name="text_to_translate">Text to translate</string>
+    <string name="translation_label">Translation:</string>
+    <string name="translating">Translating...</string>
 </resources>
