@@ -15,6 +15,9 @@ class HomeViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
 
+    fun onRecordingStateChange(value: Boolean) {
+        _uiState.update { it.copy(isRecording = value) }
+    }
     fun onTextChanged(text: String) {
         _uiState.update { it.copy(textToTranslate = text) }
     }

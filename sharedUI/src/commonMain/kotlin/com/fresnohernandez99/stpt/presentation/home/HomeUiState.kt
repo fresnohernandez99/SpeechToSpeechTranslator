@@ -8,4 +8,5 @@ data class HomeUiState(
     val targetLanguage: Language = Language.Spanish,
     val translatedText: String = "",
     val isTranslating: Boolean = false,
+    val isRecording: Boolean = false
 )

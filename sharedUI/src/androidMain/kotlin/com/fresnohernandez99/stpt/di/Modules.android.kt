@@ -7,6 +7,8 @@ import com.fresnohernandez99.stpt.FileSaverHandler
 import com.fresnohernandez99.stpt.FileSaverLauncherHolder
 import com.fresnohernandez99.stpt.FolderPickerHandler
 import com.fresnohernandez99.stpt.FolderPickerLauncherHolder
+import com.fresnohernandez99.stpt.audio.domain.AudioRecorderInteractor
+import com.fresnohernandez99.stpt.audio.domain.AudioRecorderInteractorImpl
 import com.fresnohernandez99.stpt.platform.AndroidPlatform
 import com.fresnohernandez99.stpt.platform.DATA_STORE_FILE_NAME
 import com.fresnohernandez99.stpt.platform.Downloader
@@ -15,6 +17,8 @@ import com.fresnohernandez99.stpt.platform.Transcriber
 import com.fresnohernandez99.stpt.platform.Platform
 import com.fresnohernandez99.stpt.platform.PlatformAudioPlayer
 import com.fresnohernandez99.stpt.platform.createDataStore
+import com.fresnohernandez99.stpt.audio.domain.SaveAudioNoteInteractor
+import com.fresnohernandez99.stpt.audio.domain.SaveAudioNoteInteractorImpl
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -52,16 +56,16 @@ actual val platformModule: Module = module {
 
 
     // domain
-//    single<AudioRecorderInteractor> { AudioRecorderInteractorImpl(get(), get(), get()) }
-//    single<SaveAudioNoteInteractor> {
-//        SaveAudioNoteInteractorImpl(
-//            get(),
+    single<AudioRecorderInteractor> { AudioRecorderInteractorImpl(get(), get(), get()) }
+    single<SaveAudioNoteInteractor> {
+        SaveAudioNoteInteractorImpl(
+            get(),
 //            get(),
 //            get(),
 //            get(),
 //            get()
-//        )
-//    }
+        )
+    }
 
     // export
     single { FolderPickerLauncherHolder() }

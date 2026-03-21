@@ -86,7 +86,7 @@ fun RecordingScreen(
     noteId: Long?,
     navigateBack: () -> Unit,
     viewModel: AudioRecorderViewModel = koinViewModel(),
-    homeViewModel: HomeViewModel
+    onUpdateRecordingPath: (String) -> Unit
 ) {
     val recordingState by viewModel.audioRecorderPresentationState.collectAsStateWithLifecycle()
     val screenState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -125,7 +125,7 @@ fun RecordingScreen(
                 LaunchedEffect(Unit) {
                     delay(2000)
                     println { "%%%%%%%%%%% ${recordingState.recordingPath}" }
-                    homeViewModel.onUpdateRecordingPath(recordingState.recordingPath)
+                    onUpdateRecordingPath(recordingState.recordingPath)
                     navigateBack()
                 }
             }

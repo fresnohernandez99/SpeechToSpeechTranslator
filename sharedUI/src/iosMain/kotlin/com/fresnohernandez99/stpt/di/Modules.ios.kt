@@ -1,6 +1,7 @@
 package com.fresnohernandez99.stpt.di
 
 import com.fresnohernandez99.stpt.audio.domain.AudioRecorderInteractor
+import com.fresnohernandez99.stpt.audio.domain.AudioRecorderInteractorImpl
 import com.fresnohernandez99.stpt.platform.DATA_STORE_FILE_NAME
 import com.fresnohernandez99.stpt.platform.Downloader
 import com.fresnohernandez99.stpt.platform.IOSPlatform
@@ -51,6 +52,5 @@ actual val platformModule = module {
     single { Transcriber() }
 
     // domain
-//    single<AudioRecorderInteractor> { AudioRecorderInteractorImpl(get(), get()) }
-//    single<ExportSelectionInteractor> { ExportSelectionInteractorImpl() }
+    single<AudioRecorderInteractor> { AudioRecorderInteractorImpl(get(), get()) }
 }
