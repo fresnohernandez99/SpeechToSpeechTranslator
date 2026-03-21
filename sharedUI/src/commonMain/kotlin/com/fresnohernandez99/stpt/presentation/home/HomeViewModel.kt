@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.domain.model.Language
 import dev.theolm.record.Record
+import dev.theolm.record.VolumeCallback
 import dev.theolm.record.config.AudioEncoder
 import dev.theolm.record.config.OutputFormat
 import dev.theolm.record.config.OutputLocation
@@ -98,7 +99,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun onRecordingStateChange(value: Boolean) {
-        if (value) startRecording() else stopRecording()
+        if (value) startRecording() else {}//stopRecording()
     }
 
     fun startRecording() {
@@ -106,12 +107,24 @@ class HomeViewModel : ViewModel() {
             Record.setConfig(
                 RecordConfig(
                     outputLocation = OutputLocation.Cache,
-                    outputFormat = OutputFormat.MPEG_4,
-                    audioEncoder = AudioEncoder.AAC,
-                    sampleRate = 44100
+                    outputFormat = OutputFormat.WAV,
+                    audioEncoder = AudioEncoder.PCM_16BIT,
+                    sampleRate = 16000
                 )
             )
-            Record.startRecording()
+            try {
+                Record.startRecording()
+                _uiState.update {
+                    it.copy(
+                        isRecording = true,
+                        isRecordingPaused = false,
+                        errorMessage = null
+                    )
+                }
+            } catch (e: Exception) {
+                // TODO handle errors
+            }
+
 //            audioRecorderPlayer.startRecording().fold(
 //                onSuccess = { filePath ->
 //                    recordedFilePath = filePath
@@ -133,13 +146,20 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun stopRecording() {
+    fun stopRecording(onFileFound: (String) -> Unit) {
         viewModelScope.launch {
-            Record.stopRecording().also { savedAudioPath: String ->
-                println("Recording stopped. File saved at $savedAudioPath")
-                recordedFilePath = savedAudioPath
+            try {
+                Record.stopRecording().also { savedAudioPath: String ->
+                    println("Recording stopped. File saved at $savedAudioPath")
+                    delay(1000)
+                    recordedFilePath = savedAudioPath
+                    onFileFound(recordedFilePath ?: "")
+                }
+            } catch (e: Exception) {
+                // TODO HANDLE ERRORS
             }
-//            audioRecorderPlayer.stopRecording().fold(
+
+//            audioRecorderPlayer.stopRecording().fold(Ï√
 //                onSuccess = { filePath ->
 //                    recordedFilePath = filePath
 //                    _uiState.update {

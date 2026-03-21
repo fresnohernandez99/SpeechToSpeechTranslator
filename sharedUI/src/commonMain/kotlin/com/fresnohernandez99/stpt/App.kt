@@ -15,6 +15,7 @@ import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.settings.SettingsScreen
 import com.fresnohernandez99.stpt.theme.AppTheme
 import com.fresnohernandez99.stpt.theme.rememberWindowSizeClass
+import com.fresnohernandez99.stpt.transcription.TranscriptionScreen
 
 object Arguments {
     const val NOTE_ID_PARAM = "noteId"
@@ -34,7 +35,7 @@ fun App(
         modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
             .systemBarsPadding(),
         navController = navHostController,
-        startDestination = Destination.Home,
+        startDestination = Destination.Home(),
     ) {
         composable<Destination.Home> { backStackEntry ->
             val link: Destination.Home = backStackEntry.toRoute()
@@ -58,6 +59,15 @@ fun App(
             val link: Destination.ModelSelection = backStackEntry.toRoute()
 
             ModelSelectionScreen(
+                link = link,
+                windowSize = windowSize,
+                navHostController = navHostController
+            )
+        }
+        composable<Destination.Transcription> { backStackEntry ->
+            val link: Destination.Transcription = backStackEntry.toRoute()
+
+            TranscriptionScreen(
                 link = link,
                 windowSize = windowSize,
                 navHostController = navHostController

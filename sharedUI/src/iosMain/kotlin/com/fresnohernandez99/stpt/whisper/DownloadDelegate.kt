@@ -50,7 +50,7 @@ class DownloadDelegate(
         downloadTask: NSURLSessionDownloadTask,
         didFinishDownloadingToURL: NSURL
     ) {
-        println { "Download finished at: ${didFinishDownloadingToURL.path}" }
+        println( "Download finished at: ${didFinishDownloadingToURL.path}" }
 
         try {
             val fileManager = NSFileManager.defaultManager
@@ -61,11 +61,11 @@ class DownloadDelegate(
 
             documentsDirectory.URLByAppendingPathComponent(fileName)?.let {
                 fileManager.copyItemAtURL(didFinishDownloadingToURL, it, null)
-                println { "Writing to $it completed" }
+                println( "Writing to $it completed" }
                 onSuccess?.invoke()
             }
         } catch (e: Exception) {
-            println { "Error: ${e.message}" }
+            println( "Error: ${e.message}" }
         }
     }
 
@@ -75,7 +75,7 @@ class DownloadDelegate(
         task: NSURLSessionTask,
         didCompleteWithError: NSError?
     ) {
-        println { "Error --------------- ${didCompleteWithError?.description}" }
+        println( "Error --------------- ${didCompleteWithError?.description}" }
         if (didCompleteWithError != null)
             onFailed?.invoke(didCompleteWithError.description ?: "Error")
     }

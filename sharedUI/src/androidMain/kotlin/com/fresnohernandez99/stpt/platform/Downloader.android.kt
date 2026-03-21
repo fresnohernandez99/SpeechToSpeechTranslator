@@ -41,9 +41,9 @@ actual class Downloader(
             preferencesRepository.setModelDownloadId(downloadId)
 
         } catch (e: NullPointerException) {
-            println { "Invalid download URL $url: ${e.message}" }
+            println( "Invalid download URL $url: ${e.message}" )
         } catch (e: Exception) {
-            println { "Failed to start download: ${e.message}" }
+            println( "Failed to start download: ${e.message}" )
         }
     }
 
@@ -145,13 +145,13 @@ actual class Downloader(
                                         cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI)
                                     )
                                     val uri = uriString.toUri()
-                                    println { "Download complete: $uri" }
+                                    println( "Download complete: $uri" )
                                     onSuccess()
                                 } else {
                                     // Handle failed download
                                     val reason =
                                         cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON))
-                                    println { "Download failed: $reason" }
+                                    println( "Download failed: $reason" )
                                     onFailed(getErrorTextFromReason(reason))
                                 }
                             }
@@ -160,7 +160,7 @@ actual class Downloader(
 
                         DownloadManager.ACTION_NOTIFICATION_CLICKED -> {
                             // User clicked on download notification
-                            println { "Opening downloads..." }
+                            println( "Opening downloads..." )
                         }
                     }
                     mainContext.unregisterReceiver(this)

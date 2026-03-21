@@ -1,0 +1,21 @@
+package com.fresnohernandez99.stpt.transcription
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class TranscriptionUiState(
+    val inTranscription: Boolean = false,
+    val viewOriginalText: Boolean = true,
+    val finalText: String = "",
+    val partialText: String = "",
+    val summarizedText: String = "",
+    val originalText: String = "",
+    val progress: Int = 0,
+    val downloaded: String = "0 MB ",
+    val total: String = "0 MB",
+    val hasError: Boolean = false
+)
+
+sealed class TranscriptionEffect() {
+     object DownloadEffect : TranscriptionEffect()
+}

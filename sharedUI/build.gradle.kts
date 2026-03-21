@@ -97,6 +97,7 @@ kotlin {
 
             implementation(libs.kmp.audio.recorder.player)
             implementation(libs.record.core)
+            implementation(libs.alert.kmp)
         }
 
         commonTest.dependencies {

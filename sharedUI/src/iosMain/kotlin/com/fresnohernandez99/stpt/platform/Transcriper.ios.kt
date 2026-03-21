@@ -33,7 +33,7 @@ actual class Transcriber {
 
 
     actual suspend fun initialize(modelFileName: String) {
-        println { "speech: initialize model" }
+        println("speech: initialize model")
         if (!isModelLoaded)
             loadBaseModel(modelFileName)
     }
@@ -41,15 +41,15 @@ actual class Transcriber {
     private fun loadBaseModel(modelFileName: String) {
         try {
             whisperContext = null
-            println { "Loading model: $modelFileName" }
+            println("Loading model: $modelFileName")
             val modelPath = getModelPath(modelFileName)
             whisperContext = WhisperContext.createContext(modelPath)
-            println { "Loaded model ${modelPath.substringAfterLast("/")}" }
+            println("Loaded model ${modelPath.substringAfterLast("/")}")
             isModelLoaded = true
             canTranscribe = true
 
         } catch (e: Throwable) {
-            println { "========================== ${e.message}" }
+            println("========================== ${e.message}")
             e.printStackTrace()
         }
     }
@@ -85,17 +85,17 @@ actual class Transcriber {
         onError: () -> Unit
     ) {
         if (!canTranscribe) {
-            println { "Model not loaded yet" }
+            println("Model not loaded yet")
             return
         }
 
         canTranscribe = false
 
         try {
-            println { "Reading wave samples... " }
+            println("Reading wave samples... ")
             val data = decodeWaveFile(filePath)
-            println { "${data.size / (16000 / 1000)} ms\n" }
-            println { "Transcribing data...\n" }
+            println("${data.size / (16000 / 1000)} ms\n")
+            println("Transcribing data...\n")
             whisperContext?.fullTranscribe(data, language, object : WhisperCallback {
                 override fun onProgress(progress: Int) {
                     onProgress(progress)
@@ -112,7 +112,7 @@ actual class Transcriber {
             })
         } catch (e: Exception) {
             e.printStackTrace()
-            println { "${e.message}\n" }
+            println("${e.message}\n")
         }
 
         canTranscribe = true

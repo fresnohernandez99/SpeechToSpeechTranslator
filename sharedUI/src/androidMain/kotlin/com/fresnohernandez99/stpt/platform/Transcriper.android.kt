@@ -11,7 +11,9 @@ import com.fresnohernandez99.stpt.utils.StreamingAudioChunker
 import com.fresnohernandez99.stpt.utils.TranscriptionSegment
 import com.whispercpp.whisper.WhisperCallback
 import com.whispercpp.whisper.WhisperContext
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
+import kotlin.coroutines.resume
 
 actual class Transcriber(
     private val context: Context
@@ -23,6 +25,7 @@ actual class Transcriber(
     private var permissionContinuation: ((Boolean) -> Unit)? = null
     private val streamingChunker = StreamingAudioChunker()
 
+
     actual fun hasRecordingPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
@@ -30,33 +33,34 @@ actual class Transcriber(
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+
     actual suspend fun requestRecordingPermission(): Boolean {
-//        if (hasRecordingPermission()) {
-//            return true
-//        }
-//
-//        return suspendCancellableCoroutine { continuation ->
-//            permissionContinuation = { isGranted ->
-//                continuation.resume(isGranted)
-//            }
-//
-//            permissionLauncher.launch(arrayOf(Manifest.permission.RECORD_AUDIO))
-//
-//            continuation.invokeOnCancellation {
-//                permissionContinuation = null
-//            }
-//        }
-        return true
+        if (hasRecordingPermission()) {
+            return true
+        }
+
+        return suspendCancellableCoroutine { continuation ->
+            permissionContinuation = { isGranted ->
+                continuation.resume(isGranted)
+            }
+
+            continuation.resume(false)
+
+            continuation.invokeOnCancellation {
+                permissionContinuation = null
+            }
+        }
     }
 
+
     actual suspend fun initialize(modelFileName: String) {
-        println { "speech: initialize model" }
+        println("speech: initialize model")
         loadBaseModel(modelFileName)
     }
 
     private fun loadBaseModel(modelFileName: String) {
         try {
-            println { "Loading model: $modelFileName\n" }
+            println("Loading model: $modelFileName\n")
             val modelFile = File(modelsPath, modelFileName)
             whisperContext = WhisperContext.createContextFromFile(modelFile.absolutePath)
             canTranscribe = true
@@ -105,11 +109,11 @@ actual class Transcriber(
         isTranscribing = true
 
         try {
-            println { "Reading WAV file chunks directly from disk...\n" }
+            println("Reading WAV file chunks directly from disk...\n")
 
             // Split WAV file into streaming chunks without loading entire file into memory
             val streamingChunks = streamingChunker.splitWavFileIntoChunks(filePath)
-            println { "Processing ${streamingChunks.size} streaming chunks...\n" }
+            println("Processing ${streamingChunks.size} streaming chunks...\n")
 
             val start = System.currentTimeMillis()
             val chunkResults = mutableListOf<ChunkTranscriptionResult>()
@@ -117,11 +121,11 @@ actual class Transcriber(
 
             streamingChunks.forEachIndexed { chunkIndex, streamingChunk ->
                 if (!isTranscribing) {
-                    println { "Transcription stopped by user" }
+                    println("Transcription stopped by user")
                     return@forEachIndexed
                 }
 
-                println { "Processing streaming chunk ${chunkIndex + 1}/${streamingChunks.size} (${streamingChunk.durationSeconds}s)" }
+                println("Processing streaming chunk ${chunkIndex + 1}/${streamingChunks.size} (${streamingChunk.durationSeconds}s)")
 
                 val chunkSegments = mutableListOf<TranscriptionSegment>()
                 var chunkText = ""
@@ -129,7 +133,7 @@ actual class Transcriber(
                 try {
                     // Read chunk data directly from file (using reusable arrays)
                     val chunkData = streamingChunker.readChunkData(streamingChunk)
-                    println { "Transcription: Read ${chunkData.size} samples from chunk $chunkIndex (reusable array)" }
+                    println("Transcription: Read ${chunkData.size} samples from chunk $chunkIndex (reusable array)")
 
                     // Update progress to show chunk is starting
                     val chunkProgress = 100.0 / streamingChunks.size
@@ -167,14 +171,14 @@ actual class Transcriber(
                                     ((completedChunks * chunkProgress) + (progress * chunkProgress / 100.0)).toInt()
                                         .coerceIn(0, 100)
 
-                                println { "Transcription: Chunk $chunkIndex progress: $progress%, Overall: $overallProgress%" }
+                                println("Transcription: Chunk $chunkIndex progress: $progress%, Overall: $overallProgress%")
                                 onProgress(overallProgress)
                             }
 
                             override fun onComplete() {
                                 // This will be called for each chunk
                                 completedChunks++
-                                println { "Transcription: Transcription completed for chunk $chunkIndex (${completedChunks}/${streamingChunks.size} completed)" }
+                                println("Transcription: Transcription completed for chunk $chunkIndex (${completedChunks}/${streamingChunks.size} completed)")
                             }
                         })
 
@@ -197,10 +201,10 @@ actual class Transcriber(
 
                     // Clear chunk data from memory after processing (reusable array)
                     chunkData.fill(0.0f)
-                    println { "Transcription: Cleared chunk $chunkIndex data from memory (${chunkData.size} samples, reusable array)" }
+                    println("Transcription: Cleared chunk $chunkIndex data from memory (${chunkData.size} samples, reusable array)")
 
                 } catch (e: Exception) {
-                    println { "Error processing streaming chunk $chunkIndex: ${e.localizedMessage}" }
+                    println("Error processing streaming chunk $chunkIndex: ${e.localizedMessage}")
                     e.printStackTrace()
                 }
             }
@@ -210,20 +214,20 @@ actual class Transcriber(
 
                 // Clear chunk results from memory after merging
                 chunkResults.clear()
-                println { "Transcription: Cleared all chunk results from memory" }
+                println("Transcription: Cleared all chunk results from memory")
             }
 
             val elapsed = System.currentTimeMillis() - start
-            println { "Done ($elapsed ms)\n" }
+            println("Done ($elapsed ms)\n")
 
             // Clear streaming chunks from memory
             streamingChunks.clear()
-            println { "Transcription: Cleared streaming chunks list from memory" }
+            println("Transcription: Cleared streaming chunks list from memory")
 
             // Clear reusable arrays from memory
             streamingChunker.clearReusableArrays()
             val arraySizes = streamingChunker.getReusableArraySizes()
-            println { "Transcription: Cleared reusable arrays from memory (FloatArray: ${arraySizes.first}, ByteArray: ${arraySizes.second})" }
+            println("Transcription: Cleared reusable arrays from memory (FloatArray: ${arraySizes.first}, ByteArray: ${arraySizes.second})")
 
             if (isTranscribing) {
                 onComplete()
@@ -232,11 +236,11 @@ actual class Transcriber(
         } catch (e: OutOfMemoryError) {
             onError()
             e.printStackTrace()
-            println { "OutOfMemoryError: File too large to process - ${e.message}\n" }
+            println("OutOfMemoryError: File too large to process - ${e.message}\n")
         } catch (e: Exception) {
             onError()
             e.printStackTrace()
-            println { "${e.localizedMessage}\n" }
+            println("${e.localizedMessage}\n")
         }
 
         canTranscribe = true

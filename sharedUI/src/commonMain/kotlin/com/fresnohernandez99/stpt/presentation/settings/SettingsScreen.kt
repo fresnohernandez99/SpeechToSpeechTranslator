@@ -28,6 +28,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +40,7 @@ import androidx.navigation.NavHostController
 import com.fresnohernandez99.stpt.domain.model.Language
 import com.fresnohernandez99.stpt.modelDownloader.NO_MODEL_SELECTION
 import com.fresnohernandez99.stpt.modelDownloader.OPTIMIZED_MODEL_SELECTION
+import com.fresnohernandez99.stpt.presentation.home.components.LanguagePickerDialog
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelOption
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.theme.WindowSize
@@ -70,6 +74,8 @@ fun SettingsScreen(
         NO_MODEL_SELECTION
     ).value
 
+    var showDialog by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,7 +93,7 @@ fun SettingsScreen(
             item {
                 LanguageRegionSection(
                     navigateToLanguages = {
-                        // TODO: Implement navigation
+                        showDialog = true
                     },
                     selectedLanguage = language
                 )
@@ -99,6 +105,17 @@ fun SettingsScreen(
                     modelSavedSelection = modelSavedSelection
                 )
             }
+        }
+
+        if (showDialog) {
+            LanguagePickerDialog(
+                languages = Language.list,
+                onLanguageSelected = {
+                    viewModel.onLanguageSelected(it)
+                    showDialog = false
+                },
+                onDismiss = { showDialog = false }
+            )
         }
     }
 }

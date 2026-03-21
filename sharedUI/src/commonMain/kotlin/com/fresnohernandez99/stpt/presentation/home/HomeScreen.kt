@@ -163,14 +163,18 @@ fun HomeScreen(
         if (showRecord)
             RecordingDialog(
                 onDismiss = {
-                    viewModel.stopRecording()
+                    viewModel.stopRecording(
+                        onFileFound = downloaderViewModel::checkTranscriptionAvailability
+                    )
+
                     setShowRecord(false)
                 },
                 uiState = uiState,
                 onStartRecording = viewModel::startRecording,
                 onStopRecording = {
-                    viewModel.stopRecording()
-                    downloaderViewModel.checkTranscriptionAvailability()
+                    viewModel.stopRecording(
+                        onFileFound = downloaderViewModel::checkTranscriptionAvailability
+                    )
                 },
                 onPauseRecording = viewModel::pauseRecording,
                 onResumeRecording = viewModel::resumeRecording,
@@ -229,7 +233,7 @@ fun HomeScreen(
         }
         LaunchedEffect(Unit) {
             downloaderViewModel.effects.collect {
-                when (it) {
+                when (it.first) {
                     is DownloaderEffect.DownloadEffect -> {
                         showDownloadDialog = true
                         showDownloadQuestionDialog = false
@@ -245,7 +249,12 @@ fun HomeScreen(
                     is DownloaderEffect.ModelsAreReady -> {
                         showDownloadDialog = false
                         showLoadingDialog = false
-                        // navigateToTranscription()
+                        if (it.second != null)
+                            navHostController.navigate(
+                                Destination.Transcription(
+                                    audioPath = it.second!!
+                                )
+                            )
                     }
 
                     is DownloaderEffect.AskForUserAcceptance -> {

@@ -68,14 +68,14 @@ class StreamingAudioChunker {
     ): MutableList<StreamingAudioChunk> {
         val file = RandomAccessFile(filePath, "r")
 
-        try {
+        file.use { file ->
             val header = readWavHeader(file)
             val chunks = mutableListOf<StreamingAudioChunk>()
 
             // Calculate total chunks needed
             val totalChunks = (header.dataSize + chunkSizeBytes - 1) / chunkSizeBytes
 
-            println { "Splitting WAV file: ${header.dataSize} bytes into ~$totalChunks chunks" }
+            println( "Splitting WAV file: ${header.dataSize} bytes into ~$totalChunks chunks" )
 
             var currentOffset = 44L // Skip WAV header
             var chunkIndex = 0
@@ -114,17 +114,14 @@ class StreamingAudioChunker {
                 }
             }
 
-            println { "Created ${chunks.size} streaming chunks" }
+            println( "Created ${chunks.size} streaming chunks" )
             chunks.forEachIndexed { index, chunk ->
                 val durationSeconds =
                     (chunk.endOffset - chunk.startOffset) / (header.sampleRate * header.channels * (header.bitsPerSample / 8.0))
-                println { "Chunk $index: ${chunk.startOffset}-${chunk.endOffset} (${chunk.endOffset - chunk.startOffset} bytes, ~${durationSeconds}s)" }
+                println( "Chunk $index: ${chunk.startOffset}-${chunk.endOffset} (${chunk.endOffset - chunk.startOffset} bytes, ~${durationSeconds}s)" )
             }
 
             return chunks
-
-        } finally {
-            file.close()
         }
     }
 
@@ -138,7 +135,7 @@ class StreamingAudioChunker {
     fun readChunkData(chunk: StreamingAudioChunk): FloatArray {
         val file = RandomAccessFile(chunk.filePath, "r")
 
-        try {
+        file.use { file ->
             file.seek(chunk.startOffset)
 
             val chunkSize = (chunk.endOffset - chunk.startOffset).toInt()
@@ -158,9 +155,6 @@ class StreamingAudioChunker {
             buffer.fill(0, 0, bytesRead)
 
             return result
-
-        } finally {
-            file.close()
         }
     }
 

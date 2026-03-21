@@ -5,9 +5,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Destination {
     @Serializable
-    data object Home : Destination
+    data class Home(val typed: String = "") : Destination
     @Serializable
     data object Settings : Destination
     @Serializable
     data object ModelSelection : Destination
+    @Serializable
+    data class Transcription(val audioPath: String = "") : Destination
 }

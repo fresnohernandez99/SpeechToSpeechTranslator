@@ -9,6 +9,7 @@ import com.fresnohernandez99.stpt.modelDownloader.ModelDownloaderViewModel
 import com.fresnohernandez99.stpt.modelDownloader.ModelSelection
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionViewModel
 import com.fresnohernandez99.stpt.presentation.settings.SettingsViewModel
+import com.fresnohernandez99.stpt.transcription.TranscriptionViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -31,6 +32,7 @@ val viewModelModule = module {
     viewModelOf(::ModelDownloaderViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::ModelSelectionViewModel)
+    viewModelOf(::TranscriptionViewModel)
 }
 
 val mapperModule = module {

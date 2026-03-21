@@ -33,12 +33,15 @@ class ModelDownloaderViewModel(
 
     val uiState: StateFlow<DownloaderUiState> = _uiState
 
-    private val _effects = MutableSharedFlow<DownloaderEffect>()
-    val effects: SharedFlow<DownloaderEffect> = _effects
+    private val _effects = MutableSharedFlow<Pair<DownloaderEffect, String?>>()
+    val effects: SharedFlow<Pair<DownloaderEffect, String?>> = _effects
 
-    fun checkTranscriptionAvailability() {
+    var currentFilePath = ""
+
+    fun checkTranscriptionAvailability(filePath: String?) {
         viewModelScope.launch(Dispatchers.IO) {
-            _effects.emit(DownloaderEffect.CheckingEffect())
+            _effects.emit(DownloaderEffect.CheckingEffect() to filePath)
+            if (filePath != null) currentFilePath = filePath
 
             if (downloader.hasRunningDownload()) {
                 trackDownload()
@@ -46,9 +49,9 @@ class ModelDownloaderViewModel(
                 if (!transcriber.doesModelExists(uiState.value.selectedModel.name)
                     || !transcriber.isValidModel(uiState.value.selectedModel.name)
                 ) {
-                    _effects.emit(DownloaderEffect.AskForUserAcceptance())
+                    _effects.emit(DownloaderEffect.AskForUserAcceptance() to filePath)
                 } else {
-                    _effects.emit(DownloaderEffect.ModelsAreReady())
+                    _effects.emit(DownloaderEffect.ModelsAreReady() to filePath)
                 }
             }
         }
@@ -67,7 +70,7 @@ class ModelDownloaderViewModel(
     }
 
     private suspend fun trackDownload() {
-        _effects.emit(DownloaderEffect.DownloadEffect())
+        _effects.emit(DownloaderEffect.DownloadEffect() to currentFilePath)
         downloader.trackDownloadProgress(
             uiState.value.selectedModel.name,
             onProgressUpdated = { progress, downloadedMB, totalMB ->
@@ -81,11 +84,11 @@ class ModelDownloaderViewModel(
             }, onSuccess = {
                 viewModelScope.launch {
                     transcriber.initialize(uiState.value.selectedModel.name)
-                    _effects.emit(DownloaderEffect.ModelsAreReady())
+                    _effects.emit(DownloaderEffect.ModelsAreReady() to currentFilePath)
                 }
 
             }, onFailed = {
-                viewModelScope.launch { _effects.emit(DownloaderEffect.ErrorEffect()) }
+                viewModelScope.launch { _effects.emit(DownloaderEffect.ErrorEffect() to currentFilePath) }
             })
     }
 }

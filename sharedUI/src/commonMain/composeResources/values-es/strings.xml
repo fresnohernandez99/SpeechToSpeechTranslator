@@ -71,4 +71,9 @@
     <string name="text_to_translate">Texto a traducir</string>
     <string name="translation_label">Traducción:</string>
     <string name="translating">Traduciendo...</string>
+
+    <string name="transcription_dialog_append">Añadir</string>
+    <string name="transcription_dialog_error_audio_file_title">Error de audio</string>
+    <string name="transcription_dialog_error_audio_file_desc">Hubo un error al procesar el archivo de audio.</string>
+    <string name="transcription_dialog_error_got_it">Entendido</string>
 </resources>
