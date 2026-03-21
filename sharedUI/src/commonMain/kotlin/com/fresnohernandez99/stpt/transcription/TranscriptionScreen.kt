@@ -1,32 +1,38 @@
 package com.fresnohernandez99.stpt.transcription
 
 import MediaPlayer
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -34,11 +40,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.fresnohernandez99.stpt.platform.HandlePlatformBackNavigation
+import com.fresnohernandez99.stpt.presentation.components.AppScaffold
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.theme.WindowSize
 import org.jetbrains.compose.resources.stringResource
@@ -50,6 +58,7 @@ import speechtospeechtranslator.sharedui.generated.resources.transcription_dialo
 import speechtospeechtranslator.sharedui.generated.resources.transcription_dialog_error_audio_file_title
 import speechtospeechtranslator.sharedui.generated.resources.transcription_dialog_error_got_it
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TranscriptionScreen(
     link: Destination.Transcription,
@@ -73,116 +82,139 @@ fun TranscriptionScreen(
             viewModel.finishRecognizer()
         }
     }
-    Card {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 48.dp)
-        ) {
-            Box(
-                modifier = Modifier.align(Alignment.Start)
-                    .padding(start = 4.dp, bottom = 12.dp, top = 4.dp)
-            ) {
-                BackButton(
-                    onNavigateBack = {
-                        viewModel.stopRecognizer()
-                        viewModel.finishRecognizer()
-                        navHostController.navigateUp()
-                    }
-                )
-            }
 
-            MediaPlayer(
-                modifier = Modifier.fillMaxWidth(),
-                url = link.audioPath,
-                startTime = Color.Black,
-                endTime = Color.Black,
-                volumeIconColor = Color.Black,
-                playIconColor = Color.Blue,
-                sliderTrackColor = Color.LightGray,
-                sliderIndicatorColor = Color.Blue,
-                showControls = true,
-                headers = mapOf(),
-                autoPlay = false
-            )
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .verticalScroll(scrollState)
-                    .border(
-                        2.dp,
-                        MaterialTheme.colorScheme.onBackground,
-                        RoundedCornerShape(8.dp)
-                    )
-                    .padding(8.dp)
-            ) {
-                Text(
-                    text = if (transcriptionUiState.viewOriginalText) transcriptionUiState.originalText else transcriptionUiState.summarizedText,
-                )
-            }
-            if (transcriptionUiState.progress == 0) {
-                LinearProgressIndicator(
-                    modifier = Modifier.padding(vertical = 12.dp).fillMaxWidth(),
-                    strokeCap = StrokeCap.Round
-                )
-            } else if (transcriptionUiState.progress in 1..99) {
-                SmoothLinearProgressBar((transcriptionUiState.progress / 100f))
-            }
-//                FloatingActionButton(
-//                    modifier = Modifier.padding(vertical = 8.dp),
-//                    shape = CircleShape,
-//                    onClick = {
-//                        if (!transcriptionUiState.isListening) {
-//                            onRecognitionStart()
-//                        } else {
-//                            onRecognitionStopped()
-//                        }
-//                    },
-//                    backgroundColor = if (transcriptionUiState.isListening) Color.Red else Color.Green
-//                ) {
-//                    Icon(
-//                        imageVector = Images.Icons.IcRecorder,
-//                        contentDescription = stringResource(Res.string.note_detail_recorder),
-//                        tint = LocalCustomColors.current.bodyContentColor
-//                    )
-//                }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedButton(
-                    modifier = Modifier.weight(1f),
-                    enabled = !transcriptionUiState.inTranscription,
-                    border = BorderStroke(
-                        width = 2.dp,
-                        color = if (!transcriptionUiState.inTranscription) {
-                            MaterialTheme.colorScheme.onBackground
-                        } else {
-                            MaterialTheme.colorScheme.onBackground.copy(alpha = 0.38f)
-                        }
-                    ),
-                    shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.onBackground,
-                        disabledContentColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.38f)
-                    ),
-                    content = {
+    AppScaffold(
+        topBar = {
+            Column {
+                CenterAlignedTopAppBar(
+                    title = {
                         Text(
-                            stringResource(Res.string.transcription_dialog_append)
+                            "Transcripción",
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                         )
                     },
-                    onClick = {
-//                        val result =
-//                            if (transcriptionUiState.viewOriginalText) transcriptionUiState.originalText else transcriptionUiState.summarizedText
-//                        editorViewModel.onUpdateContent(TextFieldValue("${editorState.content.text}\n$result"))
-                        navHostController.navigateUp()
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            viewModel.stopRecognizer()
+                            viewModel.finishRecognizer()
+                            navHostController.navigateUp()
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(Res.string.top_bar_back)
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background
+                    )
+                )
+
+                // Progress indicator at the bottom of top bar
+                if (transcriptionUiState.progress in 1..99) {
+                    SmoothLinearProgressBar((transcriptionUiState.progress / 100f))
+                } else if (transcriptionUiState.inTranscription && transcriptionUiState.progress == 0) {
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                }
+            }
+        },
+        bottomBar = {
+            AnimatedVisibility(
+                visible = !transcriptionUiState.inTranscription,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp)
+                ) {
+                    Button(
+                        onClick = { navHostController.navigate(Destination.Home(typed = transcriptionUiState.originalText)) },
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                    ) {
+                        Icon(Icons.Default.Check, contentDescription = null)
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            stringResource(Res.string.transcription_dialog_append),
+                            style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp)
+                        )
                     }
+                }
+            }
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Audio Player Card
+            OutlinedCard(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                MediaPlayer(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    url = link.audioPath,
+                    startTime = MaterialTheme.colorScheme.onSurface,
+                    endTime = MaterialTheme.colorScheme.onSurface,
+                    volumeIconColor = MaterialTheme.colorScheme.primary,
+                    playIconColor = MaterialTheme.colorScheme.primary,
+                    sliderTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    sliderIndicatorColor = MaterialTheme.colorScheme.primary,
+                    showControls = true,
+                    headers = mapOf(),
+                    autoPlay = false
                 )
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Transcription Content Card
+            OutlinedCard(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                        .padding(16.dp)
+                ) {
+                    if (transcriptionUiState.originalText.isEmpty() && transcriptionUiState.inTranscription) {
+                        Text(
+                            text = "Escuchando...",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        )
+                    } else {
+                        Text(
+                            text = if (transcriptionUiState.viewOriginalText) transcriptionUiState.originalText else transcriptionUiState.summarizedText,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                lineHeight = 28.sp,
+                                letterSpacing = 0.5.sp
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 
@@ -192,13 +224,9 @@ fun TranscriptionScreen(
 
     if (transcriptionUiState.hasError) {
         AlertDialog(
-            onDismissRequest = {
-                navHostController.navigateUp()
-            },
+            onDismissRequest = { navHostController.navigateUp() },
             confirmButton = {
-                TextButton(onClick = {
-                    navHostController.navigateUp()
-                }) {
+                TextButton(onClick = { navHostController.navigateUp() }) {
                     Text(stringResource(Res.string.transcription_dialog_error_got_it))
                 }
             },
@@ -206,43 +234,20 @@ fun TranscriptionScreen(
             text = { Text(stringResource(Res.string.transcription_dialog_error_audio_file_desc)) }
         )
     }
-
 }
-
-@Composable
-fun BackButton(
-    onNavigateBack: () -> Unit
-) {
-    IconButton(
-        onClick = onNavigateBack,
-    ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = stringResource(Res.string.top_bar_back),
-            tint = MaterialTheme.colorScheme.onBackground
-        )
-    }
-}
-
 
 @Composable
 fun SmoothLinearProgressBar(progress: Float) {
-    // Animate the progress value for smooth transitions
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
-        animationSpec = tween(durationMillis = 500) // Adjust duration as needed
+        animationSpec = tween(durationMillis = 500)
     )
 
     LinearProgressIndicator(
         progress = { animatedProgress },
-        modifier = Modifier.padding(vertical = 12.dp).fillMaxWidth(),
-        color = ProgressIndicatorDefaults.linearColor,
-        trackColor = ProgressIndicatorDefaults.linearTrackColor,
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.primary,
+        trackColor = MaterialTheme.colorScheme.surfaceVariant,
         strokeCap = StrokeCap.Round,
     )
 }
-
-
-
-
-

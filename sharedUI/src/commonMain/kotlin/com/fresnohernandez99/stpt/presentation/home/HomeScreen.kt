@@ -229,7 +229,10 @@ fun HomeScreen(
                 transcriptionModel = downloaderUiState.selectedModel
             )
         }
+
         LaunchedEffect(Unit) {
+            viewModel.onTextChanged(link.typed)
+
             downloaderViewModel.effects.collect {
                 when (it.first) {
                     is DownloaderEffect.DownloadEffect -> {
