@@ -1,21 +1,49 @@
 package com.fresnohernandez99.stpt.presentation.home.components
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.fresnohernandez99.stpt.presentation.home.HomeUiState
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -30,276 +58,314 @@ fun RecordingDialog(
     onStopPlaying: () -> Unit,
     onPausePlaying: () -> Unit,
     onResumePlaying: () -> Unit,
-    onSetPlaybackSpeed: (Float) -> Unit
+    onSetPlaybackSpeed: (Float) -> Unit,
+    onCompletedRecord: () -> Unit,
+    simple: Boolean = true
 ) {
-    Dialog(onDismissRequest = onDismiss) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFF455A64))
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Title
-            Text(
-                text = "Audio Recorder Player!!",
-                color = Color.White,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Normal,
-                modifier = Modifier.padding(top = 84.dp)
-            )
-
-            // Error message
-            uiState.errorMessage?.let { error ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.Red.copy(alpha = 0.8f))
-                ) {
-                    Text(
-                        text = error,
-                        color = Color.White,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+    if (simple)
+        Dialog(onDismissRequest = onDismiss) {
+            val completedEnable by remember(
+                uiState.isRecording,
+                uiState.isPlaying,
+                uiState.duration
+            ) {
+                derivedStateOf { !uiState.isRecording && !uiState.isPlaying && uiState.duration != "00:00:00" }
             }
 
-            // Record time display
-            Text(
-                text = uiState.recordTime,
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.W200,
-                letterSpacing = 3.sp,
-                modifier = Modifier.padding(top = 32.dp)
+            val infiniteTransition = rememberInfiniteTransition(label = "blink")
+            val alpha by infiniteTransition.animateFloat(
+                initialValue = 1f,
+                targetValue = 0f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(800, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "alpha"
             )
 
-            // Audio metering display (only show when recording)
-            if (uiState.isRecording) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 32.dp)
-                        .padding(top = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .padding(32.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = "Recording Level",
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-
-                    // Metering bar
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(8.dp)
-                            .background(Color(0xFF263238), RoundedCornerShape(4.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
+                        Text(
+                            text = "REC",
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
                         Box(
                             modifier = Modifier
-                                .fillMaxHeight()
-                                .fillMaxWidth(uiState.meteringLevel)
-                                .background(
-                                    when {
-                                        uiState.meteringLevel > 0.8f -> Color.Red
-                                        uiState.meteringLevel > 0.6f -> Color.Yellow
-                                        else -> Color.Green
-                                    },
-                                    RoundedCornerShape(4.dp)
-                                )
+                                .size(18.dp)
+                                .graphicsLayer(alpha = if (uiState.isRecording) alpha else 1f)
+                                .background(Color.Red, CircleShape)
                         )
                     }
 
                     Text(
-                        text = "${(uiState.meteringLevel * 100).roundToInt()}%",
-                        color = Color(0xFFCCCCCC),
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(top = 4.dp)
+                        text = uiState.recordTime,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Light,
+                        modifier = Modifier.padding(top = 8.dp)
                     )
+
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    if (uiState.isRecording) {
+                        AudioButton(
+                            text = "Detener",
+                            onClick = onStopRecording,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    if (completedEnable) {
+                        AudioButton(
+                            text = "Transcribir",
+                            onClick = onCompletedRecord,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
+                    if (!uiState.isRecording && !completedEnable) {
+                        AudioButton(
+                            text = "Grabar",
+                            onClick = onStartRecording,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
-
-            // Recording info display
-            uiState.recordingInfo?.let { info ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF37474F))
-                ) {
-                    Text(
-                        text = info,
-                        color = Color.White,
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(12.dp)
-                    )
-                }
+        }
+    else
+        Dialog(onDismissRequest = onDismiss) {
+            val completedEnable by remember(
+                uiState.isRecording,
+                uiState.isPlaying,
+                uiState.duration
+            ) {
+                derivedStateOf { !uiState.isRecording && !uiState.isPlaying && uiState.duration != "00:00:00" }
             }
 
-            // Recording controls
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 40.dp),
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        12.dp,
-                        Alignment.CenterHorizontally
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    AudioButton(
-                        text = "Record",
-                        onClick = onStartRecording,
-                        enabled = !uiState.isRecording && !uiState.isPlaying
-                    )
-                    AudioButton(
-                        text = "Pause",
-                        onClick = onPauseRecording,
-                        enabled = uiState.isRecording && !uiState.isRecordingPaused
-                    )
-                    AudioButton(
-                        text = "Resume",
-                        onClick = onResumeRecording,
-                        enabled = uiState.isRecording && uiState.isRecordingPaused
-                    )
-                    AudioButton(
-                        text = "Stop",
-                        onClick = onStopRecording,
-                        enabled = uiState.isRecording
-                    )
-                }
-            }
-
-            // Player section
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 60.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Progress bar
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 28.dp)
-                        .height(4.dp)
-                        .background(Color(0xFFCCCCCC))
-                        .clickable {
-                            // TODO: Calculate position based on click and seek
-                        }
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth(uiState.playProgress)
-                            .background(Color.White)
-                    )
-                }
-
-                // Time display
+                // Title
                 Text(
-                    text = "${uiState.playTime} / ${uiState.duration}",
-                    color = Color(0xFFCCCCCC),
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 8.dp)
+                    text = "Rec...",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.padding(top = 84.dp)
                 )
 
-                // Playback speed control
-                if (uiState.isPlaying) {
+                // Error message
+                uiState.errorMessage?.let { error ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.Red.copy(alpha = 0.8f))
+                    ) {
+                        Text(
+                            text = error,
+                            color = Color.White,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                }
+
+                // Record time display
+                Text(
+                    text = uiState.recordTime,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.W200,
+                    letterSpacing = 3.sp,
+                    modifier = Modifier.padding(top = 32.dp)
+                )
+
+                // Audio metering display (only show when recording)
+                if (uiState.isRecording) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 28.dp)
+                            .padding(horizontal = 32.dp)
                             .padding(top = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Playback Speed: ${uiState.playbackSpeed}x",
-                            color = Color.White,
-                            fontSize = 14.sp,
+                            text = "Recording Level",
+                            fontSize = 12.sp,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
 
-                        Slider(
-                            value = uiState.playbackSpeed,
-                            onValueChange = onSetPlaybackSpeed,
-                            valueRange = 0.5f..2.0f,
-                            steps = 5,
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = SliderDefaults.colors(
-                                thumbColor = Color.White,
-                                activeTrackColor = Color.White,
-                                inactiveTrackColor = Color(0xFF37474F)
-                            )
-                        )
-
-                        // Speed preset buttons
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                        // Metering bar
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(8.dp)
+                                .background(
+                                    MaterialTheme.colorScheme.primary,
+                                    RoundedCornerShape(4.dp)
+                                )
                         ) {
-                            listOf(0.5f, 0.75f, 1.0f, 1.5f, 2.0f).forEach { speed ->
-                                TextButton(
-                                    onClick = { onSetPlaybackSpeed(speed) },
-                                    colors = ButtonDefaults.textButtonColors(
-                                        contentColor = if (uiState.playbackSpeed == speed) Color.White else Color(
-                                            0xFFCCCCCC
-                                        )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .fillMaxWidth(uiState.meteringLevel)
+                                    .background(
+                                        when {
+                                            uiState.meteringLevel > 0.8f -> Color.Red
+                                            uiState.meteringLevel > 0.6f -> Color.Yellow
+                                            else -> Color.Green
+                                        },
+                                        RoundedCornerShape(4.dp)
                                     )
-                                ) {
-                                    Text(
-                                        text = "${speed}x",
-                                        fontSize = 12.sp
-                                    )
-                                }
-                            }
+                            )
                         }
                     }
                 }
 
-                // Player controls
-                FlowRow(
+                // Recording info display
+                uiState.recordingInfo?.let { info ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFF37474F))
+                    ) {
+                        Text(
+                            text = info,
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(12.dp)
+                        )
+                    }
+                }
+
+                // Recording controls
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 40.dp),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        12.dp,
-                        Alignment.CenterHorizontally
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    AudioButton(
-                        text = "Play",
-                        onClick = onStartPlaying,
-                        enabled = !uiState.isRecording && !uiState.isPlaying
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            12.dp,
+                            Alignment.CenterHorizontally
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        AudioButton(
+                            text = "Record",
+                            onClick = onStartRecording,
+                            enabled = !uiState.isRecording && !uiState.isPlaying
+                        )
+                        AudioButton(
+                            text = "Pause",
+                            onClick = onPauseRecording,
+                            enabled = uiState.isRecording && !uiState.isRecordingPaused
+                        )
+                        AudioButton(
+                            text = "Resume",
+                            onClick = onResumeRecording,
+                            enabled = uiState.isRecording && uiState.isRecordingPaused
+                        )
+                        AudioButton(
+                            text = "Stop",
+                            onClick = onStopRecording,
+                            enabled = uiState.isRecording
+                        )
+                    }
+                }
+
+                // Player section
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 60.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Time display
+                    Text(
+                        text = "${uiState.playTime} / ${uiState.duration}",
+                        color = Color(0xFFCCCCCC),
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(top = 8.dp)
                     )
-                    AudioButton(
-                        text = "Pause",
-                        onClick = onPausePlaying,
-                        enabled = uiState.isPlaying && !uiState.isPlayingPaused
-                    )
-                    AudioButton(
-                        text = "Resume",
-                        onClick = onResumePlaying,
-                        enabled = uiState.isPlaying && uiState.isPlayingPaused
-                    )
-                    AudioButton(
-                        text = "Stop",
-                        onClick = onStopPlaying,
-                        enabled = uiState.isPlaying
-                    )
+
+                    // Player controls
+                    FlowRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 40.dp),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            12.dp,
+                            Alignment.CenterHorizontally
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        AudioButton(
+                            text = "Play",
+                            onClick = onStartPlaying,
+                            enabled = !uiState.isRecording && !uiState.isPlaying
+                        )
+                        AudioButton(
+                            text = "Pause",
+                            onClick = onPausePlaying,
+                            enabled = uiState.isPlaying && !uiState.isPlayingPaused
+                        )
+                        AudioButton(
+                            text = "Resume",
+                            onClick = onResumePlaying,
+                            enabled = uiState.isPlaying && uiState.isPlayingPaused
+                        )
+                        AudioButton(
+                            text = "Stop",
+                            onClick = onStopPlaying,
+                            enabled = uiState.isPlaying
+                        )
+                    }
+
+                    OutlinedButton(
+                        onClick = onCompletedRecord,
+                        enabled = completedEnable,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.surface,
+                            disabledContentColor = Color.Gray
+                        )
+                    ) {
+                        Text(
+                            text = "Ready",
+                            color = if (completedEnable) Color.White else Color.Gray,
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }
-    }
 }
 
 @Composable
@@ -322,7 +388,7 @@ fun AudioButton(
     ) {
         Text(
             text = text,
-            color = if (enabled) Color.White else Color.Gray,
+            color = if (enabled) MaterialTheme.colorScheme.onBackground else Color.Gray,
             fontSize = 14.sp,
             textAlign = TextAlign.Center
         )

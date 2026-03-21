@@ -163,26 +163,24 @@ fun HomeScreen(
         if (showRecord)
             RecordingDialog(
                 onDismiss = {
-                    viewModel.stopRecording(
-                        onFileFound = downloaderViewModel::checkTranscriptionAvailability
-                    )
-
+                    viewModel.stopRecording()
                     setShowRecord(false)
                 },
                 uiState = uiState,
                 onStartRecording = viewModel::startRecording,
-                onStopRecording = {
-                    viewModel.stopRecording(
-                        onFileFound = downloaderViewModel::checkTranscriptionAvailability
-                    )
-                },
+                onStopRecording = viewModel::stopRecording,
                 onPauseRecording = viewModel::pauseRecording,
                 onResumeRecording = viewModel::resumeRecording,
                 onStartPlaying = viewModel::startPlaying,
                 onStopPlaying = viewModel::stopPlaying,
                 onPausePlaying = viewModel::pausePlaying,
                 onResumePlaying = viewModel::resumePlaying,
-                onSetPlaybackSpeed = viewModel::setPlaybackSpeed
+                onSetPlaybackSpeed = viewModel::setPlaybackSpeed,
+                onCompletedRecord = {
+                    viewModel.onCompletedRecording {
+                        downloaderViewModel.checkTranscriptionAvailability(it)
+                    }
+                }
             )
 
         if (showLoadingDialog) {

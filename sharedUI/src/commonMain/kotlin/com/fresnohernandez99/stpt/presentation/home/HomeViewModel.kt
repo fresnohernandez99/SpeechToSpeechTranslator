@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.domain.model.Language
 import dev.theolm.record.Record
-import dev.theolm.record.VolumeCallback
 import dev.theolm.record.config.AudioEncoder
 import dev.theolm.record.config.OutputFormat
 import dev.theolm.record.config.OutputLocation
@@ -12,6 +11,7 @@ import dev.theolm.record.config.RecordConfig
 import io.github.hyochan.audio.AudioRecorderPlayerProperties
 import io.github.hyochan.audio.RecorderAudioSet
 import io.github.hyochan.audio.createAudioRecorderPlayer
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,6 +25,7 @@ class HomeViewModel : ViewModel() {
 
     private val audioRecorderPlayer = createAudioRecorderPlayer()
     private var recordedFilePath: String? = null
+    private var timerJob: Job? = null
 
     init {
         setupListeners()
@@ -36,6 +37,30 @@ class HomeViewModel : ViewModel() {
                 meteringEnabled = true
             )
         )
+
+        //outputLocation = OutputLocation.Cache,
+//                    outputFormat = OutputFormat.WAV,
+//                    audioEncoder = AudioEncoder.PCM_16BIT,
+//                    sampleRate = 16000
+//        audioRecorderPlayer.setRecorderProperties(
+//            RecorderAudioSet(
+//                avSampleRateKeyIOS = TODO(),
+//                avFormatIDKeyIOS = TODO(),
+//                avNumberOfChannelsKeyIOS = TODO(),
+//                avEncoderAudioQualityKeyIOS = TODO(),
+//                avLinearPCMBitDepthKeyIOS = TODO(),
+//                avLinearPCMIsBigEndianKeyIOS = TODO(),
+//                avLinearPCMIsFloatKeyIOS = TODO(),
+//                avLinearPCMIsNonInterleavedIOS = TODO(),
+//                avEncoderBitRateKeyIOS = TODO(),
+//                audioSourceAndroid = TODO(),
+//                outputFormatAndroid = TODO(),
+//                audioEncoderAndroid = TODO(),
+//                audioEncodingBitRateAndroid = TODO(),
+//                audioSamplingRateAndroid = TODO(),
+//                audioChannelsAndroid = TODO()
+//            )
+//        )
     }
 
     private fun setupListeners() {
@@ -99,7 +124,8 @@ class HomeViewModel : ViewModel() {
     }
 
     fun onRecordingStateChange(value: Boolean) {
-        if (value) startRecording() else {}//stopRecording()
+        if (value) startRecording() else {
+        }//stopRecording()
     }
 
     fun startRecording() {
@@ -118,8 +144,20 @@ class HomeViewModel : ViewModel() {
                     it.copy(
                         isRecording = true,
                         isRecordingPaused = false,
-                        errorMessage = null
+                        errorMessage = null,
+                        recordTime = "00:00:00"
                     )
+                }
+                
+                timerJob?.cancel()
+                timerJob = launch {
+                    var seconds = 0L
+                    while (true) {
+                        delay(1000)
+                        seconds++
+                        val formatted = formatSeconds(seconds)
+                        _uiState.update { it.copy(recordTime = formatted) }
+                    }
                 }
             } catch (e: Exception) {
                 // TODO handle errors
@@ -146,22 +184,35 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun stopRecording(onFileFound: (String) -> Unit) {
+    private fun formatSeconds(seconds: Long): String {
+        val h = seconds / 3600
+        val m = (seconds % 3600) / 60
+        val s = seconds % 60
+        return "${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}"
+    }
+
+    fun stopRecording() {
         viewModelScope.launch {
             try {
-                Record.stopRecording().also { savedAudioPath: String ->
-                    println("Recording stopped. File saved at $savedAudioPath")
-                    delay(1000)
-                    recordedFilePath = savedAudioPath
-                    onFileFound(recordedFilePath ?: "")
+                val savedAudioPath = Record.stopRecording()
+                timerJob?.cancel()
+                recordedFilePath = savedAudioPath
+                
+                _uiState.update {
+                    it.copy(
+                        isRecording = false,
+                        duration = it.recordTime
+                    )
                 }
+                println("Recording stopped. File saved at $savedAudioPath")
             } catch (e: Exception) {
-                // TODO HANDLE ERRORS
+                _uiState.update { it.copy(errorMessage = "Error al detener grabación: ${e.message}") }
             }
 
-//            audioRecorderPlayer.stopRecording().fold(Ï√
+//            audioRecorderPlayer.stopRecording().fold(
 //                onSuccess = { filePath ->
 //                    recordedFilePath = filePath
+//
 //                    _uiState.update {
 //                        it.copy(
 //                            isRecording = false,
@@ -361,9 +412,10 @@ class HomeViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         audioRecorderPlayer.removeListeners()
+        timerJob?.cancel()
     }
 
-    fun onUpdateRecordingPath(recordingPath: String) {
-        // TODO
+    fun onCompletedRecording(onFileFound: (String) -> Unit) {
+        onFileFound(recordedFilePath ?: "")
     }
 }

@@ -51,7 +51,7 @@ class StreamingAudioChunker {
         // Corregir dataSize si el encabezado es inválido o excede el archivo
         var dataSize = buffer.getInt(40)
         val actualDataSize = (fileLength - 44).toInt()
-        if (dataSize <= 0 || dataSize > actualDataSize) {
+        if (dataSize !in 1..actualDataSize) {
             println("WavHeader: dataSize in header ($dataSize) is invalid. Using actual data size: $actualDataSize")
             dataSize = actualDataSize
         }
