@@ -12,10 +12,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import com.fresnohernandez99.stpt.domain.model.Language
+import com.fresnohernandez99.stpt.presentation.components.BackTopBar
 import com.fresnohernandez99.stpt.presentation.home.components.LanguageSelector
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.theme.WindowSize
@@ -34,8 +36,8 @@ fun DictsManageScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Manage Dictionaries") }
+            BackTopBar(
+                onBack = { navHostController.navigateUp() }
             )
         }
     ) { paddingValues ->
@@ -82,7 +84,7 @@ fun DictsManageScreen(
                     ) {
                         Icon(Icons.Default.Add, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Download Dictionary")
+                        Text("Download Dictionary", color = Color.White)
                     }
                 }
             }

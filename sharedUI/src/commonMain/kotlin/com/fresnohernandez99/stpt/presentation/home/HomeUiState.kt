@@ -19,5 +19,7 @@ data class HomeUiState(
     val errorMessage: String? = null,
     val recordingInfo: String? = null,
     val meteringLevel: Float = 0f,
-    val playbackSpeed: Float = 1.0f
+    val playbackSpeed: Float = 1.0f,
+    val isDownloading: Boolean = false,
+    val downloadProgress: String = ""
 )

@@ -2,7 +2,9 @@ package com.fresnohernandez99.stpt.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fresnohernandez99.stpt.data.repository.DictRepository
 import com.fresnohernandez99.stpt.domain.model.Language
+import com.fresnohernandez99.stpt.platform.DownloadStatus
 import dev.theolm.record.Record
 import dev.theolm.record.config.AudioEncoder
 import dev.theolm.record.config.OutputFormat
@@ -18,7 +20,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val dictRepository: DictRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
@@ -110,15 +114,54 @@ class HomeViewModel : ViewModel() {
         val text = uiState.value.textToTranslate
         if (text.isBlank()) return
 
+        val source = uiState.value.sourceLanguage
+        val target = uiState.value.targetLanguage
+
         viewModelScope.launch {
             _uiState.update { it.copy(isTranslating = true) }
-            delay(1500)
-            val translated = text
-            _uiState.update {
-                it.copy(
-                    translatedText = translated,
-                    isTranslating = false
-                )
+            
+            // Si el origen es auto-detect, ML Kit lo maneja internamente en el translate si el modelo base está
+            // Pero para offline, necesitamos asegurar que el modelo de destino esté descargado
+            // Y si el origen es específico, también.
+            
+            if (source != Language.Detect) {
+                downloadIfNeeded(source.code)
+            }
+            downloadIfNeeded(target.code)
+
+            try {
+                val translated = dictRepository.translate(text, source.code, target.code)
+                _uiState.update {
+                    it.copy(
+                        translatedText = translated,
+                        isTranslating = false
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update { 
+                    it.copy(
+                        isTranslating = false,
+                        errorMessage = e.message ?: "Translation failed"
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun downloadIfNeeded(code: String) {
+        if (!dictRepository.isLanguageDownloaded(code)) {
+            dictRepository.downloadLanguage(code).collect { status ->
+                when (status) {
+                    is DownloadStatus.Downloading -> {
+                        _uiState.update { it.copy(isDownloading = true, downloadProgress = "Downloading $code...") }
+                    }
+                    is DownloadStatus.Success -> {
+                        _uiState.update { it.copy(isDownloading = false, downloadProgress = "") }
+                    }
+                    is DownloadStatus.Error -> {
+                        _uiState.update { it.copy(isDownloading = false, errorMessage = status.message) }
+                    }
+                }
             }
         }
     }

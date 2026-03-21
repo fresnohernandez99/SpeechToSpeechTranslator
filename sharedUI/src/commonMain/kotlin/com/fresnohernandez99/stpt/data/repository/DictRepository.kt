@@ -24,4 +24,8 @@ class DictRepository(
     suspend fun deleteLanguage(code: String): Boolean {
         return translatorManager.deleteSpecificModel(code)
     }
+
+    suspend fun translate(text: String, source: String, target: String): String {
+        return translatorManager.translateUsingModel(text, source, target)
+    }
 }
