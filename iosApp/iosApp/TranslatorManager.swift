@@ -8,7 +8,7 @@
 import SharedUI
 import MLKitTranslate
 
-class TranslatorManager: TranslatorManagerIos {
+class TranslatorManagerImpl: TranslatorManagerIos {
     
     func checkSpecificModel(languageCode: String) async throws -> KotlinBoolean {
         let model = TranslateRemoteModel.translateRemoteModel(

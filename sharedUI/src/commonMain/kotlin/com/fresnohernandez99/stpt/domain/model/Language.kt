@@ -10,10 +10,11 @@ data class Language(
 ) {
     companion object {
         val Detect = Language("auto", "Detect Language (beta)", "🔍")
-        val Spanish = Language("es", "Spanish", "🇪🇸")
+        val Spanish = Language("es", "Español", "🇪🇸")
+        val English = Language("en", "English", "🇺🇸")
 
         val list: List<Language> = listOf(
-            Language("en", "English", "🇺🇸"),
+            English,
             Language("ar", "Arabic", "🇸🇦"),
             Language("ca", "Catalan", "🇪🇸"),
             Language("zh", "Chinese", "🇨🇳"),

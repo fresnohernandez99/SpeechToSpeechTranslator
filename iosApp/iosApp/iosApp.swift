@@ -12,7 +12,7 @@ struct ComposeApp: App {
 
 struct ContentView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
-        return MainKt.MainViewController(translatorManagerIos: TranslatorManager())
+        return MainKt.MainViewController(translatorManagerIos: TranslatorManagerImpl())
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
