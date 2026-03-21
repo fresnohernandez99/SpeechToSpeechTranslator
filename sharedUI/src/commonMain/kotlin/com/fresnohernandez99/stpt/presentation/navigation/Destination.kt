@@ -12,4 +12,6 @@ sealed interface Destination {
     data object ModelSelection : Destination
     @Serializable
     data class Transcription(val audioPath: String = "") : Destination
+    @Serializable
+    data object DictsManage : Destination
 }

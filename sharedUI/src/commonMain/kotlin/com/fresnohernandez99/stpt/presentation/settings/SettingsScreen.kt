@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -51,6 +52,8 @@ import speechtospeechtranslator.sharedui.generated.resources.close
 import speechtospeechtranslator.sharedui.generated.resources.customize_your_experience
 import speechtospeechtranslator.sharedui.generated.resources.language_and_region
 import speechtospeechtranslator.sharedui.generated.resources.language_used_for_voice_transcription
+import speechtospeechtranslator.sharedui.generated.resources.manage_dictionaries
+import speechtospeechtranslator.sharedui.generated.resources.offline_translation_models
 import speechtospeechtranslator.sharedui.generated.resources.optimized_model_desc
 import speechtospeechtranslator.sharedui.generated.resources.optimized_model_size
 import speechtospeechtranslator.sharedui.generated.resources.optimized_model_title
@@ -107,6 +110,12 @@ fun SettingsScreen(
                 LanguageModelSelectionSection(
                     navigateToModelSelection = { navHostController.navigate(Destination.ModelSelection) },
                     modelSavedSelection = modelSavedSelection
+                )
+            }
+
+            item {
+                DictionariesSection(
+                    onNavigateToDicts = { navHostController.navigate(Destination.DictsManage) }
                 )
             }
         }
@@ -321,6 +330,87 @@ private fun LanguageModelSelectionSection(
 }
 
 @Composable
+fun DictionariesSection(
+    onNavigateToDicts: () -> Unit
+) {
+    Column {
+        Text(
+            text = stringResource(Res.string.manage_dictionaries),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onNavigateToDicts() }
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.outlineVariant,
+                    RoundedCornerShape(12.dp)
+                ),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(
+                                MaterialTheme.colorScheme.secondary,
+                                CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Book,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSecondary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+
+                    Column(modifier = Modifier.padding(start = 12.dp)) {
+                        Text(
+                            text = stringResource(Res.string.manage_dictionaries),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = stringResource(Res.string.offline_translation_models),
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun SettingsModelOptionCard(
     model: ModelOption,
     onClick: () -> Unit,
@@ -348,25 +438,30 @@ fun SettingsModelOptionCard(
                 Text(
                     text = model.title,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-
                 Text(
                     text = model.description,
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(top = 4.dp)
                 )
-
                 Text(
                     text = model.size,
                     fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 8.dp)
                 )
             }
+
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }

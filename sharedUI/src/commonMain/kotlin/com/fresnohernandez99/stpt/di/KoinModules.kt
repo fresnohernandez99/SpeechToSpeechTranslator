@@ -1,17 +1,18 @@
 package com.fresnohernandez99.stpt.di
 
+import com.fresnohernandez99.stpt.data.repository.DictRepository
 import com.fresnohernandez99.stpt.data.repository.GreetingRepositoryImpl
 import com.fresnohernandez99.stpt.data.repository.PreferencesRepository
 import com.fresnohernandez99.stpt.domain.repository.GreetingRepository
-import com.fresnohernandez99.stpt.platform.presentation.PlatformViewModel
-import com.fresnohernandez99.stpt.presentation.home.HomeViewModel
 import com.fresnohernandez99.stpt.modelDownloader.ModelDownloaderViewModel
 import com.fresnohernandez99.stpt.modelDownloader.ModelSelection
+import com.fresnohernandez99.stpt.platform.presentation.PlatformViewModel
+import com.fresnohernandez99.stpt.presentation.dictsManage.DictsManageViewModel
+import com.fresnohernandez99.stpt.presentation.home.HomeViewModel
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionViewModel
 import com.fresnohernandez99.stpt.presentation.settings.SettingsViewModel
 import com.fresnohernandez99.stpt.transcription.TranscriptionViewModel
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -24,6 +25,7 @@ val appModule = module {
 val repositoryModule = module {
     single<GreetingRepository> { GreetingRepositoryImpl() }
     single<PreferencesRepository> { PreferencesRepository(get()) }
+    single<DictRepository> { DictRepository(get()) }
 }
 
 val viewModelModule = module {
@@ -33,6 +35,7 @@ val viewModelModule = module {
     viewModelOf(::SettingsViewModel)
     viewModelOf(::ModelSelectionViewModel)
     viewModelOf(::TranscriptionViewModel)
+    viewModelOf(::DictsManageViewModel)
 }
 
 val mapperModule = module {

@@ -76,4 +76,7 @@
     <string name="transcription_dialog_error_audio_file_title">Error de audio</string>
     <string name="transcription_dialog_error_audio_file_desc">Hubo un error al procesar el archivo de audio.</string>
     <string name="transcription_dialog_error_got_it">Entendido</string>
+
+    <string name="manage_dictionaries">Gestionar diccionarios</string>
+    <string name="offline_translation_models">Modelos de traducción offline</string>
 </resources>

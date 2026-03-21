@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.fresnohernandez99.stpt.presentation.dictsManage.DictsManageScreen
 import com.fresnohernandez99.stpt.presentation.home.HomeScreen
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionScreen
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
@@ -68,6 +69,15 @@ fun App(
             val link: Destination.Transcription = backStackEntry.toRoute()
 
             TranscriptionScreen(
+                link = link,
+                windowSize = windowSize,
+                navHostController = navHostController
+            )
+        }
+        composable<Destination.DictsManage> { backStackEntry ->
+            val link: Destination.DictsManage = backStackEntry.toRoute()
+
+            DictsManageScreen(
                 link = link,
                 windowSize = windowSize,
                 navHostController = navHostController
