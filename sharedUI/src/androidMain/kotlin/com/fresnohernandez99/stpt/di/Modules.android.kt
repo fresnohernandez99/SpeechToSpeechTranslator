@@ -13,12 +13,13 @@ import com.fresnohernandez99.stpt.platform.Downloader
 import com.fresnohernandez99.stpt.platform.Platform
 import com.fresnohernandez99.stpt.platform.PlatformUtils
 import com.fresnohernandez99.stpt.platform.Transcriber
+import com.fresnohernandez99.stpt.platform.TranslatorManager
 import com.fresnohernandez99.stpt.platform.createDataStore
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-actual val platformModule: Module = module {
+actual fun platformModule(args: List<Any>): Module = module {
     single<String>(qualifier = named("AppVersion")) {
         val context: Context = get()
         try {
@@ -48,4 +49,6 @@ actual val platformModule: Module = module {
 
     single { FolderPickerLauncherHolder() }
     single { FolderPickerHandler(get()) }
+
+    single { TranslatorManager() }
 }

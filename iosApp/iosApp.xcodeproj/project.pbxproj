@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		1850CFEC2F6DF17700C2FAC8 /* whisper.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1850CFEB2F6DF17700C2FAC8 /* whisper.xcframework */; };
 		1850CFED2F6DF17700C2FAC8 /* whisper.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1850CFEB2F6DF17700C2FAC8 /* whisper.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		18C986472F6EFA53006A6A12 /* TranslatorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C986462F6EFA00006A6A12 /* TranslatorManager.swift */; };
+		18F44C112F6E93C50045D326 /* MLKitTextRecognition in Frameworks */ = {isa = PBXBuildFile; productRef = 18F44C102F6E93C50045D326 /* MLKitTextRecognition */; };
+		18F44C132F6E93C50045D326 /* MLKitTextRecognitionChinese in Frameworks */ = {isa = PBXBuildFile; productRef = 18F44C122F6E93C50045D326 /* MLKitTextRecognitionChinese */; };
+		18F44C152F6E93C50045D326 /* MLKitTextRecognitionDevanagari in Frameworks */ = {isa = PBXBuildFile; productRef = 18F44C142F6E93C50045D326 /* MLKitTextRecognitionDevanagari */; };
+		18F44C172F6E93C50045D326 /* MLKitTextRecognitionJapanese in Frameworks */ = {isa = PBXBuildFile; productRef = 18F44C162F6E93C50045D326 /* MLKitTextRecognitionJapanese */; };
+		18F44C192F6E93C50045D326 /* MLKitTextRecognitionKorean in Frameworks */ = {isa = PBXBuildFile; productRef = 18F44C182F6E93C50045D326 /* MLKitTextRecognitionKorean */; };
+		18F44C1B2F6E93C50045D326 /* MLKitTranslate in Frameworks */ = {isa = PBXBuildFile; productRef = 18F44C1A2F6E93C50045D326 /* MLKitTranslate */; };
 		A93A953B29CC810C00F8E227 /* iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93A953A29CC810C00F8E227 /* iosApp.swift */; };
 		A93A953F29CC810D00F8E227 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A953E29CC810D00F8E227 /* Assets.xcassets */; };
 		A93A954229CC810D00F8E227 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A954129CC810D00F8E227 /* Preview Assets.xcassets */; };
@@ -30,6 +37,7 @@
 
 /* Begin PBXFileReference section */
 		1850CFEB2F6DF17700C2FAC8 /* whisper.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = whisper.xcframework; sourceTree = "<group>"; };
+		18C986462F6EFA00006A6A12 /* TranslatorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatorManager.swift; sourceTree = "<group>"; };
 		A93A953729CC810C00F8E227 /* SpeechToSpeechTranslator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpeechToSpeechTranslator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93A953A29CC810C00F8E227 /* iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosApp.swift; sourceTree = "<group>"; };
 		A93A953E29CC810D00F8E227 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -42,6 +50,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				1850CFEC2F6DF17700C2FAC8 /* whisper.xcframework in Frameworks */,
+				18F44C192F6E93C50045D326 /* MLKitTextRecognitionKorean in Frameworks */,
+				18F44C1B2F6E93C50045D326 /* MLKitTranslate in Frameworks */,
+				18F44C112F6E93C50045D326 /* MLKitTextRecognition in Frameworks */,
+				18F44C132F6E93C50045D326 /* MLKitTextRecognitionChinese in Frameworks */,
+				18F44C152F6E93C50045D326 /* MLKitTextRecognitionDevanagari in Frameworks */,
+				18F44C172F6E93C50045D326 /* MLKitTextRecognitionJapanese in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +82,7 @@
 		A93A953929CC810C00F8E227 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				18C986462F6EFA00006A6A12 /* TranslatorManager.swift */,
 				A93A953A29CC810C00F8E227 /* iosApp.swift */,
 				A93A953E29CC810D00F8E227 /* Assets.xcassets */,
 				A93A954029CC810D00F8E227 /* Preview Content */,
@@ -137,6 +152,7 @@
 			);
 			mainGroup = A93A952E29CC810C00F8E227;
 			packageReferences = (
+				18F44C0F2F6E93C50045D326 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */,
 			);
 			productRefGroup = A93A953829CC810C00F8E227 /* Products */;
 			projectDirPath = "";
@@ -184,6 +200,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18C986472F6EFA53006A6A12 /* TranslatorManager.swift in Sources */,
 				A93A953B29CC810C00F8E227 /* iosApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,6 +400,50 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		18F44C0F2F6E93C50045D326 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/d-date/google-mlkit-swiftpm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		18F44C102F6E93C50045D326 /* MLKitTextRecognition */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18F44C0F2F6E93C50045D326 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */;
+			productName = MLKitTextRecognition;
+		};
+		18F44C122F6E93C50045D326 /* MLKitTextRecognitionChinese */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18F44C0F2F6E93C50045D326 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */;
+			productName = MLKitTextRecognitionChinese;
+		};
+		18F44C142F6E93C50045D326 /* MLKitTextRecognitionDevanagari */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18F44C0F2F6E93C50045D326 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */;
+			productName = MLKitTextRecognitionDevanagari;
+		};
+		18F44C162F6E93C50045D326 /* MLKitTextRecognitionJapanese */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18F44C0F2F6E93C50045D326 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */;
+			productName = MLKitTextRecognitionJapanese;
+		};
+		18F44C182F6E93C50045D326 /* MLKitTextRecognitionKorean */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18F44C0F2F6E93C50045D326 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */;
+			productName = MLKitTextRecognitionKorean;
+		};
+		18F44C1A2F6E93C50045D326 /* MLKitTranslate */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18F44C0F2F6E93C50045D326 /* XCRemoteSwiftPackageReference "google-mlkit-swiftpm" */;
+			productName = MLKitTranslate;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A93A952F29CC810C00F8E227 /* Project object */;
 }

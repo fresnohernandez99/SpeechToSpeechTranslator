@@ -11,6 +11,7 @@ androidx-activityCompose = "1.13.0"
 appcompat = "1.7.1"
 core-ktx = "1.16.0"
 androidWaveRecorder = "2.1.0"
+mlkit-translate = "17.0.3"
 
 # Coroutines & Networking
 kotlinx-coroutines = "1.10.2"
@@ -52,9 +53,13 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 android-wave-recorder = { module = "com.github.squti:Android-Wave-Recorder", version.ref = "androidWaveRecorder" }
 
+# ML Kit
+mlkit-translate = { module = "com.google.mlkit:translate", version.ref = "mlkit-translate" }
+
 # Coroutines
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 

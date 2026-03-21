@@ -109,8 +109,10 @@ kotlin {
 
         androidMain.dependencies {
             api(libs.kotlinx.coroutines.android)
+            api(libs.kotlinx.coroutines.play.services)
             api(libs.ktor.client.okhttp)
             implementation(project(":lib"))
+            implementation(libs.mlkit.translate)
         }
 
         iosMain.dependencies {

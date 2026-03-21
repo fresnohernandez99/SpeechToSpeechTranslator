@@ -15,7 +15,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-internal expect val platformModule: Module
+internal expect fun platformModule(args: List<Any> = emptyList()): Module
 
 val appModule = module {
     factory { ModelSelection(get()) }
