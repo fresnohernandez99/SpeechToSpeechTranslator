@@ -10,7 +10,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.fresnohernandez99.stpt.presentation.home.HomeScreen
+import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionScreen
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
+import com.fresnohernandez99.stpt.presentation.settings.SettingsScreen
 import com.fresnohernandez99.stpt.theme.AppTheme
 import com.fresnohernandez99.stpt.theme.rememberWindowSizeClass
 
@@ -38,6 +40,24 @@ fun App(
             val link: Destination.Home = backStackEntry.toRoute()
 
             HomeScreen(
+                link = link,
+                windowSize = windowSize,
+                navHostController = navHostController
+            )
+        }
+        composable<Destination.Settings> { backStackEntry ->
+            val link: Destination.Settings = backStackEntry.toRoute()
+
+            SettingsScreen(
+                link = link,
+                windowSize = windowSize,
+                navHostController = navHostController
+            )
+        }
+        composable<Destination.ModelSelection> { backStackEntry ->
+            val link: Destination.ModelSelection = backStackEntry.toRoute()
+
+            ModelSelectionScreen(
                 link = link,
                 windowSize = windowSize,
                 navHostController = navHostController

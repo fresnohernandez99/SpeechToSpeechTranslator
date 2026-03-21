@@ -23,4 +23,19 @@
     <string name="recording_ui_checkmark">Éxito</string>
     <string name="top_bar_back">Atrás</string>
     <string name="transcription_icon">Transcripción</string>
+
+    <string name="settings">Ajustes</string>
+    <string name="customize_your_experience">Personaliza tu experiencia</string>
+    <string name="close">Cerrar</string>
+    <string name="language_and_region">Idioma y Región</string>
+    <string name="transcription_language">Idioma de transcripción</string>
+    <string name="language_used_for_voice_transcription">Idioma utilizado para la transcripción de voz</string>
+    <string name="appearance">Apariencia</string>
+    <string name="transcription_model_selection">Selección del modelo de transcripción</string>
+    <string name="optimized_model_title">Modelo optimizado (multilingüe)</string>
+    <string name="optimized_model_desc">Máxima precisión disponible\nSoporta todos los idiomas excepto Hindi y Gujarati\nMayor tamaño de archivo, rendimiento más lento</string>
+    <string name="optimized_model_size">468 MB</string>
+    <string name="standard_model_title">Modelo estándar (multilingüe)</string>
+    <string name="standard_model_desc">Rendimiento más rápido y menor tamaño de archivo\nSoporta todos los idiomas</string>
+    <string name="standard_model_size">142 MB</string>
 </resources>

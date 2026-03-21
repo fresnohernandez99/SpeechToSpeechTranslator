@@ -23,4 +23,23 @@
     <string name="recording_ui_checkmark">Success</string>
     <string name="top_bar_back">Back</string>
     <string name="transcription_icon">Transcription</string>
+
+    <string name="settings">Settings</string>
+    <string name="customize_your_experience">Customize your experience</string>
+    <string name="close">Close</string>
+    <string name="language_and_region">Language &amp; Region</string>
+    <string name="transcription_language">Transcription Language</string>
+    <string name="language_used_for_voice_transcription">Language used for voice transcription</string>
+    <string name="appearance">Appearance</string>
+    <string name="transcription_model_selection">Transcription Model Selection</string>
+    <string name="optimized_model_title">Optimized model (multilingual)</string>
+    <string name="optimized_model_desc">Highest accuracy available\nSupports all languages except Hindi &amp; Gujarati\nLarger file size, slower performance</string>
+    <string name="optimized_model_size">468 MB</string>
+    <string name="standard_model_title">Standard model (multilingual)</string>
+    <string name="standard_model_desc">Faster performance and smaller file size\nSupports all languages</string>
+    <string name="standard_model_size">142 MB</string>
+
+    <string name="settings_model_selection_text">About Transcription Models</string>
+    <string name="settings_model_selection_description">Choose the model that best fits your needs. The optimized model offers better accuracy, while the standard model is faster.</string>
+    <string name="question_mark">Help</string>
 </resources>

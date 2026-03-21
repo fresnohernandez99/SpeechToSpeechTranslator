@@ -35,4 +35,3 @@ dependencyResolutionManagement {
 }
 include(":sharedUI")
 include(":lib")
-include(":core:audio")

@@ -302,7 +302,8 @@ class HomeViewModel : ViewModel() {
                     },
                     onFailure = { }
                 )
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+            }
         }
     }
 

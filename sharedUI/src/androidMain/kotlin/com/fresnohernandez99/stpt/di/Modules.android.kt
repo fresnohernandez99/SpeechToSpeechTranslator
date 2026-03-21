@@ -1,33 +1,30 @@
 package com.fresnohernandez99.stpt.di
 
 import android.app.Application
+import android.content.Context
+import androidx.activity.ComponentActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.fresnohernandez99.stpt.FileSaverHandler
 import com.fresnohernandez99.stpt.FileSaverLauncherHolder
 import com.fresnohernandez99.stpt.FolderPickerHandler
 import com.fresnohernandez99.stpt.FolderPickerLauncherHolder
-import com.fresnohernandez99.stpt.audio.domain.AudioRecorderInteractor
-import com.fresnohernandez99.stpt.audio.domain.AudioRecorderInteractorImpl
 import com.fresnohernandez99.stpt.platform.AndroidPlatform
 import com.fresnohernandez99.stpt.platform.DATA_STORE_FILE_NAME
 import com.fresnohernandez99.stpt.platform.Downloader
+import com.fresnohernandez99.stpt.platform.Platform
 import com.fresnohernandez99.stpt.platform.PlatformUtils
 import com.fresnohernandez99.stpt.platform.Transcriber
-import com.fresnohernandez99.stpt.platform.Platform
-import com.fresnohernandez99.stpt.platform.PlatformAudioPlayer
 import com.fresnohernandez99.stpt.platform.createDataStore
-import com.fresnohernandez99.stpt.audio.domain.SaveAudioNoteInteractor
-import com.fresnohernandez99.stpt.audio.domain.SaveAudioNoteInteractorImpl
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 actual val platformModule: Module = module {
     single<String>(qualifier = named("AppVersion")) {
-        val app: Application = get()
+        val context: Context = get()
         try {
-            val packageInfo = app.packageManager.getPackageInfo(app.packageName, 0)
+            val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
             packageInfo.versionName ?: "Unknown"
         } catch (e: Exception) {
             "Unknown"
@@ -37,43 +34,17 @@ actual val platformModule: Module = module {
     single { FileSaverHandler(get()) }
     single<Platform> { AndroidPlatform(get(named("AppVersion")), get()) }
     single<DataStore<Preferences>> {
-        val app: Application = get()
+        val context: Context = get()
         createDataStore(
-            producePath = { app.filesDir.resolve(DATA_STORE_FILE_NAME).absolutePath }
+            producePath = { context.filesDir.resolve(DATA_STORE_FILE_NAME).absolutePath }
         )
     }
     single { PlatformUtils(get(), get()) }
 
-//    single<SqlDriver> {
-//        AndroidSqliteDriver(NoteDatabase.Schema, context = get(), "notes.db")
-//    }
-
-    single { PlatformAudioPlayer() }
-
     single { Downloader(get(), get()) }
 
-    single { Transcriber(get(), get()) }
+    single { Transcriber(get(), get() as ComponentActivity) }
 
-
-    // domain
-    single<AudioRecorderInteractor> { AudioRecorderInteractorImpl(get(), get(), get()) }
-    single<SaveAudioNoteInteractor> {
-        SaveAudioNoteInteractorImpl(
-            get(),
-//            get(),
-//            get(),
-//            get(),
-//            get()
-        )
-    }
-
-    // export
     single { FolderPickerLauncherHolder() }
     single { FolderPickerHandler(get()) }
-//    single<ExportSelectionInteractor> {
-//        ExportSelectionInteractorImpl(
-//            context = get(),
-//            folderPickerHandler = get()
-//        )
-//    }
 }

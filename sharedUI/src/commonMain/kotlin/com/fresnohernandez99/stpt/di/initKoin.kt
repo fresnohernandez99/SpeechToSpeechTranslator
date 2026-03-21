@@ -1,6 +1,5 @@
 package com.fresnohernandez99.stpt.di
 
-import audio.di.audioModule
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
@@ -12,7 +11,6 @@ fun KoinApplication.init() {
         viewModelModule,
         repositoryModule,
         platformModule,
-        audioModule,
         mapperModule
     )
 }
@@ -25,7 +23,6 @@ fun initKoinApplication(config: KoinAppDeclaration? = null) {
             viewModelModule,
             repositoryModule,
             platformModule,
-            audioModule,
             mapperModule
         )
     }

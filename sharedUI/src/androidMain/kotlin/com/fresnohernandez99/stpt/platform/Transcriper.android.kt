@@ -1,11 +1,14 @@
 package com.fresnohernandez99.stpt.platform
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Environment
+import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import audio.utils.LauncherHolder
 import com.fresnohernandez99.stpt.utils.AudioChunk
 import com.fresnohernandez99.stpt.utils.ChunkTranscriptionResult
 import com.fresnohernandez99.stpt.utils.StreamingAudioChunker
@@ -18,8 +21,10 @@ import kotlin.coroutines.resume
 
 actual class Transcriber(
     private val context: Context,
-    private val launcherHolder: LauncherHolder
+    private val activity: ComponentActivity
 ) {
+    var permissionLauncher: ActivityResultLauncher<Array<String>> = activity.registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()) {}
     private var canTranscribe: Boolean = false
     private var isTranscribing = false
     private val modelsPath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
@@ -46,11 +51,7 @@ actual class Transcriber(
                 continuation.resume(isGranted)
             }
 
-            if (launcherHolder.permissionLauncher != null) {
-                launcherHolder.permissionLauncher?.launch(arrayOf(Manifest.permission.RECORD_AUDIO))
-            } else {
-                continuation.resume(false)
-            }
+            permissionLauncher.launch(arrayOf(Manifest.permission.RECORD_AUDIO))
 
             continuation.invokeOnCancellation {
                 permissionContinuation = null

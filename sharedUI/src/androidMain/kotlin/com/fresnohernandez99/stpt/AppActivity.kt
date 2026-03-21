@@ -10,8 +10,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowInsetsControllerCompat
 import com.fresnohernandez99.stpt.di.initKoinApplication
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
 import io.github.hyochan.audio.initializeAudioRecorderPlayer
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -20,15 +18,14 @@ class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        Napier.base(DebugAntilog())
         initKoinApplication {
             androidContext(this@AppActivity)
             androidLogger()
         }
         // Initialize audio recorder player with context
         initializeAudioRecorderPlayer(this)
-        setContent { 
-            App(onThemeChanged = { ThemeChanged(it) }) 
+        setContent {
+            App(onThemeChanged = { ThemeChanged(it) })
         }
     }
 }
