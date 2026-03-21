@@ -95,7 +95,11 @@ fun SettingsScreen(
                     navigateToLanguages = {
                         showDialog = true
                     },
-                    selectedLanguage = language
+                    selectedLanguage = language,
+                    list = Language.getFilteredLanguages(
+                        Language.list,
+                        priorityLanguage = Language.Detect
+                    )
                 )
             }
 
@@ -109,7 +113,10 @@ fun SettingsScreen(
 
         if (showDialog) {
             LanguagePickerDialog(
-                languages = Language.list,
+                languages = Language.getFilteredLanguages(
+                    Language.list,
+                    priorityLanguage = Language.Detect
+                ),
                 onLanguageSelected = {
                     viewModel.onLanguageSelected(it)
                     showDialog = false
@@ -167,6 +174,7 @@ private fun SettingsHeader(
 @Composable
 private fun LanguageRegionSection(
     navigateToLanguages: () -> Unit,
+    list: List<Language>,
     selectedLanguage: String
 ) {
     Column {
@@ -180,7 +188,8 @@ private fun LanguageRegionSection(
 
         TranscriptionLanguageItem(
             navigateToLanguages = navigateToLanguages,
-            selectedLanguage = selectedLanguage
+            selectedLanguage = selectedLanguage,
+            list = list
         )
     }
 }
@@ -188,6 +197,7 @@ private fun LanguageRegionSection(
 @Composable
 fun TranscriptionLanguageItem(
     navigateToLanguages: () -> Unit,
+    list: List<Language>,
     selectedLanguage: String
 ) {
     Column(
@@ -251,7 +261,8 @@ fun TranscriptionLanguageItem(
                     }
 
                     Text(
-                        text = Language.list.firstOrNull { it.code == selectedLanguage }?.name ?: Language.Spanish.name,
+                        text = list.firstOrNull { it.code == selectedLanguage }?.name
+                            ?: Language.Spanish.name,
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(start = 12.dp)
@@ -292,6 +303,7 @@ private fun LanguageModelSelectionSection(
                         size = stringResource(Res.string.optimized_model_size)
                     )
                 }
+
                 else -> {
                     ModelOption(
                         title = stringResource(Res.string.standard_model_title),

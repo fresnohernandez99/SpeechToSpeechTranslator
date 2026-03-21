@@ -9,7 +9,7 @@ data class Language(
     val flag: String = ""
 ) {
     companion object {
-        val Detect = Language("auto", "Detect Language", "🔍")
+        val Detect = Language("auto", "Detect Language (beta)", "🔍")
         val Spanish = Language("es", "Spanish", "🇪🇸")
 
         val list: List<Language> = listOf(
@@ -48,16 +48,12 @@ data class Language(
 
         fun getFilteredLanguages(
             allLanguages: List<Language>,
-            priorityLanguage: Language? = null,
+            priorityLanguage: Language,
             excludeLanguages: List<Language> = emptyList()
         ): List<Language> {
             val filtered = allLanguages.filter { it !in excludeLanguages }
             
-            return if (priorityLanguage != null && filtered.contains(priorityLanguage)) {
-                listOf(priorityLanguage) + (filtered - priorityLanguage)
-            } else {
-                filtered
-            }
+            return listOf(priorityLanguage) + (filtered - priorityLanguage)
         }
     }
 }

@@ -12,6 +12,7 @@ import com.fresnohernandez99.stpt.modelDownloader.NO_MODEL_SELECTION
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
 class PreferencesRepository(
     private val dataStore: DataStore<Preferences>
@@ -25,17 +26,21 @@ class PreferencesRepository(
     }
 
     suspend fun hasCompletedOnboarding(): Boolean {
-        return dataStore.data.first()[KEY_ONBOARDING_COMPLETED] ?: false
+        val completed = dataStore.data.first()[KEY_ONBOARDING_COMPLETED] ?: false
+        println("PreferencesRepository: hasCompletedOnboarding = $completed")
+        return completed
     }
 
 
     suspend fun setOnboardingCompleted(completed: Boolean) {
+        println("PreferencesRepository: setOnboardingCompleted($completed)")
         dataStore.edit { prefs ->
             prefs[KEY_ONBOARDING_COMPLETED] = completed
         }
     }
 
     suspend fun setDefaultTranscriptionLanguage(language: String) {
+        println("PreferencesRepository: setDefaultTranscriptionLanguage($language)")
         dataStore.edit { prefs ->
             prefs[KEY_LANGUAGE] = language
         }
@@ -43,13 +48,14 @@ class PreferencesRepository(
 
     fun getDefaultTranscriptionLanguage(): Flow<String> = dataStore.data.map { prefs ->
         prefs[KEY_LANGUAGE] ?: Language.Spanish.code
-    }
+    }.onEach { println("PreferencesRepository: getDefaultTranscriptionLanguage emitted: $it") }
 
     fun getModelDownloadId(): Flow<Long> = dataStore.data.map { prefs ->
         prefs[KEY_MODEL_DOWNLOAD_ID] ?: -1
-    }
+    }.onEach { println("PreferencesRepository: getModelDownloadId emitted: $it") }
 
     suspend fun setModelDownloadId(downloadId: Long) {
+        println("PreferencesRepository: setModelDownloadId($downloadId)")
         dataStore.edit { prefs ->
             prefs[KEY_MODEL_DOWNLOAD_ID] = downloadId
         }
@@ -57,12 +63,12 @@ class PreferencesRepository(
 
     fun getModelSelection(): Flow<Int> = dataStore.data.map { prefs ->
         prefs[KEY_MODEL_SELECTION] ?: NO_MODEL_SELECTION
-    }
+    }.onEach { println("PreferencesRepository: getModelSelection emitted: $it") }
 
     suspend fun setModelSelection(modelSelection: Int) {
+        println("PreferencesRepository: setModelSelection($modelSelection)")
         dataStore.edit { prefs ->
             prefs[KEY_MODEL_SELECTION] = modelSelection
         }
     }
 }
-
