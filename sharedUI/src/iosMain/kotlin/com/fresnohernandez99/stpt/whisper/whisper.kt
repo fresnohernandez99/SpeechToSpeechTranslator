@@ -1,16 +1,16 @@
 package com.fresnohernandez99.stpt.whisper
 
-import kotlinx.cinterop.*
-import platform.darwin.*
-import whisper.*
-import platform.CoreFoundation.*
-import platform.Foundation.NSProcessInfo
-import kotlin.math.max
-import kotlin.math.min
 import cnames.structs.whisper_context
 import kotlinx.atomicfu.atomic
+import kotlinx.cinterop.*
+import platform.CoreFoundation.*
+import platform.Foundation.NSProcessInfo
+import platform.darwin.*
 import platform.posix.memcpy
 import platform.posix.uname
+import whisper.*
+import kotlin.math.max
+import kotlin.math.min
 
 var globalWhisperCallback: WhisperCallback? = null
 val stopTranscription = atomic(false) // Thread-safe flag

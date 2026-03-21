@@ -23,7 +23,6 @@ class WhisperContext private constructor(private var ptr: Long) {
         WhisperLib.stopTranscription()
     }
 
-
     suspend fun transcribeData(
         data: FloatArray,
         language: String,

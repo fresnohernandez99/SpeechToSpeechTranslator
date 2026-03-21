@@ -17,18 +17,22 @@ class StreamingAudioChunker {
 
         // Minimum chunk size to ensure quality transcription
         const val MIN_CHUNK_SIZE_BYTES = 5 * 1024 * 1024 // 5MB minimum
+        
+        const val TARGET_SAMPLE_RATE = 16000 // Frecuencia requerida por Whisper
     }
 
-    // Reusable FloatArray to avoid repeated allocations
+    // Reusable arrays to avoid repeated allocations
     private var reusableFloatArray: FloatArray? = null
+    private var reusableResampledArray: FloatArray? = null
     private var reusableByteArray: ByteArray? = null
 
     /**
      * Reads WAV file header and returns metadata
      */
     private fun readWavHeader(file: RandomAccessFile): WavHeader {
+        val fileLength = file.length()
         val header = ByteArray(44)
-        file.read(header)
+        file.readFully(header)
 
         val buffer = ByteBuffer.wrap(header)
         buffer.order(ByteOrder.LITTLE_ENDIAN)
@@ -43,7 +47,14 @@ class StreamingAudioChunker {
         val channels = buffer.getShort(22).toInt()
         val sampleRate = buffer.getInt(24)
         val bitsPerSample = buffer.getShort(34).toInt()
-        val dataSize = buffer.getInt(40)
+        
+        // Corregir dataSize si el encabezado es inválido o excede el archivo
+        var dataSize = buffer.getInt(40)
+        val actualDataSize = (fileLength - 44).toInt()
+        if (dataSize <= 0 || dataSize > actualDataSize) {
+            println("WavHeader: dataSize in header ($dataSize) is invalid. Using actual data size: $actualDataSize")
+            dataSize = actualDataSize
+        }
 
         return WavHeader(
             channels = channels,
@@ -55,11 +66,6 @@ class StreamingAudioChunker {
 
     /**
      * Splits WAV file into overlapping chunks without loading entire file into memory
-     * 
-     * @param filePath Path to the WAV file
-     * @param chunkSizeBytes Size of each chunk in bytes (default: 10MB)
-     * @param overlapSizeBytes Size of overlap between chunks in bytes (default: 1MB)
-     * @return List of StreamingAudioChunk objects
      */
     fun splitWavFileIntoChunks(
         filePath: String,
@@ -68,94 +74,113 @@ class StreamingAudioChunker {
     ): MutableList<StreamingAudioChunk> {
         val file = RandomAccessFile(filePath, "r")
 
-        file.use { file ->
-            val header = readWavHeader(file)
+        file.use { raf ->
+            val header = readWavHeader(raf)
             val chunks = mutableListOf<StreamingAudioChunk>()
+            val totalDataSize = header.dataSize
 
-            // Calculate total chunks needed
-            val totalChunks = (header.dataSize + chunkSizeBytes - 1) / chunkSizeBytes
-
-            println( "Splitting WAV file: ${header.dataSize} bytes into ~$totalChunks chunks" )
+            println("Splitting WAV file: $totalDataSize bytes into chunks")
 
             var currentOffset = 44L // Skip WAV header
             var chunkIndex = 0
 
-            while (currentOffset < 44 + header.dataSize) {
-                val remainingBytes = (44 + header.dataSize) - currentOffset
+            while (currentOffset < 44 + totalDataSize) {
+                val remainingBytes = (44 + totalDataSize) - currentOffset
+                if (remainingBytes <= 0) break
+                
                 val currentChunkSize = minOf(chunkSizeBytes.toLong(), remainingBytes)
 
                 // Calculate overlap for next chunk
-                val overlapStart = if (chunkIndex > 0) {
-                    currentOffset - overlapSizeBytes
+                val chunkStartOffset = if (chunkIndex > 0) {
+                    maxOf(44L, currentOffset - overlapSizeBytes)
                 } else {
                     currentOffset
                 }
 
-                val overlapEnd = currentOffset + currentChunkSize
+                val chunkEndOffset = currentOffset + currentChunkSize
 
                 chunks.add(
                     StreamingAudioChunk(
                         chunkIndex = chunkIndex,
                         filePath = filePath,
-                        startOffset = overlapStart,
-                        endOffset = overlapEnd,
+                        startOffset = chunkStartOffset,
+                        endOffset = chunkEndOffset,
                         header = header,
                         isFirstChunk = chunkIndex == 0,
-                        isLastChunk = currentOffset + currentChunkSize >= 44 + header.dataSize
+                        isLastChunk = currentOffset + currentChunkSize >= 44 + totalDataSize
                     )
                 )
 
                 chunkIndex++
-                currentOffset += (chunkSizeBytes - overlapSizeBytes)
+                currentOffset += maxOf(1, chunkSizeBytes - overlapSizeBytes)
 
-                // Ensure we don't create tiny chunks at the end
                 if (remainingBytes - (chunkSizeBytes - overlapSizeBytes) < MIN_CHUNK_SIZE_BYTES) {
                     break
                 }
             }
 
-            println( "Created ${chunks.size} streaming chunks" )
-            chunks.forEachIndexed { index, chunk ->
-                val durationSeconds =
-                    (chunk.endOffset - chunk.startOffset) / (header.sampleRate * header.channels * (header.bitsPerSample / 8.0))
-                println( "Chunk $index: ${chunk.startOffset}-${chunk.endOffset} (${chunk.endOffset - chunk.startOffset} bytes, ~${durationSeconds}s)" )
-            }
-
+            println("Created ${chunks.size} streaming chunks")
             return chunks
         }
     }
 
     /**
-     * Reads a specific chunk from the WAV file and converts it to FloatArray
-     * Uses a reusable FloatArray to avoid repeated allocations
-     * 
-     * @param chunk The streaming chunk to read
-     * @return FloatArray containing the audio data for this chunk (reused array)
+     * Reads a specific chunk from the WAV file, converts to mono and resamples to 16kHz if needed
      */
     fun readChunkData(chunk: StreamingAudioChunk): FloatArray {
         val file = RandomAccessFile(chunk.filePath, "r")
 
-        file.use { file ->
-            file.seek(chunk.startOffset)
+        file.use { raf ->
+            raf.seek(chunk.startOffset)
 
-            val chunkSize = (chunk.endOffset - chunk.startOffset).toInt()
+            val available = (raf.length() - chunk.startOffset).toInt()
+            val requestedSize = (chunk.endOffset - chunk.startOffset).toInt()
+            val chunkSize = minOf(requestedSize, available)
 
-            // Get or create reusable byte array
+            if (chunkSize <= 0) return FloatArray(0)
+
             val buffer = getReusableByteArray(chunkSize)
-            val bytesRead = file.read(buffer, 0, chunkSize)
+            raf.readFully(buffer, 0, chunkSize)
 
-            if (bytesRead <= 0) {
-                return FloatArray(0)
+            // 1. Convertir bytes a FloatArray (ya maneja Stereo a Mono promediando)
+            val originalFloats = convertBytesToFloatArrayReusable(buffer, chunkSize, chunk.header)
+            
+            // 2. Si la frecuencia no es 16000, remuestrear antes de entregar a Whisper
+            val result = if (chunk.header.sampleRate != TARGET_SAMPLE_RATE) {
+                val inputSamples = chunkSize / (chunk.header.channels * (chunk.header.bitsPerSample / 8))
+                resampleToTarget(originalFloats, inputSamples, chunk.header.sampleRate)
+            } else {
+                originalFloats
             }
 
-            // Convert bytes to FloatArray using reusable array
-            val result = convertBytesToFloatArrayReusable(buffer, bytesRead, chunk.header)
-
             // Clear the byte buffer from memory
-            buffer.fill(0, 0, bytesRead)
+            buffer.fill(0, 0, chunkSize)
 
             return result
         }
+    }
+
+    /**
+     * Resamples audio data to TARGET_SAMPLE_RATE (16kHz) using linear interpolation
+     */
+    private fun resampleToTarget(input: FloatArray, inputSamples: Int, sourceRate: Int): FloatArray {
+        val ratio = sourceRate.toDouble() / TARGET_SAMPLE_RATE.toDouble()
+        val outputSamples = (inputSamples / ratio).toInt()
+        val result = getReusableResampledArray(outputSamples)
+
+        for (i in 0 until outputSamples) {
+            val sourceIndex = i * ratio
+            val indexInt = sourceIndex.toInt()
+            val fraction = (sourceIndex - indexInt).toFloat()
+
+            if (indexInt + 1 < inputSamples) {
+                // Linear interpolation
+                result[i] = input[indexInt] * (1f - fraction) + input[indexInt + 1] * fraction
+            } else if (indexInt < inputSamples) {
+                result[i] = input[indexInt]
+            }
+        }
+        return result
     }
 
     /**
@@ -187,16 +212,30 @@ class StreamingAudioChunker {
     }
 
     /**
+     * Gets or creates a reusable FloatArray for resampled data
+     */
+    private fun getReusableResampledArray(requiredSize: Int): FloatArray {
+        val current = reusableResampledArray
+        return if (current != null && current.size >= requiredSize) {
+            current
+        } else {
+            val newArray = FloatArray(requiredSize)
+            reusableResampledArray = newArray
+            newArray
+        }
+    }
+
+    /**
      * Clears reusable arrays from memory
-     * Call this when done processing to free memory
      */
     fun clearReusableArrays() {
         reusableFloatArray = null
+        reusableResampledArray = null
         reusableByteArray = null
     }
 
     /**
-     * Gets the current size of reusable arrays for debugging
+     * Gets current array sizes for debugging
      */
     fun getReusableArraySizes(): Pair<Int, Int> {
         return Pair(
@@ -207,6 +246,7 @@ class StreamingAudioChunker {
 
     /**
      * Converts byte array to FloatArray based on WAV format (reusable version)
+     * Handles Stereo to Mono conversion by averaging channels
      */
     private fun convertBytesToFloatArrayReusable(
         buffer: ByteArray,
@@ -216,7 +256,6 @@ class StreamingAudioChunker {
         val bytesPerSample = header.bitsPerSample / 8
         val samplesCount = bytesRead / (header.channels * bytesPerSample)
 
-        // Get or create reusable FloatArray
         val result = getReusableFloatArray(samplesCount)
         val byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead)
         byteBuffer.order(ByteOrder.LITTLE_ENDIAN)
@@ -228,15 +267,13 @@ class StreamingAudioChunker {
                     val sampleValue = byteBuffer.short
                     (sampleValue / 32767.0f).coerceIn(-1f..1f)
                 }
-
                 else -> {
                     // Stereo - average the channels
-                    val left = byteBuffer.short
-                    val right = byteBuffer.short
-                    ((left + right) / 32767.0f / 2.0f).coerceIn(-1f..1f)
+                    val left = byteBuffer.short.toInt()
+                    val right = byteBuffer.short.toInt()
+                    ((left + right) / 2.0f / 32767.0f).coerceIn(-1f..1f)
                 }
             }
-
             result[i] = sample
         }
 
