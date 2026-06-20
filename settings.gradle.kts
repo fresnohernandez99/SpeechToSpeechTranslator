@@ -35,3 +35,4 @@ dependencyResolutionManagement {
 }
 include(":sharedUI")
 include(":lib")
+include(":composeApp")

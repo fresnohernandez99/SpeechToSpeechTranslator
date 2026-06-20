@@ -11,7 +11,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.kmp.library)
 }
 
 kotlin {
@@ -40,7 +40,6 @@ kotlin {
         )
     }
 
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -95,7 +94,7 @@ kotlin {
             // Preferences
             api(libs.datastore.preferences.core)
 
-            implementation(libs.kmp.audio.recorder.player)
+            api(libs.kmp.audio.recorder.player)
             implementation(libs.record.core)
             implementation(libs.alert.kmp)
         }
@@ -155,18 +154,6 @@ kotlin {
             }
         }
     }
-
-    iosX64 {
-        compilations.getByName("main") {
-            cinterops.create("whisperX64") {
-                defFile(project.file("src/nativeInterop/cinterop/whisper.def"))
-                compilerOpts(
-                    "-I${whisperFrameworkPath}/ios-arm64_x86_64-simulator/whisper.framework/Headers",
-                    "-F$whisperFrameworkPath"
-                )
-            }
-        }
-    }
 }
 
 dependencies {
@@ -174,15 +161,11 @@ dependencies {
 }
 
 android {
-    namespace = "com.fresnohernandez99.stpt"
-    compileSdk = 36
+    namespace = "com.fresnohernandez99.stpt.shared"
+    compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.fresnohernandez99.stpt"
         minSdk = 30
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.000.000"
     }
 
     packaging {
@@ -217,12 +200,6 @@ android {
         }
     }
 
-    dependenciesInfo {
-        // Disables dependency metadata when building APKs.
-        includeInApk = false
-        // Disables dependency metadata when building Android App Bundles.
-        includeInBundle = false
-    }
 
 
     compileOptions {

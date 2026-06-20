@@ -3,7 +3,7 @@ package com.fresnohernandez99.stpt.platform
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
-import com.fresnohernandez99.stpt.BuildConfig
+import com.fresnohernandez99.stpt.shared.BuildConfig
 
 class AndroidPlatform(
     private val version: String,
