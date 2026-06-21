@@ -11,6 +11,7 @@ import com.fresnohernandez99.stpt.platform.presentation.PlatformViewModel
 import com.fresnohernandez99.stpt.presentation.dictsManage.DictsManageViewModel
 import com.fresnohernandez99.stpt.presentation.home.HomeViewModel
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionViewModel
+import com.fresnohernandez99.stpt.presentation.onboarding.OnboardingViewModel
 import com.fresnohernandez99.stpt.presentation.settings.SettingsViewModel
 import com.fresnohernandez99.stpt.transcription.TranscriptionViewModel
 import org.koin.core.module.Module
@@ -37,6 +38,7 @@ val viewModelModule = module {
     viewModelOf(::TranscriptionViewModel)
     viewModelOf(::DictsManageViewModel)
     viewModelOf(::InitViewModel)
+    viewModelOf(::OnboardingViewModel)
 }
 
 val mapperModule = module {

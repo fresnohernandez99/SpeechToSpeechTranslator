@@ -31,6 +31,7 @@ import com.fresnohernandez99.stpt.theme.LocalWindowSizeHelper
 import com.fresnohernandez99.stpt.theme.WindowSize
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import org.koin.compose.viewmodel.koinViewModel
 import speechtospeechtranslator.sharedui.generated.resources.Res
 import speechtospeechtranslator.sharedui.generated.resources.onboarding_image_1
 import speechtospeechtranslator.sharedui.generated.resources.onboarding_image_2
@@ -38,7 +39,8 @@ import speechtospeechtranslator.sharedui.generated.resources.onboarding_image_3
 
 @Composable
 fun OnboardingScreen(
-    link: Destination.Onboarding
+    link: Destination.Onboarding,
+    viewModel: OnboardingViewModel = koinViewModel()
 ) {
     val haptic = LocalHapticFeedback.current
     val navHostController = LocalNavController.current
@@ -88,9 +90,11 @@ fun OnboardingScreen(
                 currentPageOffset <= 0.0F
             ) {
                 hasNavigated = true
-                navHostController.navigate(Destination.Home()) {
-                    popUpTo(Destination.Onboarding) {
-                        inclusive = true
+                viewModel.completeOnBoarding {
+                    navHostController.navigate(Destination.Home()) {
+                        popUpTo(Destination.Onboarding) {
+                            inclusive = true
+                        }
                     }
                 }
             } else
