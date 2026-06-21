@@ -18,6 +18,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.fresnohernandez99.stpt.presentation.onboarding.OnboardingPage
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import speechtospeechtranslator.sharedui.generated.resources.Res
+import speechtospeechtranslator.sharedui.generated.resources.onboarding_image_description
 
 @Composable
 fun PageUI(modifier: Modifier = Modifier, page: OnboardingPage) {
@@ -47,7 +50,7 @@ fun PageUI(modifier: Modifier = Modifier, page: OnboardingPage) {
 
         Image(
             painterResource(page.imageRes),
-            contentDescription = "Image for onboarding",
+            contentDescription = stringResource(Res.string.onboarding_image_description),
             modifier = Modifier.weight(1F).fillMaxWidth(),
             contentScale = ContentScale.FillWidth
         )
@@ -64,7 +67,7 @@ fun PageUIBig(modifier: Modifier = Modifier, page: OnboardingPage) {
         Column(Modifier.weight(1F)) {
             Image(
                 painterResource(page.imageRes),
-                contentDescription = "Image for onboarding",
+                contentDescription = stringResource(Res.string.onboarding_image_description),
                 modifier = Modifier.fillMaxHeight().align(Alignment.Start)
             )
         }

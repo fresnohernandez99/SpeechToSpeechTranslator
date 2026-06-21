@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import com.fresnohernandez99.stpt.presentation.components.PageIndicator
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
@@ -36,6 +37,12 @@ import speechtospeechtranslator.sharedui.generated.resources.Res
 import speechtospeechtranslator.sharedui.generated.resources.onboarding_image_1
 import speechtospeechtranslator.sharedui.generated.resources.onboarding_image_2
 import speechtospeechtranslator.sharedui.generated.resources.onboarding_image_3
+import speechtospeechtranslator.sharedui.generated.resources.onboarding_desc_1
+import speechtospeechtranslator.sharedui.generated.resources.onboarding_desc_2
+import speechtospeechtranslator.sharedui.generated.resources.onboarding_desc_3
+import speechtospeechtranslator.sharedui.generated.resources.onboarding_title_1
+import speechtospeechtranslator.sharedui.generated.resources.onboarding_title_2
+import speechtospeechtranslator.sharedui.generated.resources.onboarding_title_3
 
 @Composable
 fun OnboardingScreen(
@@ -47,27 +54,25 @@ fun OnboardingScreen(
     val windowSize = LocalWindowSizeHelper.current
 
 
-    val pages = remember {
-        arrayOf(
-            OnboardingPage(
-                title = "STPT",
-                description = "offline translation for Free",
-                imageRes = Res.drawable.onboarding_image_1
-            ),
+    val pages = arrayOf(
+        OnboardingPage(
+            title = stringResource(Res.string.onboarding_title_1),
+            description = stringResource(Res.string.onboarding_desc_1),
+            imageRes = Res.drawable.onboarding_image_1
+        ),
 
-            OnboardingPage(
-                title = "Different Languages",
-                description = "common communication",
-                imageRes = Res.drawable.onboarding_image_2
-            ),
+        OnboardingPage(
+            title = stringResource(Res.string.onboarding_title_2),
+            description = stringResource(Res.string.onboarding_desc_2),
+            imageRes = Res.drawable.onboarding_image_2
+        ),
 
-            OnboardingPage(
-                title = "Translate",
-                description = "anywhere, anytime",
-                imageRes = Res.drawable.onboarding_image_3
-            )
+        OnboardingPage(
+            title = stringResource(Res.string.onboarding_title_3),
+            description = stringResource(Res.string.onboarding_desc_3),
+            imageRes = Res.drawable.onboarding_image_3
         )
-    }
+    )
 
     val state = rememberPagerState {
         pages.size + 1

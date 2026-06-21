@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
+import speechtospeechtranslator.sharedui.generated.resources.Res
+import speechtospeechtranslator.sharedui.generated.resources.onboarding_ready
 
 @Composable
 fun EndPageUI(modifier: Modifier = Modifier) {
@@ -32,7 +35,7 @@ fun EndPageUI(modifier: Modifier = Modifier) {
     ) {
         Text(
             modifier = Modifier.padding(horizontal = 16.dp),
-            text = "Ready!",
+            text = stringResource(Res.string.onboarding_ready),
             color = Color.White,
             style = MaterialTheme.typography.titleLarge
         )

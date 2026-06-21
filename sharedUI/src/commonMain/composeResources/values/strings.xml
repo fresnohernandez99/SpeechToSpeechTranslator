@@ -80,4 +80,13 @@
 
     <string name="manage_dictionaries">Manage Dictionaries</string>
     <string name="offline_translation_models">Offline translation models</string>
+
+    <string name="onboarding_title_1">STPT</string>
+    <string name="onboarding_desc_1">offline translation for Free</string>
+    <string name="onboarding_title_2">Different Languages</string>
+    <string name="onboarding_desc_2">common communication</string>
+    <string name="onboarding_title_3">Translate</string>
+    <string name="onboarding_desc_3">anywhere, anytime</string>
+    <string name="onboarding_ready">Ready!</string>
+    <string name="onboarding_image_description">Image for onboarding</string>
 </resources>
