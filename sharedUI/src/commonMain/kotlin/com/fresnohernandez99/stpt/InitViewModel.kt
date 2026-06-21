@@ -4,10 +4,12 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @Immutable
 sealed interface InitUiState {
@@ -31,7 +33,7 @@ class InitViewModel(
     private fun checkStatus() {
         viewModelScope.launch {
             val hasCompletedOnboarding = preferencesRepository.hasCompletedOnboarding()
-            
+            delay(1500.milliseconds)
             if (hasCompletedOnboarding) {
                 _uiState.value = InitUiState.Resolved
             } else {
