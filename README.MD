@@ -73,6 +73,7 @@ Following the latest **AGP 9.0+** requirements, the project is modularized to se
 - [x] **Phase 1:** Core KMP Infrastructure & DI Setup.
 - [x] **Phase 2:** Whisper.cpp CInterop integration for Android & iOS.
 - [x] **Phase 3:** Speech-to-Text & Translation logic.
+- [-] **Phase 3.1** Clean Up
 - [ ] **Phase 4:** **Text-to-Speech (TTS) Integration** (Current Goal 🎯).
 - [ ] **Phase 5:** Real-time continuous translation mode.
 - [ ] **Phase 6:** UI/UX Polish & Material 3 dynamic theming.
