@@ -41,6 +41,7 @@ import com.fresnohernandez99.stpt.presentation.components.BackTopBar
 import com.fresnohernandez99.stpt.presentation.home.components.LanguageSelector
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
+import kotlinx.collections.immutable.toImmutableList
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,13 +85,13 @@ fun DictsManageScreen(
                     ) {
                         LanguageSelector(
                             selectedLanguage = state.sourceLanguage,
-                            languages = availableLanguages,
+                            languages = availableLanguages.toImmutableList(),
                             onLanguageSelected = viewModel::onSourceLanguageChange,
                             modifier = Modifier.weight(1f)
                         )
                         LanguageSelector(
                             selectedLanguage = state.targetLanguage,
-                            languages = availableLanguages,
+                            languages = availableLanguages.toImmutableList(),
                             onLanguageSelected = viewModel::onTargetLanguageChange,
                             modifier = Modifier.weight(1f)
                         )

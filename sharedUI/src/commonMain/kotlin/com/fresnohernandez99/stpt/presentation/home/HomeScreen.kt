@@ -9,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,11 +44,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.fresnohernandez99.stpt.domain.model.Language
 import com.fresnohernandez99.stpt.modelDownloader.DownloadModelDialog
 import com.fresnohernandez99.stpt.modelDownloader.DownloaderEffect
 import com.fresnohernandez99.stpt.modelDownloader.ModelDownloaderViewModel
@@ -57,7 +54,7 @@ import com.fresnohernandez99.stpt.modelDownloader.components.DownloaderDialog
 import com.fresnohernandez99.stpt.presentation.components.AppScaffold
 import com.fresnohernandez99.stpt.presentation.components.PreparingLoadingDialog
 import com.fresnohernandez99.stpt.presentation.home.components.HomeContent
-import com.fresnohernandez99.stpt.presentation.home.components.LanguageSelector
+import com.fresnohernandez99.stpt.presentation.home.components.LanguageSelectorTopBar
 import com.fresnohernandez99.stpt.presentation.home.components.RecordingDialog
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
@@ -106,55 +103,38 @@ fun HomeScreen(
 
     AppScaffold(
         modifier = Modifier.imePadding(),
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.primary,
         topBar = {
             TopAppBar(
-                title = {},
+                title = {
+                    LanguageSelectorTopBar(
+                        modifier = Modifier,
+                        sourceLanguage = uiState.sourceLanguage,
+                        targetLanguage = uiState.targetLanguage,
+                        onSourceLanguageSelected = viewModel::onSourceLanguageSelected,
+                        onTargetLanguageSelected = viewModel::onTargetLanguageSelected
+                    )
+                },
                 actions = {
                     IconButton(onClick = { navHostController.navigate(Destination.Settings) }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = stringResource(Res.string.settings),
-                            tint = MaterialTheme.colorScheme.onBackground
+                            tint = Color.White
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = MaterialTheme.colorScheme.primary
                 )
             )
         },
         bottomBar = {
             Column(
-                Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceContainer).padding(horizontal = 16.dp, vertical = 8.dp),
+                Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    LanguageSelector(
-                        selectedLanguage = uiState.sourceLanguage,
-                        languages = Language.list,
-                        onLanguageSelected = viewModel::onSourceLanguageSelected,
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    Text("→", fontWeight = FontWeight.Bold)
-
-                    LanguageSelector(
-                        selectedLanguage = uiState.targetLanguage,
-                        languages = Language.getFilteredLanguages(
-                            allLanguages = Language.list,
-                            priorityLanguage = Language.Spanish,
-                            excludeLanguages = listOf(Language.Detect)
-                        ),
-                        onLanguageSelected = viewModel::onTargetLanguageSelected,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center

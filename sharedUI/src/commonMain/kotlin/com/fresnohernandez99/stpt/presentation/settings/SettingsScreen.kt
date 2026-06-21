@@ -46,6 +46,7 @@ import com.fresnohernandez99.stpt.presentation.modelSelection.ModelOption
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import com.fresnohernandez99.stpt.theme.WindowSize
+import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import speechtospeechtranslator.sharedui.generated.resources.Res
@@ -126,7 +127,7 @@ fun SettingsScreen(
                 languages = Language.getFilteredLanguages(
                     Language.list,
                     priorityLanguage = Language.Detect
-                ),
+                ).toImmutableList(),
                 onLanguageSelected = {
                     viewModel.onLanguageSelected(it)
                     showDialog = false

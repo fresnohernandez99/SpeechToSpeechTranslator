@@ -1,5 +1,6 @@
 package com.fresnohernandez99.stpt.presentation.home.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,20 +13,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconButtonShapes
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,51 +41,45 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.fresnohernandez99.stpt.domain.model.Language
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import speechtospeechtranslator.sharedui.generated.resources.Res
+import speechtospeechtranslator.sharedui.generated.resources.change
 import speechtospeechtranslator.sharedui.generated.resources.detect_language
 
 @Composable
 fun LanguageSelector(
     selectedLanguage: Language,
-    languages: List<Language>,
+    languages: ImmutableList<Language>,
     onLanguageSelected: (Language) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
-    Box(modifier = modifier) {
-        OutlinedCard(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { showDialog = true }
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BasicText(
-                    text = "${selectedLanguage.flag} ${
-                        if (selectedLanguage == Language.Detect) {
-                            stringResource(Res.string.detect_language)
-                        } else {
-                            selectedLanguage.name
-                        }
-                    }",
-                    style = MaterialTheme.typography.bodyMedium,
-                    autoSize = TextAutoSize.StepBased(maxFontSize = 16.sp, minFontSize = 8.sp),
-                    maxLines = 1
-                )
-
-                Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-            }
-        }
+    Box(modifier = modifier.clickable { showDialog = true }) {
+        BasicText(
+            modifier = Modifier.fillMaxWidth(),
+            text = if (selectedLanguage == Language.Detect) {
+                stringResource(Res.string.detect_language)
+            } else {
+                selectedLanguage.name
+            },
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.tertiary,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center
+            ),
+            autoSize = TextAutoSize.StepBased(maxFontSize = 16.sp, minFontSize = 8.sp),
+            maxLines = 1
+        )
 
         if (showDialog) {
             LanguagePickerDialog(
@@ -98,7 +97,7 @@ fun LanguageSelector(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguagePickerDialog(
-    languages: List<Language>,
+    languages: ImmutableList<Language>,
     onLanguageSelected: (Language) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -203,6 +202,65 @@ fun LanguageItem(
                     language.name
                 },
                 style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun LanguageSelectorTopBar(
+    modifier: Modifier = Modifier,
+    sourceLanguage: Language,
+    targetLanguage: Language,
+    onSourceLanguageSelected: (Language) -> Unit,
+    onTargetLanguageSelected: (Language) -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = MaterialTheme.shapes.large,
+        elevation = CardDefaults.elevatedCardElevation(5.dp)
+    ) {
+        Row(
+            modifier = modifier.fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.primaryContainer),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LanguageSelector(
+                selectedLanguage = sourceLanguage,
+                languages = Language.list.toImmutableList(),
+                onLanguageSelected = onSourceLanguageSelected,
+                modifier = Modifier.weight(1f)
+            )
+
+            IconButton(
+                onClick = { },
+                shapes = IconButtonShapes(
+                    shape = MaterialTheme.shapes.large,
+                    pressedShape = MaterialTheme.shapes.small
+                ),
+                modifier = Modifier,
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.change),
+                    contentDescription = "Change language ico",
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.White
+                )
+            }
+
+            LanguageSelector(
+                selectedLanguage = targetLanguage,
+                languages = Language.getFilteredLanguages(
+                    allLanguages = Language.list,
+                    priorityLanguage = Language.Spanish,
+                    excludeLanguages = listOf(Language.Detect)
+                ).toImmutableList(),
+                onLanguageSelected = onTargetLanguageSelected,
+                modifier = Modifier.weight(1f)
             )
         }
     }
