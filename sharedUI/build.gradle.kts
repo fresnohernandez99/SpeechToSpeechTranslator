@@ -1,3 +1,6 @@
+import io.kmpbits.splash.ExitAnimation
+import io.kmpbits.splash.SplashColor
+import io.kmpbits.splash.SplashLogo
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
@@ -12,6 +15,14 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.android.kmp.library)
+    alias(libs.plugins.kmpSplash)
+}
+
+splashScreen {
+    backgroundColor = SplashColor.hex("#0975F4")       // Light mode background
+    logo = SplashLogo.resource("translate_logo.png")             // File in composeResources/drawable/
+    logoDark = SplashLogo.resource("translate_logo_dark.png")    // Optional: dark mode logo
+    exitAnimation = ExitAnimation.SlideUp(300)         // Optional: exit animation (Android + iOS)
 }
 
 kotlin {
@@ -97,6 +108,8 @@ kotlin {
             api(libs.kmp.audio.recorder.player)
             implementation(libs.record.core)
             implementation(libs.alert.kmp)
+
+            api(libs.kmpSplash.runtime)
         }
 
         commonTest.dependencies {
@@ -112,6 +125,7 @@ kotlin {
             api(libs.ktor.client.okhttp)
             implementation(project(":lib"))
             implementation(libs.mlkit.translate)
+            api("androidx.core:core-splashscreen:1.2.0")
         }
 
         iosMain.dependencies {
