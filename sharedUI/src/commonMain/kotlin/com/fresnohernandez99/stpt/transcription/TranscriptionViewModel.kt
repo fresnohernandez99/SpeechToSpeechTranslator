@@ -1,5 +1,6 @@
 package com.fresnohernandez99.stpt.transcription
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 const val SPACE_STR = " "
 
+@Immutable
 class TranscriptionViewModel(
     private val transcriber: Transcriber,
     private val preferencesRepository: PreferencesRepository,

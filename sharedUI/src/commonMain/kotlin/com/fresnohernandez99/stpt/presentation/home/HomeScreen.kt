@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import com.fresnohernandez99.stpt.modelDownloader.DownloadModelDialog
 import com.fresnohernandez99.stpt.modelDownloader.DownloaderEffect
@@ -55,6 +56,8 @@ import com.fresnohernandez99.stpt.presentation.components.PreparingLoadingDialog
 import com.fresnohernandez99.stpt.presentation.home.components.HomeContent
 import com.fresnohernandez99.stpt.presentation.home.components.RecordingDialog
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
+import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
+import com.fresnohernandez99.stpt.theme.LocalWindowSizeHelper
 import com.fresnohernandez99.stpt.theme.WindowSize
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -68,10 +71,11 @@ import speechtospeechtranslator.sharedui.generated.resources.settings
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     downloaderViewModel: ModelDownloaderViewModel = koinViewModel(),
-    link: Destination.Home,
-    windowSize: WindowSize,
-    navHostController: NavHostController
+    link: Destination.Home
 ) {
+    val navHostController = LocalNavController.current
+    val windowSize = LocalWindowSizeHelper.current
+
     val uiState by viewModel.uiState.collectAsState()
 
     val (showRecord, setShowRecord) = remember { mutableStateOf(false) }

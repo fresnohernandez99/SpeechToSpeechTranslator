@@ -1,5 +1,6 @@
 package com.fresnohernandez99.stpt.presentation.settings
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.domain.model.Language
@@ -8,6 +9,7 @@ import com.fresnohernandez99.stpt.modelDownloader.FARSI
 import com.fresnohernandez99.stpt.modelDownloader.OPTIMIZED_MODEL_SELECTION
 import kotlinx.coroutines.launch
 
+@Immutable
 class SettingsViewModel(
     val preferencesRepository: PreferencesRepository
 ) : ViewModel() {

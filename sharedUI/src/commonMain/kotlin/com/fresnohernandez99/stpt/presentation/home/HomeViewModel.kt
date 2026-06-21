@@ -1,5 +1,6 @@
 package com.fresnohernandez99.stpt.presentation.home
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.domain.model.Language
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Immutable
 class HomeViewModel(
     private val dictRepository: DictRepository
 ) : ViewModel() {

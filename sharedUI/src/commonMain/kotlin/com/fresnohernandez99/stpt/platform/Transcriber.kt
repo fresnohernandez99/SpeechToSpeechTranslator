@@ -1,5 +1,8 @@
 package com.fresnohernandez99.stpt.platform
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 expect class Transcriber {
     fun doesModelExists(modelFileName: String ): Boolean
     suspend fun initialize(modelFileName: String)

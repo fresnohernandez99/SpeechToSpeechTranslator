@@ -30,6 +30,7 @@ import androidx.navigation.NavHostController
 import com.fresnohernandez99.stpt.modelDownloader.NO_MODEL_SELECTION
 import com.fresnohernandez99.stpt.presentation.components.BackTopBar
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
+import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import com.fresnohernandez99.stpt.theme.WindowSize
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -58,9 +59,9 @@ data class ModelOption(
 fun ModelSelectionScreen(
     viewModel: ModelSelectionViewModel = koinViewModel(),
     link: Destination.ModelSelection,
-    windowSize: WindowSize,
-    navHostController: NavHostController
 ) {
+    val navHostController = LocalNavController.current
+
     val modelOptions = listOf(
         ModelOption(
             title = stringResource(Res.string.standard_model_title),

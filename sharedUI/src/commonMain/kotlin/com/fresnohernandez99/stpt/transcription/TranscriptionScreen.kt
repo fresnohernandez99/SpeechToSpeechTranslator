@@ -45,11 +45,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.fresnohernandez99.stpt.platform.HandlePlatformBackNavigation
 import com.fresnohernandez99.stpt.presentation.components.AppScaffold
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
-import com.fresnohernandez99.stpt.theme.WindowSize
+import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import speechtospeechtranslator.sharedui.generated.resources.Res
@@ -63,10 +62,10 @@ import speechtospeechtranslator.sharedui.generated.resources.transcription_dialo
 @Composable
 fun TranscriptionScreen(
     link: Destination.Transcription,
-    windowSize: WindowSize,
-    navHostController: NavHostController,
     viewModel: TranscriptionViewModel = koinViewModel()
 ) {
+    val navHostController = LocalNavController.current
+
     val scrollState = rememberScrollState()
     val transcriptionUiState by viewModel.uiState.collectAsState()
 

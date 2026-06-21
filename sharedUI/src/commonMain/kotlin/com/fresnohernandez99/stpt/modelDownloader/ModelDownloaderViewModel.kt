@@ -1,5 +1,6 @@
 package com.fresnohernandez99.stpt.modelDownloader
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.platform.Downloader
@@ -13,11 +14,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Immutable
 class ModelDownloaderViewModel(
     private val downloader: Downloader,
     private val transcriber: Transcriber,
     private val modelSelection: ModelSelection
 ) : ViewModel() {
+
     private var _uiState: MutableStateFlow<DownloaderUiState> = MutableStateFlow(
         DownloaderUiState(
             modelSelection.getDefaultTranscriptionModel()

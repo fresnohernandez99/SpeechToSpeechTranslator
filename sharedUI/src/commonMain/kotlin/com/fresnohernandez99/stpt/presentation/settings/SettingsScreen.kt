@@ -44,6 +44,7 @@ import com.fresnohernandez99.stpt.modelDownloader.OPTIMIZED_MODEL_SELECTION
 import com.fresnohernandez99.stpt.presentation.home.components.LanguagePickerDialog
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelOption
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
+import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import com.fresnohernandez99.stpt.theme.WindowSize
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -69,9 +70,9 @@ import speechtospeechtranslator.sharedui.generated.resources.transcription_model
 fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(),
     link: Destination.Settings,
-    windowSize: WindowSize,
-    navHostController: NavHostController
 ) {
+    val navHostController = LocalNavController.current
+
     val language by viewModel.language.collectAsState(Language.list.first().code)
     val modelSavedSelection = viewModel.modelSavedSelection.collectAsState(
         NO_MODEL_SELECTION

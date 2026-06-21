@@ -1,5 +1,8 @@
 package com.fresnohernandez99.stpt.platform
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 expect class Downloader {
     suspend fun startDownload(url: String, fileName: String)
      suspend fun hasRunningDownload():Boolean

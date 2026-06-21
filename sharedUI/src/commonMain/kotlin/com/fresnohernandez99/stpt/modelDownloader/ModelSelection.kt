@@ -1,5 +1,6 @@
 package com.fresnohernandez99.stpt.modelDownloader
 
+import androidx.compose.runtime.Immutable
 import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
 import kotlinx.coroutines.flow.first
 
@@ -23,6 +24,7 @@ data class TranscriptionModel(
     fun getModelDownloadType(): String = modelType
 }
 
+@Immutable
 class ModelSelection(private val preferencesRepository: PreferencesRepository) {
 
     /**
