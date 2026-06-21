@@ -45,32 +45,6 @@ fun HomeContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            LanguageSelector(
-                selectedLanguage = uiState.sourceLanguage,
-                languages = Language.list,
-                onLanguageSelected = onSourceLanguageSelected,
-                modifier = Modifier.weight(1f)
-            )
-
-            Text("→", fontWeight = FontWeight.Bold)
-
-            LanguageSelector(
-                selectedLanguage = uiState.targetLanguage,
-                languages = Language.getFilteredLanguages(
-                    allLanguages = Language.list,
-                    priorityLanguage = Language.Spanish,
-                    excludeLanguages = listOf(Language.Detect)
-                ),
-                onLanguageSelected = onTargetLanguageSelected,
-                modifier = Modifier.weight(1f)
-            )
-        }
-
         OutlinedTextField(
             value = uiState.textToTranslate,
             onValueChange = onTextChanged,

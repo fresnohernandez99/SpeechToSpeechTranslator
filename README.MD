@@ -79,6 +79,11 @@ Following the latest **AGP 9.0+** requirements, the project is modularized to se
 
 ---
 
+## Design Credits
+This project uses design assets from the Figma Community file:
+[Google Translate Redesign](https://www.figma.com/community/file/874980884980495556)  
+Created by [Erhan Kbekar](https://www.figma.com/@ekbekar).
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request or open an issue for feature requests.

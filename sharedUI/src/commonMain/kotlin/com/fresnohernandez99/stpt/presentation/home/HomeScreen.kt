@@ -5,19 +5,22 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,11 +45,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavDestination
-import androidx.navigation.NavHostController
+import com.fresnohernandez99.stpt.domain.model.Language
 import com.fresnohernandez99.stpt.modelDownloader.DownloadModelDialog
 import com.fresnohernandez99.stpt.modelDownloader.DownloaderEffect
 import com.fresnohernandez99.stpt.modelDownloader.ModelDownloaderViewModel
@@ -54,6 +57,7 @@ import com.fresnohernandez99.stpt.modelDownloader.components.DownloaderDialog
 import com.fresnohernandez99.stpt.presentation.components.AppScaffold
 import com.fresnohernandez99.stpt.presentation.components.PreparingLoadingDialog
 import com.fresnohernandez99.stpt.presentation.home.components.HomeContent
+import com.fresnohernandez99.stpt.presentation.home.components.LanguageSelector
 import com.fresnohernandez99.stpt.presentation.home.components.RecordingDialog
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
@@ -66,7 +70,7 @@ import speechtospeechtranslator.sharedui.generated.resources.confirmation_cancel
 import speechtospeechtranslator.sharedui.generated.resources.download_dialog_error
 import speechtospeechtranslator.sharedui.generated.resources.settings
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationStyleApi::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
@@ -121,7 +125,36 @@ fun HomeScreen(
             )
         },
         bottomBar = {
-            BottomAppBar {
+            Column(
+                Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceContainer).padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    LanguageSelector(
+                        selectedLanguage = uiState.sourceLanguage,
+                        languages = Language.list,
+                        onLanguageSelected = viewModel::onSourceLanguageSelected,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Text("→", fontWeight = FontWeight.Bold)
+
+                    LanguageSelector(
+                        selectedLanguage = uiState.targetLanguage,
+                        languages = Language.getFilteredLanguages(
+                            allLanguages = Language.list,
+                            priorityLanguage = Language.Spanish,
+                            excludeLanguages = listOf(Language.Detect)
+                        ),
+                        onLanguageSelected = viewModel::onTargetLanguageSelected,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
@@ -252,7 +285,12 @@ fun HomeScreen(
                         onClick = {
                             showErrorDialog = false
                         },
-                    ) { Text(stringResource(resource = Res.string.confirmation_cancel), color = Color.White) }
+                    ) {
+                        Text(
+                            stringResource(resource = Res.string.confirmation_cancel),
+                            color = Color.White
+                        )
+                    }
                 }
             )
 
