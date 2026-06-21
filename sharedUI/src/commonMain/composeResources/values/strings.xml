@@ -1,11 +1,12 @@
 <resources>
+    <string name="app_name">STP Offline</string>
+
     <string name="cyclone">Cyclone</string>
     <string name="open_github">Open github</string>
     <string name="run">Run</string>
     <string name="stop">Stop</string>
     <string name="theme">Theme</string>
 
-    <string name="app_name">SpeechToSpeech</string>
     <string name="home_title">Home</string>
     <string name="detect_language">Detect Language</string>
     <string name="enter_text">Enter text to translate</string>

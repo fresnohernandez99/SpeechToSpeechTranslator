@@ -4,21 +4,33 @@ import androidx.compose.ui.window.ComposeUIViewController
 import com.fresnohernandez99.stpt.App
 import com.fresnohernandez99.stpt.di.init
 import com.fresnohernandez99.stpt.platform.TranslatorManagerIos
+import io.kmpbits.splash.SplashConfig
+import kotlinx.coroutines.delay
 import org.koin.compose.KoinApplication
+import org.koin.dsl.koinConfiguration
 import platform.UIKit.UIApplication
 import platform.UIKit.UIStatusBarStyleDarkContent
 import platform.UIKit.UIStatusBarStyleLightContent
 import platform.UIKit.UIViewController
 import platform.UIKit.setStatusBarStyle
+import kotlin.time.Duration.Companion.milliseconds
 
 fun MainViewController(
     translatorManagerIos: TranslatorManagerIos
 ): UIViewController = ComposeUIViewController {
-    KoinApplication(application = {
-        init(translatorManagerIos)
-    }) {
-        App(onThemeChanged = { ThemeChanged(it) })
-    }
+    KoinApplication(
+        configuration = koinConfiguration(declaration = { init(translatorManagerIos) }),
+        content = {
+            SplashConfig(
+                isReady = {
+                    delay(500.milliseconds)
+                    true
+                }
+            ) {
+                App(onThemeChanged = { ThemeChanged(it) })
+            }
+
+        })
 }
 
 @Composable

@@ -1,78 +1,111 @@
 package com.fresnohernandez99.stpt
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.fresnohernandez99.stpt.presentation.components.LoadingView
 import com.fresnohernandez99.stpt.presentation.dictsManage.DictsManageScreen
 import com.fresnohernandez99.stpt.presentation.home.HomeScreen
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionScreen
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
+import com.fresnohernandez99.stpt.presentation.onboarding.OnboardingScreen
 import com.fresnohernandez99.stpt.presentation.settings.SettingsScreen
 import com.fresnohernandez99.stpt.theme.AppTheme
 import com.fresnohernandez99.stpt.theme.LocalWindowSizeHelper
 import com.fresnohernandez99.stpt.theme.rememberWindowSizeClass
 import com.fresnohernandez99.stpt.transcription.TranscriptionScreen
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun App(
-    onThemeChanged: @Composable (isDark: Boolean) -> Unit = {}
+    onThemeChanged: @Composable (isDark: Boolean) -> Unit = {},
+    viewModel: InitViewModel = koinViewModel()
 ) = AppTheme(onThemeChanged) {
 
     val navHostController = rememberNavController()
     val windowSize = rememberWindowSizeClass()
+    val uiState by viewModel.uiState.collectAsState()
 
     CompositionLocalProvider(
         LocalNavController provides navHostController,
         LocalWindowSizeHelper provides windowSize
     ) {
-        NavHost(
-            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
-                .systemBarsPadding(),
-            navController = navHostController,
-            startDestination = Destination.Home(),
-        ) {
-            composable<Destination.Home> { backStackEntry ->
-                val link: Destination.Home = backStackEntry.toRoute()
 
-                HomeScreen(
-                    link = link
-                )
+        when (uiState) {
+            InitUiState.Loading -> {
+                LoadingView()
             }
-            composable<Destination.Settings> { backStackEntry ->
-                val link: Destination.Settings = backStackEntry.toRoute()
 
-                SettingsScreen(
-                    link = link
-                )
-            }
-            composable<Destination.ModelSelection> { backStackEntry ->
-                val link: Destination.ModelSelection = backStackEntry.toRoute()
+            else -> {
+                val startDestination = if (uiState == InitUiState.Resolved) {
+                    Destination.Home()
+                } else {
+                    Destination.Onboarding
+                }
 
-                ModelSelectionScreen(
-                    link = link
-                )
-            }
-            composable<Destination.Transcription> { backStackEntry ->
-                val link: Destination.Transcription = backStackEntry.toRoute()
+                NavHost(
+                    modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+                        .systemBarsPadding(),
+                    navController = navHostController,
+                    startDestination = startDestination,
+                ) {
+                    composable<Destination.Onboarding> { backStackEntry ->
+                        val link: Destination.Onboarding = backStackEntry.toRoute()
 
-                TranscriptionScreen(
-                    link = link
-                )
-            }
-            composable<Destination.DictsManage> { backStackEntry ->
-                val link: Destination.DictsManage = backStackEntry.toRoute()
+                        OnboardingScreen(
+                            link = link
+                        )
+                    }
+                    composable<Destination.Home> { backStackEntry ->
+                        val link: Destination.Home = backStackEntry.toRoute()
 
-                DictsManageScreen(
-                    link = link
-                )
+                        HomeScreen(
+                            link = link
+                        )
+                    }
+                    composable<Destination.Settings> { backStackEntry ->
+                        val link: Destination.Settings = backStackEntry.toRoute()
+
+                        SettingsScreen(
+                            link = link
+                        )
+                    }
+                    composable<Destination.ModelSelection> { backStackEntry ->
+                        val link: Destination.ModelSelection = backStackEntry.toRoute()
+
+                        ModelSelectionScreen(
+                            link = link
+                        )
+                    }
+                    composable<Destination.Transcription> { backStackEntry ->
+                        val link: Destination.Transcription = backStackEntry.toRoute()
+
+                        TranscriptionScreen(
+                            link = link
+                        )
+                    }
+                    composable<Destination.DictsManage> { backStackEntry ->
+                        val link: Destination.DictsManage = backStackEntry.toRoute()
+
+                        DictsManageScreen(
+                            link = link
+                        )
+                    }
+                }
             }
         }
     }

@@ -8,6 +8,9 @@ import kotlinx.serialization.Serializable
 sealed interface Destination {
     @Serializable
     @Immutable
+    data object Onboarding : Destination
+    @Serializable
+    @Immutable
     data class Home(val typed: String = "") : Destination
     @Serializable
     @Immutable

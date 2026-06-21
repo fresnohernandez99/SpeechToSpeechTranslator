@@ -1,7 +1,6 @@
 package com.fresnohernandez99.stpt
 
 import android.app.Activity
-import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable

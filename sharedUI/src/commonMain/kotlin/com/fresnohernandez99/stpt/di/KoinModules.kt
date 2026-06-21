@@ -1,5 +1,6 @@
 package com.fresnohernandez99.stpt.di
 
+import com.fresnohernandez99.stpt.InitViewModel
 import com.fresnohernandez99.stpt.data.repository.DictRepositoryImpl
 import com.fresnohernandez99.stpt.data.repository.PreferencesRepositoryImpl
 import com.fresnohernandez99.stpt.domain.repository.DictRepository
@@ -35,6 +36,7 @@ val viewModelModule = module {
     viewModelOf(::ModelSelectionViewModel)
     viewModelOf(::TranscriptionViewModel)
     viewModelOf(::DictsManageViewModel)
+    viewModelOf(::InitViewModel)
 }
 
 val mapperModule = module {

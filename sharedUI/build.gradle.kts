@@ -1,3 +1,4 @@
+import com.google.devtools.ksp.gradle.KspAATask
 import io.kmpbits.splash.ExitAnimation
 import io.kmpbits.splash.SplashColor
 import io.kmpbits.splash.SplashLogo
@@ -15,7 +16,7 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.android.kmp.library)
-    alias(libs.plugins.kmpSplash)
+    alias(libs.plugins.kmpSplash) // ERRORS ONLY ON IOS CHECK WITH ARM MACOS
 }
 
 splashScreen {
