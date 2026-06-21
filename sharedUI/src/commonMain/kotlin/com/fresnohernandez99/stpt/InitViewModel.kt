@@ -33,7 +33,7 @@ class InitViewModel(
     private fun checkStatus() {
         viewModelScope.launch {
             val hasCompletedOnboarding = preferencesRepository.hasCompletedOnboarding()
-            delay(1500.milliseconds)
+            delay(1000.milliseconds)
             if (hasCompletedOnboarding) {
                 _uiState.value = InitUiState.Resolved
             } else {

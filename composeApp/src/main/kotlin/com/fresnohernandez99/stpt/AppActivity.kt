@@ -28,7 +28,7 @@ class AppActivity : SplashActivity() {
     }
 
     override suspend fun isReady(): Boolean {
-        delay(500.milliseconds)
+        delay(200.milliseconds)
         return true
     }
 

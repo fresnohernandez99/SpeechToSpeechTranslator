@@ -111,6 +111,8 @@ kotlin {
             implementation(libs.alert.kmp)
 
             api(libs.kmpSplash.runtime)
+
+            api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.5.0")
         }
 
         commonTest.dependencies {

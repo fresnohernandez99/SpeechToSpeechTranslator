@@ -1,5 +1,9 @@
 package com.fresnohernandez99.stpt
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,10 +62,11 @@ fun App(
                 }
 
                 NavHost(
-                    modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
-                        .systemBarsPadding(),
+                    modifier = Modifier,
                     navController = navHostController,
                     startDestination = startDestination,
+                    enterTransition = { fadeIn() + slideInHorizontally() },
+                    exitTransition = { fadeOut() + slideOutHorizontally() }
                 ) {
                     composable<Destination.Onboarding> { backStackEntry ->
                         val link: Destination.Onboarding = backStackEntry.toRoute()
