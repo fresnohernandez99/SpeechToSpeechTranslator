@@ -18,12 +18,6 @@ import com.fresnohernandez99.stpt.theme.AppTheme
 import com.fresnohernandez99.stpt.theme.rememberWindowSizeClass
 import com.fresnohernandez99.stpt.transcription.TranscriptionScreen
 
-object Arguments {
-    const val NOTE_ID_PARAM = "noteId"
-    const val DEFAULT_NOTE_ID = "0"
-    const val ROUTE_SEPARATOR = "/"
-}
-
 @Composable
 fun App(
     onThemeChanged: @Composable (isDark: Boolean) -> Unit = {}

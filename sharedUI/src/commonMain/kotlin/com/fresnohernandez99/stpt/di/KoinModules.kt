@@ -1,9 +1,9 @@
 package com.fresnohernandez99.stpt.di
 
-import com.fresnohernandez99.stpt.data.repository.DictRepository
-import com.fresnohernandez99.stpt.data.repository.GreetingRepositoryImpl
-import com.fresnohernandez99.stpt.data.repository.PreferencesRepository
-import com.fresnohernandez99.stpt.domain.repository.GreetingRepository
+import com.fresnohernandez99.stpt.data.repository.DictRepositoryImpl
+import com.fresnohernandez99.stpt.data.repository.PreferencesRepositoryImpl
+import com.fresnohernandez99.stpt.domain.repository.DictRepository
+import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
 import com.fresnohernandez99.stpt.modelDownloader.ModelDownloaderViewModel
 import com.fresnohernandez99.stpt.modelDownloader.ModelSelection
 import com.fresnohernandez99.stpt.platform.presentation.PlatformViewModel
@@ -23,9 +23,8 @@ val appModule = module {
 }
 
 val repositoryModule = module {
-    single<GreetingRepository> { GreetingRepositoryImpl() }
-    single<PreferencesRepository> { PreferencesRepository(get()) }
-    single<DictRepository> { DictRepository(get()) }
+    single<PreferencesRepository> { PreferencesRepositoryImpl(get()) }
+    single<DictRepository> { DictRepositoryImpl(get()) }
 }
 
 val viewModelModule = module {

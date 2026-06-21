@@ -2,8 +2,8 @@ package com.fresnohernandez99.stpt.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fresnohernandez99.stpt.data.repository.DictRepository
 import com.fresnohernandez99.stpt.domain.model.Language
+import com.fresnohernandez99.stpt.domain.repository.DictRepository
 import com.fresnohernandez99.stpt.platform.DownloadStatus
 import dev.theolm.record.Record
 import dev.theolm.record.config.AudioEncoder
@@ -119,11 +119,11 @@ class HomeViewModel(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isTranslating = true) }
-            
+
             // Si el origen es auto-detect, ML Kit lo maneja internamente en el translate si el modelo base está
             // Pero para offline, necesitamos asegurar que el modelo de destino esté descargado
             // Y si el origen es específico, también.
-            
+
             if (source != Language.Detect) {
                 downloadIfNeeded(source.code)
             }
@@ -138,7 +138,7 @@ class HomeViewModel(
                     )
                 }
             } catch (e: Exception) {
-                _uiState.update { 
+                _uiState.update {
                     it.copy(
                         isTranslating = false,
                         errorMessage = e.message ?: "Translation failed"
@@ -153,13 +153,25 @@ class HomeViewModel(
             dictRepository.downloadLanguage(code).collect { status ->
                 when (status) {
                     is DownloadStatus.Downloading -> {
-                        _uiState.update { it.copy(isDownloading = true, downloadProgress = "Downloading $code...") }
+                        _uiState.update {
+                            it.copy(
+                                isDownloading = true,
+                                downloadProgress = "Downloading $code..."
+                            )
+                        }
                     }
+
                     is DownloadStatus.Success -> {
                         _uiState.update { it.copy(isDownloading = false, downloadProgress = "") }
                     }
+
                     is DownloadStatus.Error -> {
-                        _uiState.update { it.copy(isDownloading = false, errorMessage = status.message) }
+                        _uiState.update {
+                            it.copy(
+                                isDownloading = false,
+                                errorMessage = status.message
+                            )
+                        }
                     }
                 }
             }
@@ -191,7 +203,7 @@ class HomeViewModel(
                         recordTime = "00:00:00"
                     )
                 }
-                
+
                 timerJob?.cancel()
                 timerJob = launch {
                     var seconds = 0L
@@ -231,7 +243,9 @@ class HomeViewModel(
         val h = seconds / 3600
         val m = (seconds % 3600) / 60
         val s = seconds % 60
-        return "${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}"
+        return "${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${
+            s.toString().padStart(2, '0')
+        }"
     }
 
     fun stopRecording() {
@@ -240,7 +254,7 @@ class HomeViewModel(
                 val savedAudioPath = Record.stopRecording()
                 timerJob?.cancel()
                 recordedFilePath = savedAudioPath
-                
+
                 _uiState.update {
                     it.copy(
                         isRecording = false,

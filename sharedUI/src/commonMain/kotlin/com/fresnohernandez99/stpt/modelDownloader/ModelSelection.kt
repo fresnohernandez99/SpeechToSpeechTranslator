@@ -1,6 +1,6 @@
 package com.fresnohernandez99.stpt.modelDownloader
 
-import com.fresnohernandez99.stpt.data.repository.PreferencesRepository
+import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
 import kotlinx.coroutines.flow.first
 
 const val NO_MODEL_SELECTION = -1

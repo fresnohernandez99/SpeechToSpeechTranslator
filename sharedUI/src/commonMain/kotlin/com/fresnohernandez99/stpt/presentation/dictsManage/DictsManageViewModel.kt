@@ -2,8 +2,8 @@ package com.fresnohernandez99.stpt.presentation.dictsManage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fresnohernandez99.stpt.data.repository.DictRepository
 import com.fresnohernandez99.stpt.domain.model.Language
+import com.fresnohernandez99.stpt.domain.repository.DictRepository
 import com.fresnohernandez99.stpt.platform.DownloadStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -61,13 +61,25 @@ class DictsManageViewModel(
             dictRepository.downloadLanguage(code).collect { status ->
                 when (status) {
                     is DownloadStatus.Downloading -> {
-                        _state.update { it.copy(isDownloading = true, downloadProgress = "Downloading $code...") }
+                        _state.update {
+                            it.copy(
+                                isDownloading = true,
+                                downloadProgress = "Downloading $code..."
+                            )
+                        }
                     }
+
                     is DownloadStatus.Success -> {
                         _state.update { it.copy(isDownloading = false, downloadProgress = "") }
                     }
+
                     is DownloadStatus.Error -> {
-                        _state.update { it.copy(isDownloading = false, errorMessage = status.message) }
+                        _state.update {
+                            it.copy(
+                                isDownloading = false,
+                                errorMessage = status.message
+                            )
+                        }
                     }
                 }
             }

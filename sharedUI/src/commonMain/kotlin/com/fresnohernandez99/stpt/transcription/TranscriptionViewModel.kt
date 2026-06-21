@@ -2,7 +2,7 @@ package com.fresnohernandez99.stpt.transcription
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fresnohernandez99.stpt.data.repository.PreferencesRepository
+import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
 import com.fresnohernandez99.stpt.modelDownloader.ModelSelection
 import com.fresnohernandez99.stpt.platform.Transcriber
 import com.fresnohernandez99.stpt.transcription.textAnalysis.getSegmenter
@@ -36,7 +36,7 @@ class TranscriptionViewModel(
             transcriber.initialize(modelFileName.name)
         }
     }
-    
+
     fun startRecognizer(filePath: String) {
         println("startRecognizer =========================")
         viewModelScope.launch(Dispatchers.Default) {

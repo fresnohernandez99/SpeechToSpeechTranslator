@@ -1,0 +1,21 @@
+package com.fresnohernandez99.stpt.domain.repository
+
+import kotlinx.coroutines.flow.Flow
+
+interface PreferencesRepository {
+    suspend fun hasCompletedOnboarding(): Boolean
+
+    suspend fun setOnboardingCompleted(completed: Boolean)
+
+    suspend fun setDefaultTranscriptionLanguage(language: String)
+
+    fun getDefaultTranscriptionLanguage(): Flow<String>
+
+    fun getModelDownloadId(): Flow<Long>
+
+    suspend fun setModelDownloadId(downloadId: Long)
+
+    fun getModelSelection(): Flow<Int>
+
+    suspend fun setModelSelection(modelSelection: Int)
+}

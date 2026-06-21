@@ -2,7 +2,7 @@ package com.fresnohernandez99.stpt.presentation.modelSelection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fresnohernandez99.stpt.data.repository.PreferencesRepository
+import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
 import kotlinx.coroutines.launch
 
 class ModelSelectionViewModel(

@@ -1,31 +1,32 @@
 package com.fresnohernandez99.stpt.data.repository
 
 import com.fresnohernandez99.stpt.domain.model.Language
+import com.fresnohernandez99.stpt.domain.repository.DictRepository
 import com.fresnohernandez99.stpt.platform.DownloadStatus
 import com.fresnohernandez99.stpt.platform.TranslatorManager
 import kotlinx.coroutines.flow.Flow
 
-class DictRepository(
+class DictRepositoryImpl(
     private val translatorManager: TranslatorManager
-) {
-    suspend fun getDownloadedLanguages(): List<Language> {
+): DictRepository {
+    override suspend fun getDownloadedLanguages(): List<Language> {
         val codes = translatorManager.getDownloadedModels()
         return Language.list.filter { it.code in codes }
     }
 
-    suspend fun isLanguageDownloaded(code: String): Boolean {
+    override suspend fun isLanguageDownloaded(code: String): Boolean {
         return translatorManager.checkSpecificModel(code)
     }
 
-    fun downloadLanguage(code: String): Flow<DownloadStatus> {
+    override fun downloadLanguage(code: String): Flow<DownloadStatus> {
         return translatorManager.downloadSpecificModel(code)
     }
 
-    suspend fun deleteLanguage(code: String): Boolean {
+    override suspend fun deleteLanguage(code: String): Boolean {
         return translatorManager.deleteSpecificModel(code)
     }
 
-    suspend fun translate(text: String, source: String, target: String): String {
+    override suspend fun translate(text: String, source: String, target: String): String {
         return translatorManager.translateUsingModel(text, source, target)
     }
 }

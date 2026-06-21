@@ -1,14 +1,11 @@
 package com.fresnohernandez99.stpt.platform.presentation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.fresnohernandez99.stpt.data.repository.PreferencesRepository
+import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
 import com.fresnohernandez99.stpt.platform.Platform
 import com.fresnohernandez99.stpt.platform.PlatformUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlin.time.ExperimentalTime
 
 class PlatformViewModel(
