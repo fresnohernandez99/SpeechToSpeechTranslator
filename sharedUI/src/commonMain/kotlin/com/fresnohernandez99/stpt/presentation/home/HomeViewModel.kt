@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @Immutable
 class HomeViewModel(
@@ -101,7 +102,7 @@ class HomeViewModel(
     }
 
     fun onTextChanged(text: String) {
-        _uiState.update { it.copy(textToTranslate = text) }
+        _uiState.update { it.copy(textToTranslate = text, translateState = TranslateState.NOT_REQUESTED) }
     }
 
     fun onSourceLanguageSelected(language: Language) {
@@ -120,7 +121,11 @@ class HomeViewModel(
         val target = uiState.value.targetLanguage
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isTranslating = true) }
+            _uiState.update {
+                it.copy(
+                    translateState = TranslateState.LOADING
+                )
+            }
 
             // Si el origen es auto-detect, ML Kit lo maneja internamente en el translate si el modelo base está
             // Pero para offline, necesitamos asegurar que el modelo de destino esté descargado
@@ -136,13 +141,13 @@ class HomeViewModel(
                 _uiState.update {
                     it.copy(
                         translatedText = translated,
-                        isTranslating = false
+                        translateState = TranslateState.SUCCESS
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
-                        isTranslating = false,
+                        translateState = TranslateState.ERROR,
                         errorMessage = e.message ?: "Translation failed"
                     )
                 }
@@ -210,7 +215,7 @@ class HomeViewModel(
                 timerJob = launch {
                     var seconds = 0L
                     while (true) {
-                        delay(1000)
+                        delay(1000.milliseconds)
                         seconds++
                         val formatted = formatSeconds(seconds)
                         _uiState.update { it.copy(recordTime = formatted) }

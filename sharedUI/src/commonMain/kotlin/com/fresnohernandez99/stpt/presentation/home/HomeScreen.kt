@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
@@ -132,7 +134,7 @@ fun HomeScreen(
         bottomBar = {
             Column(
                 Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceContainer)
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp).navigationBarsPadding(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Box(
@@ -165,8 +167,6 @@ fun HomeScreen(
                 HomeContent(
                     uiState = uiState,
                     onTextChanged = viewModel::onTextChanged,
-                    onSourceLanguageSelected = viewModel::onSourceLanguageSelected,
-                    onTargetLanguageSelected = viewModel::onTargetLanguageSelected,
                     onTranslateClick = viewModel::translate,
                     modifier = Modifier.padding(padding)
                 )
@@ -176,8 +176,6 @@ fun HomeScreen(
                 HomeContent(
                     uiState = uiState,
                     onTextChanged = viewModel::onTextChanged,
-                    onSourceLanguageSelected = viewModel::onSourceLanguageSelected,
-                    onTargetLanguageSelected = viewModel::onTargetLanguageSelected,
                     onTranslateClick = viewModel::translate,
                     modifier = Modifier.padding(padding)
                 )

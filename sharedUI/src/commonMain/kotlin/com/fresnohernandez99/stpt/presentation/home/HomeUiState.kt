@@ -1,13 +1,15 @@
 package com.fresnohernandez99.stpt.presentation.home
 
+import androidx.compose.runtime.Immutable
 import com.fresnohernandez99.stpt.domain.model.Language
 
+@Immutable
 data class HomeUiState(
     val textToTranslate: String = "",
     val sourceLanguage: Language = Language.Detect,
     val targetLanguage: Language = Language.Spanish,
     val translatedText: String = "",
-    val isTranslating: Boolean = false,
+    val translateState: TranslateState = TranslateState.NOT_REQUESTED,
     val isRecording: Boolean = false,
     val recordTime: String = "00:00:00",
     val playTime: String = "00:00:00",
@@ -23,3 +25,7 @@ data class HomeUiState(
     val isDownloading: Boolean = false,
     val downloadProgress: String = ""
 )
+
+enum class TranslateState {
+    NOT_REQUESTED, LOADING, SUCCESS, ERROR
+}
