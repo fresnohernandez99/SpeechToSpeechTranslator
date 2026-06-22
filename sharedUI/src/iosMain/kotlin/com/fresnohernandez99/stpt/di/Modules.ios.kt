@@ -52,4 +52,10 @@ actual fun platformModule(args: List<Any>) = module {
             translatorManagerIos = args.first() as TranslatorManagerIos
         )
     }
+
+    single {
+        TranslatorManager(
+            translatorManagerIos = args.first() as TranslatorManagerIos
+        )
+    }
 }

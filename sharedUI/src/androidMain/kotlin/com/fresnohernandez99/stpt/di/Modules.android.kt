@@ -10,6 +10,7 @@ import com.fresnohernandez99.stpt.FolderPickerLauncherHolder
 import com.fresnohernandez99.stpt.platform.AndroidPlatform
 import com.fresnohernandez99.stpt.platform.DATA_STORE_FILE_NAME
 import com.fresnohernandez99.stpt.platform.Downloader
+import com.fresnohernandez99.stpt.platform.LanguageIdManager
 import com.fresnohernandez99.stpt.platform.Platform
 import com.fresnohernandez99.stpt.platform.PlatformUtils
 import com.fresnohernandez99.stpt.platform.Transcriber
@@ -51,4 +52,5 @@ actual fun platformModule(args: List<Any>): Module = module {
     single { FolderPickerHandler(get()) }
 
     single { TranslatorManager() }
+    single { LanguageIdManager() }
 }

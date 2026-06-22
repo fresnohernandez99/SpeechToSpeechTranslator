@@ -128,6 +128,7 @@ kotlin {
             api(libs.ktor.client.okhttp)
             implementation(project(":lib"))
             implementation(libs.mlkit.translate)
+            implementation(libs.mlkit.languageid)
             api("androidx.core:core-splashscreen:1.2.0")
         }
 

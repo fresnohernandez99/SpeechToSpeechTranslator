@@ -7,5 +7,6 @@ target 'iosApp' do
 
   # Pods for iosApp
   pod 'GoogleMLKit/Translate', '8.0.0'
+  pod 'GoogleMLKit/LanguageID', '8.0.0'
 
 end

@@ -11,10 +11,10 @@
 		1850CFEC2F6DF17700C2FAC8 /* whisper.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1850CFEB2F6DF17700C2FAC8 /* whisper.xcframework */; };
 		1850CFED2F6DF17700C2FAC8 /* whisper.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1850CFEB2F6DF17700C2FAC8 /* whisper.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		18C986472F6EFA53006A6A12 /* TranslatorManagerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C986462F6EFA00006A6A12 /* TranslatorManagerImpl.swift */; };
+		18F12D852FE8D53100D4855B /* LanguageIdManagerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F12D842FE8D53100D4855B /* LanguageIdManagerImpl.swift */; };
 		A93A953B29CC810C00F8E227 /* iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93A953A29CC810C00F8E227 /* iosApp.swift */; };
 		A93A953F29CC810D00F8E227 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A953E29CC810D00F8E227 /* Assets.xcassets */; };
 		A93A954229CC810D00F8E227 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A954129CC810D00F8E227 /* Preview Assets.xcassets */; };
-		B310DBF12A7B8C1C00943F69 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B310DBF02A7B8C1B00943F69 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +34,7 @@
 /* Begin PBXFileReference section */
 		1850CFEB2F6DF17700C2FAC8 /* whisper.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = whisper.xcframework; sourceTree = "<group>"; };
 		18C986462F6EFA00006A6A12 /* TranslatorManagerImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslatorManagerImpl.swift; sourceTree = "<group>"; };
+		18F12D842FE8D53100D4855B /* LanguageIdManagerImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageIdManagerImpl.swift; sourceTree = "<group>"; };
 		517EF06A56CECDFA4A6072BA /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		83865E4DEF25C176FD4B5BBF /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 		94E84C15755B326946B6A8D3 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -41,7 +42,6 @@
 		A93A953A29CC810C00F8E227 /* iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosApp.swift; sourceTree = "<group>"; };
 		A93A953E29CC810D00F8E227 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A93A954129CC810D00F8E227 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		B310DBF02A7B8C1B00943F69 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,7 +63,6 @@
 				517EF06A56CECDFA4A6072BA /* Pods-iosApp.debug.xcconfig */,
 				83865E4DEF25C176FD4B5BBF /* Pods-iosApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -89,6 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				18C986462F6EFA00006A6A12 /* TranslatorManagerImpl.swift */,
+				18F12D842FE8D53100D4855B /* LanguageIdManagerImpl.swift */,
 				A93A953A29CC810C00F8E227 /* iosApp.swift */,
 				A93A953E29CC810D00F8E227 /* Assets.xcassets */,
 				A93A954029CC810D00F8E227 /* Preview Content */,
@@ -213,9 +213,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -230,9 +234,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iosApp/Pods-iosApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -265,6 +273,7 @@
 			files = (
 				18C986472F6EFA53006A6A12 /* TranslatorManagerImpl.swift in Sources */,
 				A93A953B29CC810C00F8E227 /* iosApp.swift in Sources */,
+				18F12D852FE8D53100D4855B /* LanguageIdManagerImpl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

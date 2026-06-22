@@ -3,6 +3,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.window.ComposeUIViewController
 import com.fresnohernandez99.stpt.App
 import com.fresnohernandez99.stpt.di.init
+import com.fresnohernandez99.stpt.platform.LanguageIdManagerIos
 import com.fresnohernandez99.stpt.platform.TranslatorManagerIos
 import io.kmpbits.splash.SplashConfig
 import kotlinx.coroutines.delay
@@ -16,10 +17,11 @@ import platform.UIKit.setStatusBarStyle
 import kotlin.time.Duration.Companion.milliseconds
 
 fun MainViewController(
-    translatorManagerIos: TranslatorManagerIos
+    translatorManagerIos: TranslatorManagerIos,
+    languageIdManagerIos: LanguageIdManagerIos
 ): UIViewController = ComposeUIViewController {
     KoinApplication(
-        configuration = koinConfiguration(declaration = { init(translatorManagerIos) }),
+        configuration = koinConfiguration(declaration = { init(translatorManagerIos, languageIdManagerIos) }),
         content = {
             SplashConfig(
                 isReady = {
