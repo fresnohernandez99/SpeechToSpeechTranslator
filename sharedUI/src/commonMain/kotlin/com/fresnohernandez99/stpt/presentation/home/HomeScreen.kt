@@ -1,34 +1,28 @@
 package com.fresnohernandez99.stpt.presentation.home
 
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -37,6 +31,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -63,11 +57,17 @@ import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import com.fresnohernandez99.stpt.theme.LocalWindowSizeHelper
 import com.fresnohernandez99.stpt.theme.WindowSize
 import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
 import speechtospeechtranslator.sharedui.generated.resources.Res
+import speechtospeechtranslator.sharedui.generated.resources.add_box
+import speechtospeechtranslator.sharedui.generated.resources.camera
 import speechtospeechtranslator.sharedui.generated.resources.confirmation_cancel
 import speechtospeechtranslator.sharedui.generated.resources.download_dialog_error
-import speechtospeechtranslator.sharedui.generated.resources.settings
+import speechtospeechtranslator.sharedui.generated.resources.draw
+import speechtospeechtranslator.sharedui.generated.resources.history
+import speechtospeechtranslator.sharedui.generated.resources.menu
+import speechtospeechtranslator.sharedui.generated.resources.mic
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationStyleApi::class)
 @Composable
@@ -83,19 +83,6 @@ fun HomeScreen(
 
     val (showRecord, setShowRecord) = remember { mutableStateOf(false) }
 
-    val infiniteTransition = rememberInfiniteTransition(label = "recording")
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.2f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "scale"
-    )
-
-    val fabScale = if (uiState.isRecording) scale else 1f
-
     var showLoadingDialog by remember { mutableStateOf(false) }
     var showDownloadDialog by remember { mutableStateOf(false) }
     var showErrorDialog by remember { mutableStateOf(false) }
@@ -103,60 +90,134 @@ fun HomeScreen(
 
     val downloaderUiState by downloaderViewModel.uiState.collectAsStateWithLifecycle()
 
+    var lastTranslated by remember { mutableStateOf("") }
+    val enabledTranslationFunction by remember(lastTranslated, uiState.textToTranslate) {
+        derivedStateOf {
+            lastTranslated != uiState.textToTranslate && uiState.textToTranslate.isNotBlank()
+        }
+    }
+
+    LaunchedEffect(uiState.translateState) {
+        if (uiState.translateState == TranslateState.SUCCESS) {
+            lastTranslated = uiState.textToTranslate
+        }
+    }
+
     AppScaffold(
         modifier = Modifier.imePadding(),
         containerColor = MaterialTheme.colorScheme.primary,
         topBar = {
-            TopAppBar(
-                title = {
-                    LanguageSelectorTopBar(
-                        modifier = Modifier,
-                        sourceLanguage = uiState.sourceLanguage,
-                        targetLanguage = uiState.targetLanguage,
-                        onSourceLanguageSelected = viewModel::onSourceLanguageSelected,
-                        onTargetLanguageSelected = viewModel::onTargetLanguageSelected
-                    )
-                },
-                actions = {
-                    IconButton(onClick = { navHostController.navigate(Destination.Settings) }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(Res.string.settings),
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+            Box(Modifier.systemBarsPadding()) {
+                LanguageSelectorTopBar(
+                    modifier = Modifier,
+                    sourceLanguage = uiState.sourceLanguage,
+                    targetLanguage = uiState.targetLanguage,
+                    onSourceLanguageSelected = viewModel::onSourceLanguageSelected,
+                    onTargetLanguageSelected = viewModel::onTargetLanguageSelected
                 )
-            )
+            }
         },
         bottomBar = {
-            Column(
-                Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceContainer)
-                    .padding(horizontal = 16.dp, vertical = 8.dp).navigationBarsPadding(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            Box(
+                modifier = Modifier.fillMaxWidth()
+                    .navigationBarsPadding(), contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+                Card(
+                    shape = MaterialTheme.shapes.extraLarge,
+                    colors = CardDefaults.cardColors(
+                        contentColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    elevation = CardDefaults.elevatedCardElevation(2.dp)
                 ) {
-                    FloatingActionButton(
-                        onClick = {
-                            setShowRecord(true)
-                            viewModel.onRecordingStateChange(!uiState.isRecording)
-                        },
-                        containerColor = if (uiState.isRecording) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
-                        contentColor = if (uiState.isRecording) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.graphicsLayer {
-                            scaleX = fabScale
-                            scaleY = fabScale
-                        }
-                    ) {
-                        Icon(
-                            imageVector = if (uiState.isRecording) Icons.Default.Stop else Icons.Default.Mic,
-                            contentDescription = if (uiState.isRecording) "Stop Recording" else "Record Audio"
+                    Row(
+                        modifier = Modifier.padding(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            space = 16.dp,
+                            alignment = Alignment.CenterHorizontally
                         )
+                    )
+                    {
+                        IconButton(
+                            enabled = false,
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.surface,
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                            ),
+                            onClick = { /* do something */ }) {
+                            Icon(
+                                vectorResource(Res.drawable.camera),
+                                modifier = Modifier.size(24.dp),
+                                contentDescription = "Scan with camera icon",
+                            )
+                        }
+
+                        IconButton(
+                            enabled = false,
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.surface,
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                            ),
+                            onClick = { /* do something */ }) {
+                            Icon(
+                                vectorResource(Res.drawable.add_box),
+                                modifier = Modifier.size(24.dp),
+                                contentDescription = "Add box icon",
+                            )
+                        }
+                        IconButton(
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.surface,
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                            ),
+                            onClick = {
+                                setShowRecord(true)
+                                viewModel.onRecordingStateChange(!uiState.isRecording)
+                            }
+                        ) {
+                            Icon(
+                                vectorResource(Res.drawable.mic),
+                                modifier = Modifier.size(24.dp),
+                                contentDescription = "Record button",
+                            )
+                        }
+                        IconButton(
+                            enabled = false,
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.surface,
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                            ),
+                            onClick = { /* do something */ }) {
+                            Icon(
+                                vectorResource(Res.drawable.draw),
+                                modifier = Modifier.size(24.dp),
+                                contentDescription = "Draw text icon",
+                            )
+                        }
+                        IconButton(
+                            enabled = false,
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.surface,
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                            ),
+                            onClick = { /* do something */ }) {
+                            Icon(
+                                vectorResource(Res.drawable.history),
+                                modifier = Modifier.size(24.dp),
+                                contentDescription = "Go history icon",
+                            )
+                        }
+                        IconButton(
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.surface,
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                            ),
+                            onClick = { navHostController.navigate(Destination.Settings) }) {
+                            Icon(
+                                vectorResource(Res.drawable.menu),
+                                modifier = Modifier.size(24.dp),
+                                contentDescription = "Go menu icon",
+                            )
+                        }
                     }
                 }
             }
@@ -168,7 +229,8 @@ fun HomeScreen(
                     uiState = uiState,
                     onTextChanged = viewModel::onTextChanged,
                     onTranslateClick = viewModel::translate,
-                    modifier = Modifier.padding(padding)
+                    modifier = Modifier.padding(padding),
+                    enabledTranslationFunction = enabledTranslationFunction
                 )
             }
 
@@ -177,7 +239,8 @@ fun HomeScreen(
                     uiState = uiState,
                     onTextChanged = viewModel::onTextChanged,
                     onTranslateClick = viewModel::translate,
-                    modifier = Modifier.padding(padding)
+                    modifier = Modifier.padding(padding),
+                    enabledTranslationFunction = enabledTranslationFunction
                 )
             }
         }

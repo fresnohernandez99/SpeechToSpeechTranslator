@@ -38,9 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -61,7 +59,8 @@ fun HomeContent(
     uiState: HomeUiState,
     onTextChanged: (String) -> Unit,
     onTranslateClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabledTranslationFunction: Boolean
 ) {
     Column(
         modifier = modifier
@@ -78,18 +77,6 @@ fun HomeContent(
             }
         }
 
-        var lastTranslated by remember { mutableStateOf("") }
-        val enabledTranslationFunction by remember(lastTranslated, uiState.textToTranslate) {
-            derivedStateOf {
-                lastTranslated != uiState.textToTranslate && uiState.textToTranslate.isNotBlank()
-            }
-        }
-        LaunchedEffect(uiState.translateState) {
-            if (uiState.translateState == TranslateState.SUCCESS) {
-                lastTranslated = uiState.textToTranslate
-            }
-        }
-
         Row(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(
                 value = uiState.textToTranslate,
@@ -101,7 +88,7 @@ fun HomeContent(
                 label = {
                     Text(
                         stringResource(Res.string.enter_text),
-                        style = if (!isTypingState) MaterialTheme.typography.titleLarge else MaterialTheme.typography.bodyMedium,
+                        style = if (!isTypingState) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium,
                         color = Color.White
                     )
                 },

@@ -66,7 +66,7 @@ fun LanguageSelector(
 
     Box(modifier = modifier.clickable { showDialog = true }) {
         BasicText(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
             text = if (selectedLanguage == Language.Detect) {
                 stringResource(Res.string.detect_language)
             } else {
@@ -74,10 +74,9 @@ fun LanguageSelector(
             },
             style = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.colorScheme.tertiary,
-                fontSize = 20.sp,
                 textAlign = TextAlign.Center
             ),
-            autoSize = TextAutoSize.StepBased(maxFontSize = 16.sp, minFontSize = 8.sp),
+            autoSize = TextAutoSize.StepBased(maxFontSize = 20.sp, minFontSize = 8.sp),
             maxLines = 1
         )
 
