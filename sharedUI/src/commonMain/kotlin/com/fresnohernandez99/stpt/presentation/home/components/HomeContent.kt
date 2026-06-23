@@ -7,9 +7,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,7 +37,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -64,8 +65,7 @@ fun HomeContent(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         val interactionSource = remember { MutableInteractionSource() }
@@ -77,14 +77,19 @@ fun HomeContent(
             }
         }
 
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth().weight(0.6F)
+                .padding(horizontal = 16.dp)
+        ) {
             OutlinedTextField(
                 value = uiState.textToTranslate,
                 onValueChange = onTextChanged,
-                modifier = Modifier.weight(1F),
+                modifier = Modifier,
                 interactionSource = interactionSource,
                 textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.White),
                 minLines = 3,
+                singleLine = false,
+                maxLines = 8,
                 label = {
                     Text(
                         stringResource(Res.string.enter_text),
@@ -168,39 +173,49 @@ fun HomeContent(
             }
         }
 
-        if (uiState.translatedText.isNotEmpty() || uiState.translateState in arrayOf(
-                TranslateState.SUCCESS, TranslateState.ERROR, TranslateState.LOADING
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.4F)
+                .background(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = MaterialTheme.shapes.extraLarge
+                )
         ) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+            if (uiState.translatedText.isNotEmpty() || uiState.translateState in arrayOf(
+                    TranslateState.SUCCESS, TranslateState.ERROR, TranslateState.LOADING
                 )
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    ),
                 ) {
-                    Text(
-                        text = "Translation:",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    if (uiState.translateState == TranslateState.LOADING) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
                         Text(
-                            text = "Translating...",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
+                            text = "Translation:",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary
                         )
-                    } else {
-                        SelectionContainer {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        if (uiState.translateState == TranslateState.LOADING) {
                             Text(
-                                text = uiState.translatedText,
+                                text = "Translating...",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
                             )
+                        } else {
+                            SelectionContainer {
+                                Text(
+                                    text = uiState.translatedText,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                            }
                         }
                     }
                 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -125,7 +126,7 @@ fun HomeScreen(
                 Card(
                     shape = MaterialTheme.shapes.extraLarge,
                     colors = CardDefaults.cardColors(
-                        contentColor = MaterialTheme.colorScheme.primaryContainer
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
                     ),
                     elevation = CardDefaults.elevatedCardElevation(2.dp)
                 ) {
@@ -223,13 +224,17 @@ fun HomeScreen(
             }
         }
     ) { padding ->
+        val topPadding = padding.calculateTopPadding()
+
         when (windowSize) {
             WindowSize.Compact -> {
                 HomeContent(
                     uiState = uiState,
                     onTextChanged = viewModel::onTextChanged,
                     onTranslateClick = viewModel::translate,
-                    modifier = Modifier.padding(padding),
+                    modifier = Modifier
+                        .padding(top = topPadding)
+                        .consumeWindowInsets(padding),
                     enabledTranslationFunction = enabledTranslationFunction
                 )
             }
