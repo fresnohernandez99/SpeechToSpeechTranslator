@@ -9,6 +9,9 @@ import com.fresnohernandez99.stpt.platform.Transcriber
 import com.fresnohernandez99.stpt.platform.TranslatorManager
 import com.fresnohernandez99.stpt.platform.TranslatorManagerIos
 import com.fresnohernandez99.stpt.platform.createDataStore
+import com.fresnohernandez99.stpt.room.AppDatabase
+import com.fresnohernandez99.stpt.room.getDatabaseBuilder
+import com.fresnohernandez99.stpt.room.getRoomDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -58,4 +61,10 @@ actual fun platformModule(args: List<Any>) = module {
             translatorManagerIos = args.first() as TranslatorManagerIos
         )
     }
+    
+    single {
+        val builder = getDatabaseBuilder(null)
+        getRoomDatabase(builder)
+    }
+    single { get<AppDatabase>().translatedItemDao() }
 }

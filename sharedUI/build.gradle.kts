@@ -102,6 +102,12 @@ kotlin {
 
             // Database (Room)
             api(libs.room.runtime)
+            api(libs.room.paging)
+            api(libs.sqlite.bundled)
+
+            // Paging
+            api(libs.paging.common)
+            api(libs.paging.compose)
 
             // Preferences
             api(libs.datastore.preferences.core)

@@ -16,6 +16,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 actual class Downloader(
     private val mainContext: Context,
@@ -108,7 +109,7 @@ actual class Downloader(
                 cursor.close()
                 break
             }
-            delay(1000)
+            delay(1000.milliseconds)
         }
     }
 

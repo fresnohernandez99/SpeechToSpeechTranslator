@@ -1,6 +1,5 @@
 package com.fresnohernandez99.stpt.presentation.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,8 +26,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -103,6 +100,8 @@ fun HomeScreen(
             lastTranslated = uiState.textToTranslate
         }
     }
+
+    val last3 by viewModel.last3.collectAsState()
 
     AppScaffold(
         modifier = Modifier.imePadding(),
@@ -232,6 +231,7 @@ fun HomeScreen(
                     uiState = uiState,
                     onTextChanged = viewModel::onTextChanged,
                     onTranslateClick = viewModel::translate,
+                    last3 = last3,
                     modifier = Modifier
                         .padding(top = topPadding)
                         .consumeWindowInsets(padding),
@@ -244,8 +244,9 @@ fun HomeScreen(
                     uiState = uiState,
                     onTextChanged = viewModel::onTextChanged,
                     onTranslateClick = viewModel::translate,
+                    last3 = last3,
                     modifier = Modifier.padding(padding),
-                    enabledTranslationFunction = enabledTranslationFunction
+                    enabledTranslationFunction = enabledTranslationFunction,
                 )
             }
         }

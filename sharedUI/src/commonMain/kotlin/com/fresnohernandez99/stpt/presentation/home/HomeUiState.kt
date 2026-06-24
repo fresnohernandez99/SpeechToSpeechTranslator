@@ -1,6 +1,7 @@
 package com.fresnohernandez99.stpt.presentation.home
 
 import androidx.compose.runtime.Immutable
+import com.fresnohernandez99.stpt.data.local.TranslatedItem
 import com.fresnohernandez99.stpt.domain.model.Language
 
 @Immutable
@@ -28,4 +29,10 @@ data class HomeUiState(
 
 enum class TranslateState {
     NOT_REQUESTED, LOADING, SUCCESS, ERROR
+}
+
+sealed class HistoryState {
+    data class Success(val items: List<TranslatedItem> = listOf()) : HistoryState()
+    object Loading : HistoryState()
+    object Empty : HistoryState()
 }

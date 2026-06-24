@@ -3,8 +3,10 @@ package com.fresnohernandez99.stpt.di
 import com.fresnohernandez99.stpt.InitViewModel
 import com.fresnohernandez99.stpt.data.repository.DictRepositoryImpl
 import com.fresnohernandez99.stpt.data.repository.PreferencesRepositoryImpl
+import com.fresnohernandez99.stpt.data.repository.TranslationHistoryRepositoryImpl
 import com.fresnohernandez99.stpt.domain.repository.DictRepository
 import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
+import com.fresnohernandez99.stpt.domain.repository.TranslationHistoryRepository
 import com.fresnohernandez99.stpt.modelDownloader.ModelDownloaderViewModel
 import com.fresnohernandez99.stpt.modelDownloader.ModelSelection
 import com.fresnohernandez99.stpt.platform.presentation.PlatformViewModel
@@ -13,6 +15,9 @@ import com.fresnohernandez99.stpt.presentation.home.HomeViewModel
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionViewModel
 import com.fresnohernandez99.stpt.presentation.onboarding.OnboardingViewModel
 import com.fresnohernandez99.stpt.presentation.settings.SettingsViewModel
+import com.fresnohernandez99.stpt.room.AppDatabase
+import com.fresnohernandez99.stpt.room.getDatabaseBuilder
+import com.fresnohernandez99.stpt.room.getRoomDatabase
 import com.fresnohernandez99.stpt.transcription.TranscriptionViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
@@ -27,6 +32,7 @@ val appModule = module {
 val repositoryModule = module {
     single<PreferencesRepository> { PreferencesRepositoryImpl(get()) }
     single<DictRepository> { DictRepositoryImpl(get()) }
+    single<TranslationHistoryRepository> { TranslationHistoryRepositoryImpl(get()) }
 }
 
 val viewModelModule = module {

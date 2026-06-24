@@ -16,6 +16,9 @@ import com.fresnohernandez99.stpt.platform.PlatformUtils
 import com.fresnohernandez99.stpt.platform.Transcriber
 import com.fresnohernandez99.stpt.platform.TranslatorManager
 import com.fresnohernandez99.stpt.platform.createDataStore
+import com.fresnohernandez99.stpt.room.AppDatabase
+import com.fresnohernandez99.stpt.room.getDatabaseBuilder
+import com.fresnohernandez99.stpt.room.getRoomDatabase
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -53,4 +56,11 @@ actual fun platformModule(args: List<Any>): Module = module {
 
     single { TranslatorManager() }
     single { LanguageIdManager() }
+
+    single {
+        val context: Context = get()
+        val builder = getDatabaseBuilder(context)
+        getRoomDatabase(builder)
+    }
+    single { get<AppDatabase>().translatedItemDao() }
 }

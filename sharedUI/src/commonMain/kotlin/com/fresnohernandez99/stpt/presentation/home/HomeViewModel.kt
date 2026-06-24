@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.domain.model.Language
 import com.fresnohernandez99.stpt.domain.repository.DictRepository
+import com.fresnohernandez99.stpt.domain.repository.TranslationHistoryRepository
 import com.fresnohernandez99.stpt.platform.DownloadStatus
 import dev.theolm.record.Record
 import dev.theolm.record.config.AudioEncoder
@@ -14,6 +15,8 @@ import dev.theolm.record.config.RecordConfig
 import io.github.hyochan.audio.AudioRecorderPlayerProperties
 import io.github.hyochan.audio.RecorderAudioSet
 import io.github.hyochan.audio.createAudioRecorderPlayer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +27,8 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Immutable
 class HomeViewModel(
-    private val dictRepository: DictRepository
+    private val dictRepository: DictRepository,
+    private val translationHistoryRepository: TranslationHistoryRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -33,6 +37,9 @@ class HomeViewModel(
     private val audioRecorderPlayer = createAudioRecorderPlayer()
     private var recordedFilePath: String? = null
     private var timerJob: Job? = null
+
+    private var _last3 = MutableStateFlow<HistoryState>(HistoryState.Loading)
+    val last3 = _last3.asStateFlow()
 
     init {
         setupListeners()
@@ -44,6 +51,8 @@ class HomeViewModel(
                 meteringEnabled = true
             )
         )
+
+        loadLast3()
 
         //outputLocation = OutputLocation.Cache,
 //                    outputFormat = OutputFormat.WAV,
@@ -102,7 +111,12 @@ class HomeViewModel(
     }
 
     fun onTextChanged(text: String) {
-        _uiState.update { it.copy(textToTranslate = text, translateState = TranslateState.NOT_REQUESTED) }
+        _uiState.update {
+            it.copy(
+                textToTranslate = text,
+                translateState = TranslateState.NOT_REQUESTED
+            )
+        }
     }
 
     fun onSourceLanguageSelected(language: Language) {
@@ -470,6 +484,18 @@ class HomeViewModel(
                     _uiState.update { it.copy(errorMessage = "Set playback speed failed: ${exception.message}") }
                 }
             )
+        }
+    }
+
+    fun loadLast3() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val dataInDb = translationHistoryRepository.getLast3()
+            delay(2000.milliseconds)
+            if (dataInDb.isEmpty()) {
+                _last3.value = HistoryState.Empty
+            } else {
+                _last3.value = HistoryState.Success(dataInDb)
+            }
         }
     }
 

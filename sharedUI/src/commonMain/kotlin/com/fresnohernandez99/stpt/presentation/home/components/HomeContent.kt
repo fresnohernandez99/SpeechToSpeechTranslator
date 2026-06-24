@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
@@ -45,7 +46,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import com.fresnohernandez99.stpt.presentation.history.components.SimpleTranslatedItemUi
+import com.fresnohernandez99.stpt.presentation.home.HistoryState
 import com.fresnohernandez99.stpt.presentation.home.HomeUiState
 import com.fresnohernandez99.stpt.presentation.home.TranslateState
 import org.jetbrains.compose.resources.painterResource
@@ -61,7 +65,8 @@ fun HomeContent(
     onTextChanged: (String) -> Unit,
     onTranslateClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabledTranslationFunction: Boolean
+    enabledTranslationFunction: Boolean,
+    last3: HistoryState
 ) {
     Column(
         modifier = modifier
@@ -182,39 +187,65 @@ fun HomeContent(
                     shape = MaterialTheme.shapes.extraLarge
                 )
         ) {
-            if (uiState.translatedText.isNotEmpty() || uiState.translateState in arrayOf(
-                    TranslateState.SUCCESS, TranslateState.ERROR, TranslateState.LOADING
-                )
-            ) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer
-                    ),
+            Column(Modifier.fillMaxWidth()) {
+                if (uiState.translatedText.isNotEmpty() || uiState.translateState in arrayOf(
+                        TranslateState.SUCCESS, TranslateState.ERROR, TranslateState.LOADING
+                    )
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer
+                        ),
                     ) {
-                        Text(
-                            text = "Translation:",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        if (uiState.translateState == TranslateState.LOADING) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
                             Text(
-                                text = "Translating...",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
+                                text = "Translation:",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary
                             )
-                        } else {
-                            SelectionContainer {
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            if (uiState.translateState == TranslateState.LOADING) {
                                 Text(
-                                    text = uiState.translatedText,
+                                    text = "Translating...",
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                        alpha = 0.6f
+                                    )
                                 )
+                            } else {
+                                SelectionContainer {
+                                    Text(
+                                        text = uiState.translatedText,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                when (last3) {
+                    HistoryState.Empty -> {
+                        Text(
+                            "No translation history, yet",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontStyle = FontStyle.Italic),
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                    }
+
+                    HistoryState.Loading -> {
+                        CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
+                    }
+
+                    is HistoryState.Success -> {
+                        LazyColumn {
+                            items(last3.items.size) { index ->
+                                SimpleTranslatedItemUi(translatedItemOriginalText = last3.items[index].originalText)
                             }
                         }
                     }
