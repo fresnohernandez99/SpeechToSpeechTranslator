@@ -1,11 +1,15 @@
 package com.fresnohernandez99.stpt.platform
 
 import com.google.mlkit.nl.languageid.LanguageIdentification
+import com.google.mlkit.nl.languageid.LanguageIdentificationOptions
 import kotlinx.coroutines.tasks.await
 
 actual class LanguageIdManager {
+    val options = LanguageIdentificationOptions.Builder()
+        .setConfidenceThreshold(0.01f)
+        .build()
 
-    private val languageIdentifier = LanguageIdentification.getClient()
+    private val languageIdentifier = LanguageIdentification.getClient(options)
 
     actual suspend fun getLanguage(
         text: String

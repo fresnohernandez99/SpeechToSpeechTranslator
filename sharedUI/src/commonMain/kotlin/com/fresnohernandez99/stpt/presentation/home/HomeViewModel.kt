@@ -141,9 +141,7 @@ class HomeViewModel(
                 )
             }
 
-            // Si el origen es auto-detect, ML Kit lo maneja internamente en el translate si el modelo base está
-            // Pero para offline, necesitamos asegurar que el modelo de destino esté descargado
-            // Y si el origen es específico, también.
+            downloadIfNeeded(target.code)
 
             if (source != Language.Detect) {
                 downloadIfNeeded(source.code)
@@ -158,12 +156,11 @@ class HomeViewModel(
                         )
                     }
                     return@launch
+                } else {
+                    source = language
+                    _uiState.update { it.copy(sourceLanguage = language) }
                 }
-
-                source = language
-                _uiState.update { it.copy(sourceLanguage = source) }
             }
-            downloadIfNeeded(target.code)
 
             try {
                 val translated = dictRepository.translate(text, source.code, target.code)

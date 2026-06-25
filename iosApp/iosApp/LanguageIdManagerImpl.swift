@@ -10,8 +10,10 @@ import MLKitLanguageID
 
 
 class LanguageIdManagerImpl: LanguageIdManagerIos {
-    
-    let languageId = NaturalLanguage.languageIdentification()
+
+    let options = LanguageIdentificationOptions(confidenceThreshold: 0.01)
+
+    let languageId = LanguageIdentification.languageIdentification(options: options)
 
     func getLanguage(
         text: String,
