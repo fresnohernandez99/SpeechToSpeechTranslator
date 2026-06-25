@@ -113,7 +113,8 @@ fun HomeScreen(
                     sourceLanguage = uiState.sourceLanguage,
                     targetLanguage = uiState.targetLanguage,
                     onSourceLanguageSelected = viewModel::onSourceLanguageSelected,
-                    onTargetLanguageSelected = viewModel::onTargetLanguageSelected
+                    onTargetLanguageSelected = viewModel::onTargetLanguageSelected,
+                    swapLanguages = viewModel::onSwapLanguage
                 )
             }
         },

@@ -127,6 +127,11 @@ class HomeViewModel(
         _uiState.update { it.copy(targetLanguage = language) }
     }
 
+    fun onSwapLanguage() {
+        _uiState.update { it.copy(targetLanguage = it.sourceLanguage, sourceLanguage = it.targetLanguage) },
+
+    }
+
     fun translate() {
         val text = uiState.value.textToTranslate
         if (text.isBlank()) return

@@ -214,6 +214,7 @@ fun LanguageSelectorTopBar(
     targetLanguage: Language,
     onSourceLanguageSelected: (Language) -> Unit,
     onTargetLanguageSelected: (Language) -> Unit,
+    swapLanguages: () -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
@@ -233,14 +234,16 @@ fun LanguageSelectorTopBar(
             )
 
             IconButton(
-                onClick = { },
+                onClick = swapLanguages,
+                enabled = sourceLanguage != Language.Detect && sourceLanguage != targetLanguage,
                 shapes = IconButtonShapes(
                     shape = MaterialTheme.shapes.large,
                     pressedShape = MaterialTheme.shapes.small
                 ),
                 modifier = Modifier,
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    disabledContainerColor = MaterialTheme.colorScheme.tertiary
                 )
             ) {
                 Icon(
