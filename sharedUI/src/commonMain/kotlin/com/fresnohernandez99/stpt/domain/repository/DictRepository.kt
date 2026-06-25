@@ -14,4 +14,6 @@ interface DictRepository {
     suspend fun deleteLanguage(code: String): Boolean
 
     suspend fun translate(text: String, source: String, target: String): String
+
+    suspend fun getLanguage(text: String): Language
 }

@@ -131,7 +131,7 @@ class HomeViewModel(
         val text = uiState.value.textToTranslate
         if (text.isBlank()) return
 
-        val source = uiState.value.sourceLanguage
+        var source = uiState.value.sourceLanguage
         val target = uiState.value.targetLanguage
 
         viewModelScope.launch {
@@ -147,6 +147,21 @@ class HomeViewModel(
 
             if (source != Language.Detect) {
                 downloadIfNeeded(source.code)
+            } else {
+                val language = dictRepository.getLanguage(text)
+
+                if (language == Language.Detect) {
+                    _uiState.update {
+                        it.copy(
+                            translateState = TranslateState.ERROR,
+                            errorMessage = "Language detection failed"
+                        )
+                    }
+                    return@launch
+                }
+
+                source = language
+                _uiState.update { it.copy(sourceLanguage = source) }
             }
             downloadIfNeeded(target.code)
 

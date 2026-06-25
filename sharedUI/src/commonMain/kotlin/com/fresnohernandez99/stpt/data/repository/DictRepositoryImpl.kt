@@ -3,12 +3,14 @@ package com.fresnohernandez99.stpt.data.repository
 import com.fresnohernandez99.stpt.domain.model.Language
 import com.fresnohernandez99.stpt.domain.repository.DictRepository
 import com.fresnohernandez99.stpt.platform.DownloadStatus
+import com.fresnohernandez99.stpt.platform.LanguageIdManager
 import com.fresnohernandez99.stpt.platform.TranslatorManager
 import kotlinx.coroutines.flow.Flow
 
 class DictRepositoryImpl(
-    private val translatorManager: TranslatorManager
-): DictRepository {
+    private val translatorManager: TranslatorManager,
+    private val languageIdManager: LanguageIdManager
+) : DictRepository {
     override suspend fun getDownloadedLanguages(): List<Language> {
         val codes = translatorManager.getDownloadedModels()
         return Language.list.filter { it.code in codes }
@@ -28,5 +30,11 @@ class DictRepositoryImpl(
 
     override suspend fun translate(text: String, source: String, target: String): String {
         return translatorManager.translateUsingModel(text, source, target)
+    }
+
+    override suspend fun getLanguage(text: String): Language {
+        val languageId = languageIdManager.getLanguage(text)
+
+        return Language.list.find { it.code == languageId } ?: Language.Detect
     }
 }

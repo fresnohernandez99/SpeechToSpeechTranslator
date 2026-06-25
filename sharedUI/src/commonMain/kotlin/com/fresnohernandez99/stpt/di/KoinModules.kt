@@ -31,7 +31,7 @@ val appModule = module {
 
 val repositoryModule = module {
     single<PreferencesRepository> { PreferencesRepositoryImpl(get()) }
-    single<DictRepository> { DictRepositoryImpl(get()) }
+    single<DictRepository> { DictRepositoryImpl(get(), get()) }
     single<TranslationHistoryRepository> { TranslationHistoryRepositoryImpl(get()) }
 }
 
