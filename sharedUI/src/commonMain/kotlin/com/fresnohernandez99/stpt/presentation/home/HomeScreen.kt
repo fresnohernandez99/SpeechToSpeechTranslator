@@ -225,6 +225,7 @@ fun HomeScreen(
         }
     ) { padding ->
         val topPadding = padding.calculateTopPadding()
+        val bottomPadding = padding.calculateBottomPadding()
 
         when (windowSize) {
             WindowSize.Compact -> {
@@ -236,7 +237,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(top = topPadding)
                         .consumeWindowInsets(padding),
-                    enabledTranslationFunction = enabledTranslationFunction
+                    enabledTranslationFunction = enabledTranslationFunction,
+                    bottomPadding = bottomPadding
                 )
             }
 
@@ -245,9 +247,10 @@ fun HomeScreen(
                     uiState = uiState,
                     onTextChanged = viewModel::onTextChanged,
                     onTranslateClick = viewModel::translate,
-                    last3 = last3,
                     modifier = Modifier.padding(padding),
                     enabledTranslationFunction = enabledTranslationFunction,
+                    last3 = last3,
+                    bottomPadding = bottomPadding
                 )
             }
         }

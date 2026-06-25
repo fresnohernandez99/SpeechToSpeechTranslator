@@ -3,6 +3,7 @@ package com.fresnohernandez99.stpt.presentation.home
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fresnohernandez99.stpt.data.local.TranslatedItem
 import com.fresnohernandez99.stpt.domain.model.Language
 import com.fresnohernandez99.stpt.domain.repository.DictRepository
 import com.fresnohernandez99.stpt.domain.repository.TranslationHistoryRepository
@@ -23,7 +24,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.ExperimentalTime
 
 @Immutable
 class HomeViewModel(
@@ -128,10 +131,15 @@ class HomeViewModel(
     }
 
     fun onSwapLanguage() {
-        _uiState.update { it.copy(targetLanguage = it.sourceLanguage, sourceLanguage = it.targetLanguage) },
-
+        _uiState.update {
+            it.copy(
+                targetLanguage = it.sourceLanguage,
+                sourceLanguage = it.targetLanguage
+            )
+        }
     }
 
+    @OptIn(ExperimentalTime::class)
     fun translate() {
         val text = uiState.value.textToTranslate
         if (text.isBlank()) return
@@ -175,6 +183,16 @@ class HomeViewModel(
                         translateState = TranslateState.SUCCESS
                     )
                 }
+
+                translationHistoryRepository.addTranslation(
+                    TranslatedItem(
+                        originalText = uiState.value.textToTranslate,
+                        translatedText = translated,
+                        originalLanguage = uiState.value.sourceLanguage.code,
+                        translatedTo = uiState.value.targetLanguage.code,
+                        updateAt = Clock.System.now().toEpochMilliseconds()
+                    )
+                )
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(

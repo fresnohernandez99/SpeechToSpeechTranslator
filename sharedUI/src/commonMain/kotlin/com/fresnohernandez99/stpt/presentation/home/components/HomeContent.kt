@@ -21,13 +21,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -46,7 +46,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.fresnohernandez99.stpt.presentation.history.components.SimpleTranslatedItemUi
 import com.fresnohernandez99.stpt.presentation.home.HistoryState
@@ -66,8 +69,10 @@ fun HomeContent(
     onTranslateClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabledTranslationFunction: Boolean,
-    last3: HistoryState
+    last3: HistoryState,
+    bottomPadding: Dp
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -76,6 +81,11 @@ fun HomeContent(
         val interactionSource = remember { MutableInteractionSource() }
         val isFocused by interactionSource.collectIsFocusedAsState()
 
+        fun onTranslate() {
+            onTranslateClick()
+            keyboardController?.hide()
+        }
+
         val isTypingState by remember(isFocused, uiState.textToTranslate) {
             derivedStateOf {
                 isFocused || uiState.textToTranslate.isNotEmpty()
@@ -83,18 +93,26 @@ fun HomeContent(
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth().weight(0.6F)
+            modifier = Modifier.fillMaxWidth().weight(0.5F)
                 .padding(horizontal = 16.dp)
         ) {
             OutlinedTextField(
                 value = uiState.textToTranslate,
                 onValueChange = onTextChanged,
-                modifier = Modifier,
+                modifier = Modifier.weight(1F),
                 interactionSource = interactionSource,
                 textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.White),
                 minLines = 3,
                 singleLine = false,
                 maxLines = 8,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onTranslate()
+                    }
+                ),
                 label = {
                     Text(
                         stringResource(Res.string.enter_text),
@@ -114,7 +132,7 @@ fun HomeContent(
             )
 
             IconButton(
-                onClick = onTranslateClick,
+                onClick = ::onTranslate,
                 modifier = Modifier.align(Alignment.Bottom),
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -181,75 +199,77 @@ fun HomeContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.4F)
+                .weight(0.5F)
                 .background(
                     color = MaterialTheme.colorScheme.primaryContainer,
                     shape = MaterialTheme.shapes.extraLarge
                 )
         ) {
-            Column(Modifier.fillMaxWidth()) {
+            LazyColumn(modifier = Modifier.padding(16.dp)) {
                 if (uiState.translatedText.isNotEmpty() || uiState.translateState in arrayOf(
                         TranslateState.SUCCESS, TranslateState.ERROR, TranslateState.LOADING
                     )
-                ) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.secondaryContainer
-                        ),
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            Text(
-                                text = "Translation:",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
+                )
+                    item {
+                        Text(
+                            text = "Translation:",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                            if (uiState.translateState == TranslateState.LOADING) {
-                                Text(
-                                    text = "Translating...",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
-                                        alpha = 0.6f
-                                    )
+                        if (uiState.translateState == TranslateState.LOADING) {
+                            Text(
+                                text = "Translating...",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                    alpha = 0.6f
                                 )
-                            } else {
-                                SelectionContainer {
-                                    Text(
-                                        text = uiState.translatedText,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                }
+                            )
+                        } else {
+                            SelectionContainer {
+                                Text(
+                                    text = uiState.translatedText,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
                             }
                         }
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
-                }
 
                 when (last3) {
                     HistoryState.Empty -> {
-                        Text(
-                            "No translation history, yet",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontStyle = FontStyle.Italic),
-                            color = MaterialTheme.colorScheme.tertiary
-                        )
+                        item {
+                            Text(
+                                "No translation history, yet",
+                                style = MaterialTheme.typography.bodyLarge.copy(fontStyle = FontStyle.Italic),
+                                color = MaterialTheme.colorScheme.tertiary
+                            )
+                        }
                     }
 
                     HistoryState.Loading -> {
-                        CircularProgressIndicator(Modifier.align(Alignment.CenterHorizontally))
+                        item {
+                            CircularProgressIndicator(Modifier)
+                        }
                     }
 
                     is HistoryState.Success -> {
-                        LazyColumn {
-                            items(last3.items.size) { index ->
-                                SimpleTranslatedItemUi(translatedItemOriginalText = last3.items[index].originalText)
-                            }
+                        item {
+                            Text(
+                                text = "History:",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.tertiary
+                            )
+                        }
+                        items(last3.items.size) { index ->
+                            SimpleTranslatedItemUi(translatedItemOriginalText = last3.items[index].originalText)
                         }
                     }
                 }
+
+                item { Spacer(modifier = Modifier.padding(bottom = bottomPadding)) }
             }
         }
     }
