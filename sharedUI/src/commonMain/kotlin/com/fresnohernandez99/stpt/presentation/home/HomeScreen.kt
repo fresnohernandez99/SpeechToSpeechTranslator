@@ -1,5 +1,8 @@
 package com.fresnohernandez99.stpt.presentation.home
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -40,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.Popup
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fresnohernandez99.stpt.modelDownloader.DownloadModelDialog
 import com.fresnohernandez99.stpt.modelDownloader.DownloaderEffect
@@ -61,11 +66,14 @@ import speechtospeechtranslator.sharedui.generated.resources.Res
 import speechtospeechtranslator.sharedui.generated.resources.add_box
 import speechtospeechtranslator.sharedui.generated.resources.camera
 import speechtospeechtranslator.sharedui.generated.resources.confirmation_cancel
+import speechtospeechtranslator.sharedui.generated.resources.d_mode
 import speechtospeechtranslator.sharedui.generated.resources.download_dialog_error
 import speechtospeechtranslator.sharedui.generated.resources.draw
 import speechtospeechtranslator.sharedui.generated.resources.history
+import speechtospeechtranslator.sharedui.generated.resources.l_mode
 import speechtospeechtranslator.sharedui.generated.resources.menu
 import speechtospeechtranslator.sharedui.generated.resources.mic
+import speechtospeechtranslator.sharedui.generated.resources.settings
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationStyleApi::class)
 @Composable
@@ -103,6 +111,10 @@ fun HomeScreen(
 
     val last3 by viewModel.last3.collectAsState()
 
+    var expanded by remember { mutableStateOf(false) }
+
+    val isDarkTheme = isSystemInDarkTheme()
+
     AppScaffold(
         modifier = Modifier.imePadding(),
         containerColor = MaterialTheme.colorScheme.primary,
@@ -136,13 +148,14 @@ fun HomeScreen(
                             space = 16.dp,
                             alignment = Alignment.CenterHorizontally
                         )
-                    )
-                    {
+                    ) {
                         IconButton(
                             enabled = false,
                             colors = IconButtonDefaults.iconButtonColors(
                                 contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                    alpha = 0.3F
+                                ),
                             ),
                             onClick = { /* do something */ }) {
                             Icon(
@@ -156,7 +169,9 @@ fun HomeScreen(
                             enabled = false,
                             colors = IconButtonDefaults.iconButtonColors(
                                 contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                    alpha = 0.3F
+                                ),
                             ),
                             onClick = { /* do something */ }) {
                             Icon(
@@ -168,7 +183,9 @@ fun HomeScreen(
                         IconButton(
                             colors = IconButtonDefaults.iconButtonColors(
                                 contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                    alpha = 0.3F
+                                ),
                             ),
                             onClick = {
                                 setShowRecord(true)
@@ -185,7 +202,9 @@ fun HomeScreen(
                             enabled = false,
                             colors = IconButtonDefaults.iconButtonColors(
                                 contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                    alpha = 0.3F
+                                ),
                             ),
                             onClick = { /* do something */ }) {
                             Icon(
@@ -198,7 +217,9 @@ fun HomeScreen(
                             enabled = false,
                             colors = IconButtonDefaults.iconButtonColors(
                                 contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
+                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                    alpha = 0.3F
+                                ),
                             ),
                             onClick = { /* do something */ }) {
                             Icon(
@@ -207,17 +228,72 @@ fun HomeScreen(
                                 contentDescription = "Go history icon",
                             )
                         }
-                        IconButton(
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.3F),
-                            ),
-                            onClick = { navHostController.navigate(Destination.Settings) }) {
-                            Icon(
-                                vectorResource(Res.drawable.menu),
-                                modifier = Modifier.size(24.dp),
-                                contentDescription = "Go menu icon",
-                            )
+
+                        Box {
+                            IconButton(
+                                modifier = Modifier.styleable {
+                                    alpha(if (expanded) 0f else 1f)
+                                },
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.surface,
+                                    disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                        alpha = 0.3F
+                                    ),
+                                ),
+                                onClick = {
+                                    expanded = true
+                                }
+                            ) {
+                                Icon(
+                                    vectorResource(Res.drawable.menu),
+                                    modifier = Modifier.size(24.dp),
+                                    contentDescription = "Open menu icon",
+                                )
+                            }
+
+                            if (expanded) {
+                                Popup(
+                                    alignment = Alignment.TopCenter,
+                                    onDismissRequest = { expanded = false }
+                                ) {
+                                    Column {
+                                        Column(
+                                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            modifier = Modifier
+                                                .background(
+                                                    MaterialTheme.colorScheme.primary,
+                                                    shape = MaterialTheme.shapes.extraLarge
+                                                )
+                                                .padding(8.dp)
+                                        ) {
+                                            Icon(
+                                                vectorResource(Res.drawable.settings),
+                                                modifier = Modifier.clickable {
+                                                    navHostController.navigate(Destination.Settings)
+                                                }
+                                                    .size(24.dp),
+                                                contentDescription = "Go settings icon",
+                                                tint = Color.White
+                                            )
+                                            Icon(
+                                                vectorResource(if (isDarkTheme) Res.drawable.d_mode else Res.drawable.l_mode),
+                                                modifier = Modifier.size(24.dp),
+                                                contentDescription = "Change theme icon",
+                                                tint = Color.White.copy(alpha = 0.7F),
+                                            )
+                                            Icon(
+                                                vectorResource(Res.drawable.menu),
+                                                modifier = Modifier.size(24.dp),
+                                                contentDescription = "Go menu icon",
+                                                tint = Color.White
+                                            )
+                                        }
+
+                                        Spacer(Modifier.height(15.dp))
+                                    }
+                                }
+                            }
                         }
                     }
                 }
