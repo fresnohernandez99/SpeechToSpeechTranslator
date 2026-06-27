@@ -37,6 +37,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -87,16 +88,16 @@ fun HomeScreen(
 
     val uiState by viewModel.uiState.collectAsState()
 
-    val (showRecord, setShowRecord) = remember { mutableStateOf(false) }
+    val (showRecord, setShowRecord) = rememberSaveable { mutableStateOf(false) }
 
-    var showLoadingDialog by remember { mutableStateOf(false) }
-    var showDownloadDialog by remember { mutableStateOf(false) }
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var showDownloadQuestionDialog by remember { mutableStateOf(false) }
+    var showLoadingDialog by rememberSaveable { mutableStateOf(false) }
+    var showDownloadDialog by rememberSaveable { mutableStateOf(false) }
+    var showErrorDialog by rememberSaveable { mutableStateOf(false) }
+    var showDownloadQuestionDialog by rememberSaveable { mutableStateOf(false) }
 
     val downloaderUiState by downloaderViewModel.uiState.collectAsStateWithLifecycle()
 
-    var lastTranslated by remember { mutableStateOf("") }
+    var lastTranslated by rememberSaveable { mutableStateOf("") }
     val enabledTranslationFunction by remember(lastTranslated, uiState.textToTranslate) {
         derivedStateOf {
             lastTranslated != uiState.textToTranslate && uiState.textToTranslate.isNotBlank()
@@ -111,7 +112,7 @@ fun HomeScreen(
 
     val last3 by viewModel.last3.collectAsState()
 
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by rememberSaveable { mutableStateOf(false) }
 
     val isDarkTheme = isSystemInDarkTheme()
 

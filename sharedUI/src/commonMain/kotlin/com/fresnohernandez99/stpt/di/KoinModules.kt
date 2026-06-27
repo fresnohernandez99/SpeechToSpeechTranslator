@@ -12,6 +12,7 @@ import com.fresnohernandez99.stpt.modelDownloader.ModelSelection
 import com.fresnohernandez99.stpt.platform.presentation.PlatformViewModel
 import com.fresnohernandez99.stpt.presentation.dictsManage.DictsManageViewModel
 import com.fresnohernandez99.stpt.presentation.home.HomeViewModel
+import com.fresnohernandez99.stpt.presentation.languageSelection.LanguageSelectionViewModel
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionViewModel
 import com.fresnohernandez99.stpt.presentation.onboarding.OnboardingViewModel
 import com.fresnohernandez99.stpt.presentation.settings.SettingsViewModel
@@ -19,6 +20,7 @@ import com.fresnohernandez99.stpt.room.AppDatabase
 import com.fresnohernandez99.stpt.room.getDatabaseBuilder
 import com.fresnohernandez99.stpt.room.getRoomDatabase
 import com.fresnohernandez99.stpt.transcription.TranscriptionViewModel
+import com.fresnohernandez99.stpt.utils.Gson
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -30,7 +32,7 @@ val appModule = module {
 }
 
 val repositoryModule = module {
-    single<PreferencesRepository> { PreferencesRepositoryImpl(get()) }
+    single<PreferencesRepository> { PreferencesRepositoryImpl(get(), get()) }
     single<DictRepository> { DictRepositoryImpl(get(), get()) }
     single<TranslationHistoryRepository> { TranslationHistoryRepositoryImpl(get()) }
 }
@@ -45,7 +47,9 @@ val viewModelModule = module {
     viewModelOf(::DictsManageViewModel)
     viewModelOf(::InitViewModel)
     viewModelOf(::OnboardingViewModel)
+    viewModelOf(::LanguageSelectionViewModel)
 }
 
 val mapperModule = module {
+    single<Gson> { Gson() }
 }

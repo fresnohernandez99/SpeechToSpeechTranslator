@@ -8,15 +8,18 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.fresnohernandez99.stpt.domain.model.Language
+import com.fresnohernandez99.stpt.domain.model.LanguagesInPref
 import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
 import com.fresnohernandez99.stpt.modelDownloader.NO_MODEL_SELECTION
+import com.fresnohernandez99.stpt.utils.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 class PreferencesRepositoryImpl(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val gson: Gson
 ) : PreferencesRepository {
 
     companion object {
@@ -24,6 +27,7 @@ class PreferencesRepositoryImpl(
         private val KEY_LANGUAGE = stringPreferencesKey("language")
         private val KEY_MODEL_DOWNLOAD_ID = longPreferencesKey("model_download_id")
         private val KEY_MODEL_SELECTION = intPreferencesKey("model_selection")
+        private val KEY_LANGUAGE_PREFERENCES = stringPreferencesKey("language_preferences")
     }
 
     override suspend fun hasCompletedOnboarding(): Boolean {
@@ -31,7 +35,6 @@ class PreferencesRepositoryImpl(
         println("PreferencesRepository: hasCompletedOnboarding = $completed")
         return completed
     }
-
 
     override suspend fun setOnboardingCompleted(completed: Boolean) {
         println("PreferencesRepository: setOnboardingCompleted($completed)")
@@ -70,6 +73,29 @@ class PreferencesRepositoryImpl(
         println("PreferencesRepository: setModelSelection($modelSelection)")
         dataStore.edit { prefs ->
             prefs[KEY_MODEL_SELECTION] = modelSelection
+        }
+    }
+
+    override fun getLanguagePref(): Flow<LanguagesInPref> = dataStore.data.map { prefs ->
+        return@map try {
+            gson.fromJson(
+                prefs[KEY_LANGUAGE_PREFERENCES] ?: "{}",
+                LanguagesInPref::class,
+                LanguagesInPref.serializer()
+            )
+        } catch (_: Exception) {
+            null
+        } ?: LanguagesInPref(
+            sourceLanguage = Language.Detect,
+            targetLanguage = Language.Spanish
+        )
+    }
+        .onEach { println("PreferencesRepository: getLanguagePref emitted: ${it.sourceLanguage.code} to ${it.targetLanguage.code}") }
+
+    override suspend fun setLanguagePref(pref: LanguagesInPref) {
+        println("PreferencesRepository: setLanguagePref(${pref.sourceLanguage.code} to ${pref.targetLanguage.code}")
+        dataStore.edit { prefs ->
+            prefs[KEY_LANGUAGE_PREFERENCES] = gson.toJson(pref)
         }
     }
 }

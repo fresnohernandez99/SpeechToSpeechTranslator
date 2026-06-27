@@ -1,5 +1,6 @@
 package com.fresnohernandez99.stpt.domain.model
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -53,8 +54,15 @@ data class Language(
             excludeLanguages: List<Language> = emptyList()
         ): List<Language> {
             val filtered = allLanguages.filter { it !in excludeLanguages }
-            
+
             return listOf(priorityLanguage) + (filtered - priorityLanguage)
         }
     }
 }
+
+@Immutable
+@Serializable
+data class LanguagesInPref(
+    val sourceLanguage: Language,
+    val targetLanguage: Language
+)

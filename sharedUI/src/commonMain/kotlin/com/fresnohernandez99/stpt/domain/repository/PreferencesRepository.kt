@@ -1,5 +1,6 @@
 package com.fresnohernandez99.stpt.domain.repository
 
+import com.fresnohernandez99.stpt.domain.model.LanguagesInPref
 import kotlinx.coroutines.flow.Flow
 
 interface PreferencesRepository {
@@ -18,4 +19,8 @@ interface PreferencesRepository {
     fun getModelSelection(): Flow<Int>
 
     suspend fun setModelSelection(modelSelection: Int)
+
+    fun getLanguagePref(): Flow<LanguagesInPref>
+
+    suspend fun setLanguagePref(pref: LanguagesInPref)
 }

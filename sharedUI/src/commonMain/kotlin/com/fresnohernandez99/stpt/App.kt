@@ -4,17 +4,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,6 +16,7 @@ import androidx.navigation.toRoute
 import com.fresnohernandez99.stpt.presentation.components.LoadingView
 import com.fresnohernandez99.stpt.presentation.dictsManage.DictsManageScreen
 import com.fresnohernandez99.stpt.presentation.home.HomeScreen
+import com.fresnohernandez99.stpt.presentation.languageSelection.component.LanguageSelectionScreen
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionScreen
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
@@ -107,6 +101,13 @@ fun App(
                         val link: Destination.DictsManage = backStackEntry.toRoute()
 
                         DictsManageScreen(
+                            link = link
+                        )
+                    }
+                    composable<Destination.LanguageSelection> { backStackEntry ->
+                        val link: Destination.LanguageSelection = backStackEntry.toRoute()
+
+                        LanguageSelectionScreen(
                             link = link
                         )
                     }

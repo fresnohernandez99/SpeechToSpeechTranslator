@@ -24,4 +24,12 @@ sealed interface Destination {
     @Serializable
     @Immutable
     data object DictsManage : Destination
+    @Serializable
+    @Immutable
+    data class LanguageSelection(val intent: String = SOURCE) : Destination {
+        companion object {
+            const val SOURCE = "source"
+            const val TARGET = "target"
+        }
+    }
 }
