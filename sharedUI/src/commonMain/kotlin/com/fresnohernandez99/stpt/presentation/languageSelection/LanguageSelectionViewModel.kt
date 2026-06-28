@@ -9,7 +9,5 @@ class LanguageSelectionViewModel(
     private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
 
-    init {
 
-    }
 }

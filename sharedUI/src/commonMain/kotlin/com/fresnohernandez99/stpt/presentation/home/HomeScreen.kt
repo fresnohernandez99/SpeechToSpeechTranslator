@@ -125,8 +125,20 @@ fun HomeScreen(
                     modifier = Modifier,
                     sourceLanguage = uiState.sourceLanguage,
                     targetLanguage = uiState.targetLanguage,
-                    onSourceLanguageSelected = viewModel::onSourceLanguageSelected,
-                    onTargetLanguageSelected = viewModel::onTargetLanguageSelected,
+                    onSelectSourceLanguage = {
+                        navHostController.navigate(
+                            Destination.LanguageSelection(
+                                intent = Destination.LanguageSelection.SOURCE
+                            )
+                        )
+                    },
+                    onSelectTargetLanguage = {
+                        navHostController.navigate(
+                            Destination.LanguageSelection(
+                                intent = Destination.LanguageSelection.TARGET
+                            )
+                        )
+                    },
                     swapLanguages = viewModel::onSwapLanguage
                 )
             }

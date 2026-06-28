@@ -16,7 +16,7 @@ import androidx.navigation.toRoute
 import com.fresnohernandez99.stpt.presentation.components.LoadingView
 import com.fresnohernandez99.stpt.presentation.dictsManage.DictsManageScreen
 import com.fresnohernandez99.stpt.presentation.home.HomeScreen
-import com.fresnohernandez99.stpt.presentation.languageSelection.component.LanguageSelectionScreen
+import com.fresnohernandez99.stpt.presentation.languageSelection.LanguageSelectionScreen
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionScreen
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController

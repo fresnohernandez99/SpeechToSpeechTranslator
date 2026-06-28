@@ -50,12 +50,33 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.fresnohernandez99.stpt.domain.model.Language
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import speechtospeechtranslator.sharedui.generated.resources.Res
 import speechtospeechtranslator.sharedui.generated.resources.change
 import speechtospeechtranslator.sharedui.generated.resources.detect_language
+
+@Composable
+fun LanguageSelectorBtn(
+    selectedLanguage: Language,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    BasicText(
+        modifier = modifier.clickable { onClick() }.fillMaxWidth().padding(horizontal = 8.dp),
+        text = if (selectedLanguage == Language.Detect) {
+            stringResource(Res.string.detect_language)
+        } else {
+            selectedLanguage.name
+        },
+        style = MaterialTheme.typography.bodyMedium.copy(
+            color = MaterialTheme.colorScheme.tertiary,
+            textAlign = TextAlign.Center
+        ),
+        autoSize = TextAutoSize.StepBased(maxFontSize = 20.sp, minFontSize = 8.sp),
+        maxLines = 1
+    )
+}
 
 @Composable
 fun LanguageSelector(
@@ -217,8 +238,8 @@ fun LanguageSelectorTopBar(
     modifier: Modifier = Modifier,
     sourceLanguage: Language,
     targetLanguage: Language,
-    onSourceLanguageSelected: (Language) -> Unit,
-    onTargetLanguageSelected: (Language) -> Unit,
+    onSelectSourceLanguage: () -> Unit,
+    onSelectTargetLanguage: () -> Unit,
     swapLanguages: () -> Unit,
 ) {
     Card(
@@ -231,11 +252,10 @@ fun LanguageSelectorTopBar(
                 .background(color = MaterialTheme.colorScheme.primaryContainer),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            LanguageSelector(
+            LanguageSelectorBtn(
                 selectedLanguage = sourceLanguage,
-                languages = Language.list.toImmutableList(),
-                onLanguageSelected = onSourceLanguageSelected,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                onClick = onSelectSourceLanguage
             )
 
             IconButton(
@@ -259,15 +279,10 @@ fun LanguageSelectorTopBar(
                 )
             }
 
-            LanguageSelector(
+            LanguageSelectorBtn(
                 selectedLanguage = targetLanguage,
-                languages = Language.getFilteredLanguages(
-                    allLanguages = Language.list,
-                    priorityLanguage = Language.Spanish,
-                    excludeLanguages = listOf(Language.Detect)
-                ).toImmutableList(),
-                onLanguageSelected = onTargetLanguageSelected,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                onClick = onSelectTargetLanguage
             )
         }
     }

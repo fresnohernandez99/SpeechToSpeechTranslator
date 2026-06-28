@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.KeyboardActionHandler
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -20,19 +24,23 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import com.fresnohernandez99.stpt.domain.model.Language
 import com.fresnohernandez99.stpt.presentation.components.AppScaffold
+import com.fresnohernandez99.stpt.presentation.components.BackTopBar
 import com.fresnohernandez99.stpt.presentation.languageSelection.component.LanguageItem
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
+import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.koin.compose.viewmodel.koinViewModel
@@ -46,44 +54,76 @@ fun LanguageSelectionScreen(
     languages: ImmutableList<Language> = Language.list.toImmutableList()
 ) {
 
-    var searchQuery by remember { mutableStateOf("") }
-    val filteredLanguages = remember(searchQuery, languages) {
-        languages.filter {
-            it.name.contains(searchQuery, ignoreCase = true) ||
-                    it.code.contains(searchQuery, ignoreCase = true)
+    val navController = LocalNavController.current
+
+    val searchQuery = rememberTextFieldState()
+    val filteredLanguages by remember(searchQuery.text, languages) {
+        derivedStateOf {
+            languages.filter {
+                it.name.contains(searchQuery.text, ignoreCase = true) ||
+                        it.code.contains(searchQuery.text, ignoreCase = true)
+            }
         }
     }
 
     AppScaffold(
         modifier = Modifier.imePadding(),
-        containerColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
         topBar = {
-
+            BackTopBar(
+                onBack = { navController.navigateUp() },
+                title = "All Languages",
+                modifier = Modifier
+            )
         },
     ) { pV ->
         Column(
-            modifier = Modifier.consumeWindowInsets(pV).padding(pV)
+            modifier = Modifier
+                .consumeWindowInsets(pV)
+                .padding(pV)
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
         ) {
             OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
+                state = searchQuery,
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Search language...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                trailingIcon = if (searchQuery.isNotEmpty()) {
+                placeholder = {
+                    Text(
+                        "Search",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 20.sp),
+                        color = MaterialTheme.colorScheme.surface
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = "search bar icon",
+                        tint = MaterialTheme.colorScheme.surface
+                    )
+                },
+                trailingIcon = if (searchQuery.text.isNotEmpty()) {
                     {
-                        IconButton(onClick = { searchQuery = "" }) {
-                            Icon(Icons.Default.Close, contentDescription = "Clear")
+                        IconButton(onClick = { searchQuery.clearText() }) {
+                            Icon(
+                                Icons.Default.Close, contentDescription = "Clear",
+                                tint = MaterialTheme.colorScheme.surface
+                            )
                         }
                     }
                 } else null,
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Search
                 ),
-                singleLine = true,
-                shape = MaterialTheme.shapes.medium
+                onKeyboardAction = KeyboardActionHandler {
+
+                },
+                shape = MaterialTheme.shapes.medium,
+                lineLimits = TextFieldLineLimits.SingleLine,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.surface,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.surface,
+                    cursorColor = MaterialTheme.colorScheme.surface,
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
