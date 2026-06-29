@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fresnohernandez99.stpt.domain.model.Language
+import com.fresnohernandez99.stpt.presentation.components.StyleApiCard
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import speechtospeechtranslator.sharedui.generated.resources.Res
@@ -28,16 +29,14 @@ import speechtospeechtranslator.sharedui.generated.resources.download
 fun LanguageItem(
     language: Language,
     onClick: () -> Unit,
-    wasDownloaded: Boolean = false
+    wasDownloaded: Boolean = false,
+    isSelected: Boolean = false
 ) {
-    Card(
+    StyleApiCard(
         shape = MaterialTheme.shapes.extraExtraLarge,
         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 4.dp),
         onClick = onClick,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        elevation = CardDefaults.cardElevation(3.dp)
+        isSelected = isSelected,
     ) {
         Row(
             modifier = Modifier
