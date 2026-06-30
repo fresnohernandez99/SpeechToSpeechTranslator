@@ -69,10 +69,11 @@ fun LanguageSelectionScreen(
     val searchQuery = rememberTextFieldState()
     val filteredLanguages by remember(searchQuery.text, languages) {
         derivedStateOf {
-            languages.filter {
+            val base = languages.filter {
                 it.name.contains(searchQuery.text, ignoreCase = true) ||
                         it.code.contains(searchQuery.text, ignoreCase = true)
             }
+            if (link.intent == Destination.LanguageSelection.SOURCE) listOf(Language.Detect) + base else base
         }
     }
 
