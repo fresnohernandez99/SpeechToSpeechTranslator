@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.data.local.TranslatedItem
 import com.fresnohernandez99.stpt.domain.model.Language
 import com.fresnohernandez99.stpt.domain.repository.DictRepository
+import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
 import com.fresnohernandez99.stpt.domain.repository.TranslationHistoryRepository
 import com.fresnohernandez99.stpt.platform.DownloadStatus
 import dev.theolm.record.Record
@@ -31,11 +32,14 @@ import kotlin.time.ExperimentalTime
 @Immutable
 class HomeViewModel(
     private val dictRepository: DictRepository,
-    private val translationHistoryRepository: TranslationHistoryRepository
+    private val translationHistoryRepository: TranslationHistoryRepository,
+    private val preferencesRepository: PreferencesRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
+
+    val selectedLanguage = preferencesRepository.getLanguagePref()
 
     private val audioRecorderPlayer = createAudioRecorderPlayer()
     private var recordedFilePath: String? = null

@@ -47,6 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.Popup
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.fresnohernandez99.stpt.domain.model.Language
+import com.fresnohernandez99.stpt.domain.model.LanguagesInPref
 import com.fresnohernandez99.stpt.modelDownloader.DownloadModelDialog
 import com.fresnohernandez99.stpt.modelDownloader.DownloaderEffect
 import com.fresnohernandez99.stpt.modelDownloader.ModelDownloaderViewModel
@@ -86,6 +88,12 @@ fun HomeScreen(
     val navHostController = LocalNavController.current
     val windowSize = LocalWindowSizeHelper.current
 
+    val languagePref by viewModel.selectedLanguage.collectAsState(
+        initial = LanguagesInPref(
+            Language.Detect, Language.English
+        )
+    )
+
     val uiState by viewModel.uiState.collectAsState()
 
     val (showRecord, setShowRecord) = rememberSaveable { mutableStateOf(false) }
@@ -123,8 +131,8 @@ fun HomeScreen(
             Box(Modifier.systemBarsPadding()) {
                 LanguageSelectorTopBar(
                     modifier = Modifier,
-                    sourceLanguage = uiState.sourceLanguage,
-                    targetLanguage = uiState.targetLanguage,
+                    sourceLanguage = languagePref.sourceLanguage,
+                    targetLanguage = languagePref.targetLanguage,
                     onSelectSourceLanguage = {
                         navHostController.navigate(
                             Destination.LanguageSelection(
