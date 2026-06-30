@@ -7,8 +7,6 @@ import com.fresnohernandez99.stpt.domain.model.Language
 @Immutable
 data class HomeUiState(
     val textToTranslate: String = "",
-    val sourceLanguage: Language = Language.Detect,
-    val targetLanguage: Language = Language.Spanish,
     val translatedText: String = "",
     val translateState: TranslateState = TranslateState.NOT_REQUESTED,
     val isRecording: Boolean = false,

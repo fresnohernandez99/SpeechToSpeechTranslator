@@ -23,6 +23,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
@@ -126,83 +127,94 @@ class HomeViewModel(
         }
     }
 
-    fun onSourceLanguageSelected(language: Language) {
-        _uiState.update { it.copy(sourceLanguage = language) }
-    }
-
-    fun onTargetLanguageSelected(language: Language) {
-        _uiState.update { it.copy(targetLanguage = language) }
-    }
+    private var isSelecting = false
 
     fun onSwapLanguage() {
-        _uiState.update {
-            it.copy(
-                targetLanguage = it.sourceLanguage,
-                sourceLanguage = it.targetLanguage
-            )
+        if (!isSelecting) {
+            isSelecting = true
+            viewModelScope.launch(Dispatchers.IO) {
+                val prefs = selectedLanguage.first()
+                preferencesRepository.setLanguagePref(
+                    selectedLanguage.first().copy(
+                        sourceLanguage = prefs.targetLanguage,
+                        targetLanguage = prefs.sourceLanguage
+                    )
+                )
+                delay(600.milliseconds)
+                viewModelScope.launch(Dispatchers.Main) {
+                    isSelecting = false
+                }
+            }
         }
     }
 
     @OptIn(ExperimentalTime::class)
     fun translate() {
-        val text = uiState.value.textToTranslate
-        if (text.isBlank()) return
+        viewModelScope.launch(Dispatchers.IO + Job()) {
+            val text = uiState.value.textToTranslate
+            if (text.isBlank()) return@launch
 
-        var source = uiState.value.sourceLanguage
-        val target = uiState.value.targetLanguage
+            val prefs = selectedLanguage.first()
 
-        viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    translateState = TranslateState.LOADING
-                )
-            }
+            val source = prefs.sourceLanguage
+            val target = prefs.targetLanguage
 
-            downloadIfNeeded(target.code)
+            viewModelScope.launch {
+                _uiState.update {
+                    it.copy(
+                        translateState = TranslateState.LOADING
+                    )
+                }
 
-            if (source != Language.Detect) {
-                downloadIfNeeded(source.code)
-            } else {
-                val language = dictRepository.getLanguage(text)
+                downloadIfNeeded(target.code)
 
-                if (language == Language.Detect) {
+                if (source != Language.Detect) {
+                    downloadIfNeeded(source.code)
+                } else {
+                    val language = dictRepository.getLanguage(text)
+
+                    if (language == Language.Detect) {
+                        _uiState.update {
+                            it.copy(
+                                translateState = TranslateState.ERROR,
+                                errorMessage = "Language detection failed"
+                            )
+                        }
+                        return@launch
+                    } else {
+                        preferencesRepository.setLanguagePref(
+                            selectedLanguage.first().copy(
+                                sourceLanguage = language
+                            )
+                        )
+                    }
+                }
+
+                try {
+                    val translated = dictRepository.translate(text, source.code, target.code)
+                    _uiState.update {
+                        it.copy(
+                            translatedText = translated,
+                            translateState = TranslateState.SUCCESS
+                        )
+                    }
+
+                    translationHistoryRepository.addTranslation(
+                        TranslatedItem(
+                            originalText = uiState.value.textToTranslate,
+                            translatedText = translated,
+                            originalLanguage = selectedLanguage.first().sourceLanguage.code,
+                            translatedTo = selectedLanguage.first().targetLanguage.code,
+                            updateAt = Clock.System.now().toEpochMilliseconds()
+                        )
+                    )
+                } catch (e: Exception) {
                     _uiState.update {
                         it.copy(
                             translateState = TranslateState.ERROR,
-                            errorMessage = "Language detection failed"
+                            errorMessage = e.message ?: "Translation failed"
                         )
                     }
-                    return@launch
-                } else {
-                    source = language
-                    _uiState.update { it.copy(sourceLanguage = language) }
-                }
-            }
-
-            try {
-                val translated = dictRepository.translate(text, source.code, target.code)
-                _uiState.update {
-                    it.copy(
-                        translatedText = translated,
-                        translateState = TranslateState.SUCCESS
-                    )
-                }
-
-                translationHistoryRepository.addTranslation(
-                    TranslatedItem(
-                        originalText = uiState.value.textToTranslate,
-                        translatedText = translated,
-                        originalLanguage = uiState.value.sourceLanguage.code,
-                        translatedTo = uiState.value.targetLanguage.code,
-                        updateAt = Clock.System.now().toEpochMilliseconds()
-                    )
-                )
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        translateState = TranslateState.ERROR,
-                        errorMessage = e.message ?: "Translation failed"
-                    )
                 }
             }
         }
