@@ -37,6 +37,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -62,6 +63,14 @@ import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import com.fresnohernandez99.stpt.theme.LocalWindowSizeHelper
 import com.fresnohernandez99.stpt.theme.WindowSize
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.permissions.compose.BindEffect
+import dev.icerock.moko.permissions.compose.PermissionsControllerFactory
+import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import dev.icerock.moko.permissions.microphone.RECORD_AUDIO
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -131,6 +140,10 @@ fun HomeScreen(
     ) {
         derivedStateOf { !uiState.isRecording && !uiState.isPlaying && uiState.duration != "00:00:00" }
     }
+
+    val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
+    val controller: PermissionsController = remember(factory) { factory.createPermissionsController() }
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
     AppScaffold(
         modifier = Modifier.imePadding(),
@@ -217,8 +230,14 @@ fun HomeScreen(
                                 ),
                             ),
                             onClick = {
-                                setShowRecord(true)
-                                viewModel.startRecording()
+                                coroutineScope.launch {
+                                    if (!controller.isPermissionGranted(Permission.RECORD_AUDIO)) {
+                                        controller.providePermission(Permission.RECORD_AUDIO)
+                                    } else {
+                                        setShowRecord(true)
+                                        viewModel.startRecording()
+                                    }
+                                }
                             }
                         ) {
                             Icon(
@@ -510,5 +529,7 @@ fun HomeScreen(
                 }
             }
         }
+
+        BindEffect(controller)
     }
 }

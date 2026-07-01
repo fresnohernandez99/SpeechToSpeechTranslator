@@ -119,6 +119,11 @@ kotlin {
             api(libs.kmpSplash.runtime)
 
             api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.5.0")
+
+            // permissions
+            api("dev.icerock.moko:permissions:0.20.1")
+            api("dev.icerock.moko:permissions-microphone:0.20.1")
+            api("dev.icerock.moko:permissions-compose:0.20.1")
         }
 
         commonTest.dependencies {
