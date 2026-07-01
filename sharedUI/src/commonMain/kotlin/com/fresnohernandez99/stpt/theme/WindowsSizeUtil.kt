@@ -17,7 +17,11 @@ import androidx.navigation.NavHostController
 // Copyright 2022 Google LLC.
 // SPDX-License-Identifier: Apache-2.0
 
-enum class WindowSize { Compact, Medium, Expanded }
+enum class WindowSize {
+    Compact,
+    Medium,
+    Expanded
+}
 
 /**
  * Remembers the [WindowSize] class for the window corresponding to the

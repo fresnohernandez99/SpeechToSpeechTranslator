@@ -124,6 +124,14 @@ fun HomeScreen(
 
     val isDarkTheme = isSystemInDarkTheme()
 
+    val completedEnable by remember(
+        uiState.isRecording,
+        uiState.isPlaying,
+        uiState.duration
+    ) {
+        derivedStateOf { !uiState.isRecording && !uiState.isPlaying && uiState.duration != "00:00:00" }
+    }
+
     AppScaffold(
         modifier = Modifier.imePadding(),
         containerColor = MaterialTheme.colorScheme.primary,
@@ -210,7 +218,7 @@ fun HomeScreen(
                             ),
                             onClick = {
                                 setShowRecord(true)
-                                viewModel.onRecordingStateChange(!uiState.isRecording)
+                                viewModel.startRecording()
                             }
                         ) {
                             Icon(
@@ -383,28 +391,33 @@ fun HomeScreen(
             )
         }
 
-        if (showRecord)
-            RecordingDialog(
-                onDismiss = {
-                    viewModel.stopRecording()
-                    setShowRecord(false)
-                },
-                uiState = uiState,
-                onStartRecording = viewModel::startRecording,
-                onStopRecording = viewModel::stopRecording,
-                onPauseRecording = viewModel::pauseRecording,
-                onResumeRecording = viewModel::resumeRecording,
-                onStartPlaying = viewModel::startPlaying,
-                onStopPlaying = viewModel::stopPlaying,
-                onPausePlaying = viewModel::pausePlaying,
-                onResumePlaying = viewModel::resumePlaying,
-                onSetPlaybackSpeed = viewModel::setPlaybackSpeed,
-                onCompletedRecord = {
-                    viewModel.onCompletedRecording {
+        RecordingDialog(
+            onDismiss = {
+                viewModel.stopRecording {}
+                setShowRecord(false)
+            },
+            uiState = uiState,
+            onStartRecording = viewModel::startRecording,
+            onStopRecording = {
+                viewModel.stopRecording {
+                    if (completedEnable)
                         downloaderViewModel.checkTranscriptionAvailability(it)
-                    }
                 }
-            )
+            },
+            onPauseRecording = viewModel::pauseRecording,
+            onResumeRecording = viewModel::resumeRecording,
+            onStartPlaying = viewModel::startPlaying,
+            onStopPlaying = viewModel::stopPlaying,
+            onPausePlaying = viewModel::pausePlaying,
+            onResumePlaying = viewModel::resumePlaying,
+            onSetPlaybackSpeed = viewModel::setPlaybackSpeed,
+            onCompletedRecord = {
+                viewModel.onCompletedRecording {
+                    downloaderViewModel.checkTranscriptionAvailability(it)
+                }
+            },
+            show = showRecord
+        )
 
         if (showLoadingDialog) {
             PreparingLoadingDialog()
@@ -441,7 +454,6 @@ fun HomeScreen(
                     }
                 }
             )
-
         }
 
         if (showDownloadQuestionDialog) {

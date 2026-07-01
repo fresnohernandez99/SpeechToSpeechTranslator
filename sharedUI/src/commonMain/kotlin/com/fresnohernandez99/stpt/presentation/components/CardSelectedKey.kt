@@ -36,7 +36,7 @@ val CardSelectedKey = StyleStateKey(defaultValue = false)
 @OptIn(ExperimentalFoundationStyleApi::class)
 fun StyleScope.onSelected(block: StyleScope.() -> Unit) {
     state(CardSelectedKey, Style(block)) { key, state ->
-        state[key] == true
+        state[key]
     }
 }
 

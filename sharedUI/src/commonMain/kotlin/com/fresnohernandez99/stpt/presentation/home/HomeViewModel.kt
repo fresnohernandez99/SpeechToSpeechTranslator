@@ -250,11 +250,6 @@ class HomeViewModel(
         }
     }
 
-    fun onRecordingStateChange(value: Boolean) {
-        if (value) startRecording() else {
-        }//stopRecording()
-    }
-
     fun startRecording() {
         viewModelScope.launch {
             Record.setConfig(
@@ -320,7 +315,7 @@ class HomeViewModel(
         }"
     }
 
-    fun stopRecording() {
+    fun stopRecording(onCompleted: (String) -> Unit) {
         viewModelScope.launch {
             try {
                 val savedAudioPath = Record.stopRecording()
@@ -334,6 +329,10 @@ class HomeViewModel(
                     )
                 }
                 println("Recording stopped. File saved at $savedAudioPath")
+
+                onCompletedRecording {
+                    onCompleted(it)
+                }
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = "Error al detener grabación: ${e.message}") }
             }

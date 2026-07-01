@@ -16,6 +16,6 @@ data class TranscriptionUiState(
     val hasError: Boolean = false
 )
 
-sealed class TranscriptionEffect() {
+sealed class TranscriptionEffect {
      object DownloadEffect : TranscriptionEffect()
 }
