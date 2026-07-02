@@ -9,6 +9,7 @@ data class HomeUiState(
     val textToTranslate: String = "",
     val translatedText: String = "",
     val translateState: TranslateState = TranslateState.NOT_REQUESTED,
+
     val isRecording: Boolean = false,
     val recordTime: String = "00:00:00",
     val playTime: String = "00:00:00",

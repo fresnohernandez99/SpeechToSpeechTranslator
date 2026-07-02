@@ -7,6 +7,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -387,6 +388,33 @@ fun RecordingDialog(
         }
 }
 
+@OptIn(
+    ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalMediaQueryApi::class
+)
+@Composable
+fun RecordingUi(
+    uiState: HomeUiState,
+    onStopRecording: () -> Unit,
+    show: Boolean = true
+) {
+    BoxWithConstraints(modifier = Modifier) {
+        CircularRevealContainer(
+            isExpanded = show,
+            modifier = Modifier.fillMaxSize(),
+            baseColor = MaterialTheme.colorScheme.primaryContainer,
+            expandedColor = MaterialTheme.colorScheme.primary,
+            offsetInY = (this.maxHeight / 2.dp).dp
+        ) {
+            RecordingContent(
+                uiState = uiState,
+                onStopRecording = onStopRecording,
+                modifier = Modifier
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationStyleApi::class)
 @Composable
 fun RecordingContent(
@@ -399,22 +427,20 @@ fun RecordingContent(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = "Listening ...",
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.White
-            )
+        Text(
+            text = "Listening ...",
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.White
+        )
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = uiState.recordTime,
-                style = MaterialTheme.typography.displayMedium,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        Text(
+            modifier = Modifier.align(Alignment.End),
+            text = uiState.recordTime,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.surface
+        )
 
         RecordingWaveButton(onClick = onStopRecording)
     }
@@ -460,7 +486,7 @@ fun RecordingWaveButton(
                     scaleY = waveScale
                     alpha = waveAlpha
                 }
-                .background(Color.White.copy(alpha = 0.2f), CircleShape)
+                .border(1.dp, Color.White, CircleShape)
         )
 
         Box(
@@ -472,7 +498,7 @@ fun RecordingWaveButton(
                     scaleY = secondaryScale
                     alpha = waveAlpha * 0.8f
                 }
-                .background(Color.White.copy(alpha = 0.15f), CircleShape)
+                .border(1.dp, Color.White, CircleShape)
         )
 
         Box(

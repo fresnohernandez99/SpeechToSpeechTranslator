@@ -61,7 +61,7 @@ import com.fresnohernandez99.stpt.presentation.components.AppScaffold
 import com.fresnohernandez99.stpt.presentation.components.PreparingLoadingDialog
 import com.fresnohernandez99.stpt.presentation.home.components.HomeContent
 import com.fresnohernandez99.stpt.presentation.home.components.LanguageSelectorTopBar
-import com.fresnohernandez99.stpt.presentation.home.components.RecordingDialog
+import com.fresnohernandez99.stpt.presentation.home.components.RecordingUi
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import com.fresnohernandez99.stpt.theme.LocalWindowSizeHelper
@@ -135,14 +135,6 @@ fun HomeScreen(
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     val isDarkTheme = isSystemInDarkTheme()
-
-    val completedEnable by remember(
-        uiState.isRecording,
-        uiState.isPlaying,
-        uiState.duration
-    ) {
-        derivedStateOf { !uiState.isRecording && !uiState.isPlaying && uiState.duration != "00:00:00" }
-    }
 
     val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
     val controller: PermissionsController =
@@ -434,31 +426,11 @@ fun HomeScreen(
             )
         }
 
-        RecordingDialog(
-            onDismiss = {
-                viewModel.stopRecording {}
-                setShowRecord(false)
-            },
+        RecordingUi(
             uiState = uiState,
-            onStartRecording = viewModel::startRecording,
             onStopRecording = {
                 viewModel.stopRecording {
-                    if (completedEnable)
-                        downloaderViewModel.checkTranscriptionAvailability(it)
-                    setShowRecord(false)
-                }
-            },
-            onPauseRecording = viewModel::pauseRecording,
-            onResumeRecording = viewModel::resumeRecording,
-            onStartPlaying = viewModel::startPlaying,
-            onStopPlaying = viewModel::stopPlaying,
-            onPausePlaying = viewModel::pausePlaying,
-            onResumePlaying = viewModel::resumePlaying,
-            onSetPlaybackSpeed = viewModel::setPlaybackSpeed,
-            onCompletedRecord = {
-                viewModel.onCompletedRecording {
                     downloaderViewModel.checkTranscriptionAvailability(it)
-                    setShowRecord(false)
                 }
             },
             show = showRecord
@@ -530,6 +502,7 @@ fun HomeScreen(
                         showDownloadDialog = false
                         showErrorDialog = true
                         showLoadingDialog = false
+                        setShowRecord(false)
                     }
 
                     is DownloaderEffect.ModelsAreReady -> {
@@ -541,11 +514,13 @@ fun HomeScreen(
                                     audioPath = it.second!!
                                 )
                             )
+                        setShowRecord(false)
                     }
 
                     is DownloaderEffect.AskForUserAcceptance -> {
                         showDownloadQuestionDialog = true
                         showLoadingDialog = false
+                        setShowRecord(false)
                     }
 
                     is DownloaderEffect.CheckingEffect -> {
