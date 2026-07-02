@@ -25,7 +25,7 @@ import com.fresnohernandez99.stpt.presentation.settings.SettingsScreen
 import com.fresnohernandez99.stpt.theme.AppTheme
 import com.fresnohernandez99.stpt.theme.LocalWindowSizeHelper
 import com.fresnohernandez99.stpt.theme.rememberWindowSizeClass
-import com.fresnohernandez99.stpt.transcription.TranscriptionScreen
+import com.fresnohernandez99.stpt.presentation.transcription.TranscriptionScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

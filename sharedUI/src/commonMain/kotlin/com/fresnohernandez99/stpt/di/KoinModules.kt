@@ -16,10 +16,7 @@ import com.fresnohernandez99.stpt.presentation.languageSelection.LanguageSelecti
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionViewModel
 import com.fresnohernandez99.stpt.presentation.onboarding.OnboardingViewModel
 import com.fresnohernandez99.stpt.presentation.settings.SettingsViewModel
-import com.fresnohernandez99.stpt.room.AppDatabase
-import com.fresnohernandez99.stpt.room.getDatabaseBuilder
-import com.fresnohernandez99.stpt.room.getRoomDatabase
-import com.fresnohernandez99.stpt.transcription.TranscriptionViewModel
+import com.fresnohernandez99.stpt.presentation.transcription.TranscriptionViewModel
 import com.fresnohernandez99.stpt.utils.Gson
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf

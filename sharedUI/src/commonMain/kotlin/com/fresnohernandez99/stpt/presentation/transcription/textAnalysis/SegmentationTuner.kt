@@ -1,4 +1,4 @@
-package com.fresnohernandez99.stpt.transcription.textAnalysis
+package com.fresnohernandez99.stpt.presentation.transcription.textAnalysis
 
 class SegmentationTuner {
     fun adjustBoundaryThreshold(segmenter: HindiTextSegmenter,

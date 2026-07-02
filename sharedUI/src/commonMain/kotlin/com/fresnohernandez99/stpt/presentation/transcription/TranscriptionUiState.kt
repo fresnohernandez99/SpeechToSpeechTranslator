@@ -1,4 +1,4 @@
-package com.fresnohernandez99.stpt.transcription
+package com.fresnohernandez99.stpt.presentation.transcription
 
 import kotlinx.serialization.Serializable
 

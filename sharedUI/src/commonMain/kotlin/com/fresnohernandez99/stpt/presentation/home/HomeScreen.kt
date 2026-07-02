@@ -1,5 +1,8 @@
 package com.fresnohernandez99.stpt.presentation.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -142,146 +145,107 @@ fun HomeScreen(
     }
 
     val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
-    val controller: PermissionsController = remember(factory) { factory.createPermissionsController() }
+    val controller: PermissionsController =
+        remember(factory) { factory.createPermissionsController() }
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
     AppScaffold(
         modifier = Modifier.imePadding(),
         containerColor = MaterialTheme.colorScheme.primary,
         topBar = {
-            Box(Modifier.systemBarsPadding()) {
-                LanguageSelectorTopBar(
-                    modifier = Modifier,
-                    sourceLanguage = languagePref.sourceLanguage,
-                    targetLanguage = languagePref.targetLanguage,
-                    onSelectSourceLanguage = {
-                        navHostController.navigate(
-                            Destination.LanguageSelection(
-                                intent = Destination.LanguageSelection.SOURCE
-                            )
-                        )
-                    },
-                    onSelectTargetLanguage = {
-                        navHostController.navigate(
-                            Destination.LanguageSelection(
-                                intent = Destination.LanguageSelection.TARGET
-                            )
-                        )
-                    },
-                    swapLanguages = viewModel::onSwapLanguage
+            AnimatedVisibility(
+                visible = !showRecord,
+                enter = slideInVertically(
+                    initialOffsetY = { fullHeight -> -fullHeight }
+                ),
+                exit = slideOutVertically(
+                    targetOffsetY = { fullHeight -> -fullHeight }
                 )
+            ) {
+                Box(Modifier.systemBarsPadding()) {
+                    LanguageSelectorTopBar(
+                        modifier = Modifier,
+                        sourceLanguage = languagePref.sourceLanguage,
+                        targetLanguage = languagePref.targetLanguage,
+                        onSelectSourceLanguage = {
+                            navHostController.navigate(
+                                Destination.LanguageSelection(
+                                    intent = Destination.LanguageSelection.SOURCE
+                                )
+                            )
+                        },
+                        onSelectTargetLanguage = {
+                            navHostController.navigate(
+                                Destination.LanguageSelection(
+                                    intent = Destination.LanguageSelection.TARGET
+                                )
+                            )
+                        },
+                        swapLanguages = viewModel::onSwapLanguage
+                    )
+                }
             }
         },
         bottomBar = {
-            Box(
-                modifier = Modifier.fillMaxWidth()
-                    .navigationBarsPadding(), contentAlignment = Alignment.Center
+            AnimatedVisibility(
+                visible = !showRecord,
+                enter = slideInVertically(
+                    initialOffsetY = { fullHeight -> fullHeight }
+                ),
+                exit = slideOutVertically(
+                    targetOffsetY = { fullHeight -> fullHeight }
+                )
             ) {
-                Card(
-                    shape = MaterialTheme.shapes.extraLarge,
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ),
-                    elevation = CardDefaults.elevatedCardElevation(2.dp)
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .navigationBarsPadding(), contentAlignment = Alignment.Center
                 ) {
-                    Row(
-                        modifier = Modifier.padding(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(
-                            space = 16.dp,
-                            alignment = Alignment.CenterHorizontally
-                        )
+                    Card(
+                        shape = MaterialTheme.shapes.extraLarge,
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        ),
+                        elevation = CardDefaults.elevatedCardElevation(2.dp)
                     ) {
-                        IconButton(
-                            enabled = false,
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(
-                                    alpha = 0.3F
-                                ),
-                            ),
-                            onClick = { /* do something */ }) {
-                            Icon(
-                                vectorResource(Res.drawable.camera),
-                                modifier = Modifier.size(24.dp),
-                                contentDescription = "Scan with camera icon",
+                        Row(
+                            modifier = Modifier.padding(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(
+                                space = 16.dp,
+                                alignment = Alignment.CenterHorizontally
                             )
-                        }
-
-                        IconButton(
-                            enabled = false,
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(
-                                    alpha = 0.3F
-                                ),
-                            ),
-                            onClick = { /* do something */ }) {
-                            Icon(
-                                vectorResource(Res.drawable.add_box),
-                                modifier = Modifier.size(24.dp),
-                                contentDescription = "Add box icon",
-                            )
-                        }
-                        IconButton(
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(
-                                    alpha = 0.3F
-                                ),
-                            ),
-                            onClick = {
-                                coroutineScope.launch {
-                                    if (!controller.isPermissionGranted(Permission.RECORD_AUDIO)) {
-                                        controller.providePermission(Permission.RECORD_AUDIO)
-                                    } else {
-                                        setShowRecord(true)
-                                        viewModel.startRecording()
-                                    }
-                                }
-                            }
                         ) {
-                            Icon(
-                                vectorResource(Res.drawable.mic),
-                                modifier = Modifier.size(24.dp),
-                                contentDescription = "Record button",
-                            )
-                        }
-                        IconButton(
-                            enabled = false,
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(
-                                    alpha = 0.3F
-                                ),
-                            ),
-                            onClick = { /* do something */ }) {
-                            Icon(
-                                vectorResource(Res.drawable.draw),
-                                modifier = Modifier.size(24.dp),
-                                contentDescription = "Draw text icon",
-                            )
-                        }
-                        IconButton(
-                            enabled = false,
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.surface,
-                                disabledContentColor = MaterialTheme.colorScheme.surface.copy(
-                                    alpha = 0.3F
-                                ),
-                            ),
-                            onClick = { /* do something */ }) {
-                            Icon(
-                                vectorResource(Res.drawable.history),
-                                modifier = Modifier.size(24.dp),
-                                contentDescription = "Go history icon",
-                            )
-                        }
-
-                        Box {
                             IconButton(
-                                modifier = Modifier.styleable {
-                                    alpha(if (expanded) 0f else 1f)
-                                },
+                                enabled = false,
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.surface,
+                                    disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                        alpha = 0.3F
+                                    ),
+                                ),
+                                onClick = { /* do something */ }) {
+                                Icon(
+                                    vectorResource(Res.drawable.camera),
+                                    modifier = Modifier.size(24.dp),
+                                    contentDescription = "Scan with camera icon",
+                                )
+                            }
+
+                            IconButton(
+                                enabled = false,
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.surface,
+                                    disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                        alpha = 0.3F
+                                    ),
+                                ),
+                                onClick = { /* do something */ }) {
+                                Icon(
+                                    vectorResource(Res.drawable.add_box),
+                                    modifier = Modifier.size(24.dp),
+                                    contentDescription = "Add box icon",
+                                )
+                            }
+                            IconButton(
                                 colors = IconButtonDefaults.iconButtonColors(
                                     contentColor = MaterialTheme.colorScheme.surface,
                                     disabledContentColor = MaterialTheme.colorScheme.surface.copy(
@@ -289,56 +253,116 @@ fun HomeScreen(
                                     ),
                                 ),
                                 onClick = {
-                                    expanded = true
+                                    coroutineScope.launch {
+                                        if (!controller.isPermissionGranted(Permission.RECORD_AUDIO)) {
+                                            controller.providePermission(Permission.RECORD_AUDIO)
+                                        } else {
+                                            setShowRecord(true)
+                                            viewModel.startRecording()
+                                        }
+                                    }
                                 }
                             ) {
                                 Icon(
-                                    vectorResource(Res.drawable.menu),
+                                    vectorResource(Res.drawable.mic),
                                     modifier = Modifier.size(24.dp),
-                                    contentDescription = "Open menu icon",
+                                    contentDescription = "Record button",
+                                )
+                            }
+                            IconButton(
+                                enabled = false,
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.surface,
+                                    disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                        alpha = 0.3F
+                                    ),
+                                ),
+                                onClick = { /* do something */ }) {
+                                Icon(
+                                    vectorResource(Res.drawable.draw),
+                                    modifier = Modifier.size(24.dp),
+                                    contentDescription = "Draw text icon",
+                                )
+                            }
+                            IconButton(
+                                enabled = false,
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.surface,
+                                    disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                        alpha = 0.3F
+                                    ),
+                                ),
+                                onClick = { /* do something */ }) {
+                                Icon(
+                                    vectorResource(Res.drawable.history),
+                                    modifier = Modifier.size(24.dp),
+                                    contentDescription = "Go history icon",
                                 )
                             }
 
-                            if (expanded) {
-                                Popup(
-                                    alignment = Alignment.TopCenter,
-                                    onDismissRequest = { expanded = false }
+                            Box {
+                                IconButton(
+                                    modifier = Modifier.styleable {
+                                        alpha(if (expanded) 0f else 1f)
+                                    },
+                                    colors = IconButtonDefaults.iconButtonColors(
+                                        contentColor = MaterialTheme.colorScheme.surface,
+                                        disabledContentColor = MaterialTheme.colorScheme.surface.copy(
+                                            alpha = 0.3F
+                                        ),
+                                    ),
+                                    onClick = {
+                                        expanded = true
+                                    }
                                 ) {
-                                    Column {
-                                        Column(
-                                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                                            horizontalAlignment = Alignment.CenterHorizontally,
-                                            modifier = Modifier
-                                                .background(
-                                                    MaterialTheme.colorScheme.primary,
-                                                    shape = MaterialTheme.shapes.extraLarge
-                                                )
-                                                .padding(8.dp)
-                                        ) {
-                                            Icon(
-                                                vectorResource(Res.drawable.settings),
-                                                modifier = Modifier.clickable {
-                                                    navHostController.navigate(Destination.Settings)
-                                                }
-                                                    .size(24.dp),
-                                                contentDescription = "Go settings icon",
-                                                tint = Color.White
-                                            )
-                                            Icon(
-                                                vectorResource(if (isDarkTheme) Res.drawable.d_mode else Res.drawable.l_mode),
-                                                modifier = Modifier.size(24.dp),
-                                                contentDescription = "Change theme icon",
-                                                tint = Color.White.copy(alpha = 0.7F),
-                                            )
-                                            Icon(
-                                                vectorResource(Res.drawable.menu),
-                                                modifier = Modifier.size(24.dp),
-                                                contentDescription = "Go menu icon",
-                                                tint = Color.White
-                                            )
-                                        }
+                                    Icon(
+                                        vectorResource(Res.drawable.menu),
+                                        modifier = Modifier.size(24.dp),
+                                        contentDescription = "Open menu icon",
+                                    )
+                                }
 
-                                        Spacer(Modifier.height(15.dp))
+                                if (expanded) {
+                                    Popup(
+                                        alignment = Alignment.TopCenter,
+                                        onDismissRequest = { expanded = false }
+                                    ) {
+                                        Column {
+                                            Column(
+                                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                                horizontalAlignment = Alignment.CenterHorizontally,
+                                                modifier = Modifier
+                                                    .background(
+                                                        MaterialTheme.colorScheme.primary,
+                                                        shape = MaterialTheme.shapes.extraLarge
+                                                    )
+                                                    .padding(8.dp)
+                                            ) {
+                                                Icon(
+                                                    vectorResource(Res.drawable.settings),
+                                                    modifier = Modifier.clickable {
+                                                        navHostController.navigate(Destination.Settings)
+                                                    }
+                                                        .size(24.dp),
+                                                    contentDescription = "Go settings icon",
+                                                    tint = Color.White
+                                                )
+                                                Icon(
+                                                    vectorResource(if (isDarkTheme) Res.drawable.d_mode else Res.drawable.l_mode),
+                                                    modifier = Modifier.size(24.dp),
+                                                    contentDescription = "Change theme icon",
+                                                    tint = Color.White.copy(alpha = 0.7F),
+                                                )
+                                                Icon(
+                                                    vectorResource(Res.drawable.menu),
+                                                    modifier = Modifier.size(24.dp),
+                                                    contentDescription = "Go menu icon",
+                                                    tint = Color.White
+                                                )
+                                            }
+
+                                            Spacer(Modifier.height(15.dp))
+                                        }
                                     }
                                 }
                             }
@@ -421,6 +445,7 @@ fun HomeScreen(
                 viewModel.stopRecording {
                     if (completedEnable)
                         downloaderViewModel.checkTranscriptionAvailability(it)
+                    setShowRecord(false)
                 }
             },
             onPauseRecording = viewModel::pauseRecording,
@@ -433,6 +458,7 @@ fun HomeScreen(
             onCompletedRecord = {
                 viewModel.onCompletedRecording {
                     downloaderViewModel.checkTranscriptionAvailability(it)
+                    setShowRecord(false)
                 }
             },
             show = showRecord

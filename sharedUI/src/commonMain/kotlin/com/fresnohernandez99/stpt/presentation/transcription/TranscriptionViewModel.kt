@@ -1,4 +1,4 @@
-package com.fresnohernandez99.stpt.transcription
+package com.fresnohernandez99.stpt.presentation.transcription
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
 import com.fresnohernandez99.stpt.modelDownloader.ModelSelection
 import com.fresnohernandez99.stpt.platform.Transcriber
-import com.fresnohernandez99.stpt.transcription.textAnalysis.getSegmenter
+import com.fresnohernandez99.stpt.presentation.transcription.textAnalysis.getSegmenter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
