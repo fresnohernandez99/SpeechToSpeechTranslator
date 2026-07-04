@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +37,8 @@ fun DownloaderDialog(
     ) {
         Surface(
             modifier = Modifier,
-            shape = RoundedCornerShape(16.dp), // Rounded corners
+            shape = RoundedCornerShape(16.dp), // Rounded corners,
+            color = MaterialTheme.colorScheme.primaryContainer
         ) {
             Column(
                 modifier = Modifier.padding(12.dp),
@@ -45,13 +46,14 @@ fun DownloaderDialog(
 
                 ) {
                 Text(
-                    "Downloading ${transcriptionModel.description}"
+                    "Downloading ${transcriptionModel.description}",
+                    color = MaterialTheme.colorScheme.surface
                 )
                 LinearProgressIndicator(
                     progress = { (downloaderUiState.progress / 100) },
                     modifier = Modifier.padding(vertical = 12.dp).fillMaxWidth(),
-                    color = ProgressIndicatorDefaults.linearColor,
-                    trackColor = ProgressIndicatorDefaults.linearTrackColor,
+                    color = MaterialTheme.colorScheme.secondary,
+                    trackColor = MaterialTheme.colorScheme.secondaryContainer,
                     strokeCap = StrokeCap.Round,
                 )
                 Row(
@@ -59,14 +61,17 @@ fun DownloaderDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-                        downloaderUiState.downloaded
+                        downloaderUiState.downloaded,
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                     Text(
                         "/",
-                        modifier = Modifier.padding(horizontal = 12.dp)
+                        modifier = Modifier.padding(horizontal = 12.dp),
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                     Text(
-                        downloaderUiState.total
+                        downloaderUiState.total,
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                 }
             }

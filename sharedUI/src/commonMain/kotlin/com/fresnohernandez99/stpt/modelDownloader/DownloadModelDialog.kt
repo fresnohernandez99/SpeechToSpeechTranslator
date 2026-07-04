@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -51,17 +52,27 @@ fun DownloadModelDialog(
         },
         text = {
             Column {
-                Text(stringResource(Res.string.for_accurate_transcription))
+                Text(
+                    stringResource(Res.string.for_accurate_transcription),
+                    color = MaterialTheme.colorScheme.surface
+                )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(stringResource(Res.string.take_few_minutes))
+                Text(
+                    stringResource(Res.string.take_few_minutes),
+                    color = MaterialTheme.colorScheme.surface
+                )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(fileInfo)
+                Text(
+                    fileInfo,
+                    color = MaterialTheme.colorScheme.surface
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     stringResource(
                         Res.string.file_size_approx,
                         transcriptionModel.getModelDownloadSize()
-                    )
+                    ),
+                    color = MaterialTheme.colorScheme.surface
                 )
             }
         },
