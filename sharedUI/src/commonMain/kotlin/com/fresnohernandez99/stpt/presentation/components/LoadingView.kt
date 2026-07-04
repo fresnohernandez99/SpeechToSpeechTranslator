@@ -30,9 +30,12 @@ import com.fresnohernandez99.stpt.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import speechtospeechtranslator.sharedui.generated.resources.Res
+import speechtospeechtranslator.sharedui.generated.resources.app_logo_desc
 import speechtospeechtranslator.sharedui.generated.resources.app_name
 import speechtospeechtranslator.sharedui.generated.resources.loading_shape_1
+import speechtospeechtranslator.sharedui.generated.resources.loading_shape_1_desc
 import speechtospeechtranslator.sharedui.generated.resources.loading_shape_2
+import speechtospeechtranslator.sharedui.generated.resources.loading_shape_2_desc
 import speechtospeechtranslator.sharedui.generated.resources.translate_logo
 
 @OptIn(ExperimentalFoundationStyleApi::class)
@@ -78,7 +81,7 @@ fun LoadingView(
             Image(
                 modifier = Modifier.size(100.dp),
                 painter = painterResource(Res.drawable.translate_logo),
-                contentDescription = "App Logo"
+                contentDescription = stringResource(Res.string.app_logo_desc)
             )
 
             Text(
@@ -101,7 +104,7 @@ fun LoadingView(
                     this.scaleY = scale * 1.05f
                 },
             painter = painterResource(Res.drawable.loading_shape_2),
-            contentDescription = "Floating shape 2"
+            contentDescription = stringResource(Res.string.loading_shape_2_desc)
         )
 
         Image(
@@ -116,7 +119,7 @@ fun LoadingView(
                     this.scaleY = scale
                 },
             painter = painterResource(Res.drawable.loading_shape_1),
-            contentDescription = "Floating shape 1"
+            contentDescription = stringResource(Res.string.loading_shape_1_desc)
         )
     }
 }

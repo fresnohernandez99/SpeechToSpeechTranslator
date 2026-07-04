@@ -55,6 +55,7 @@ import speechtospeechtranslator.sharedui.generated.resources.transcription_dialo
 import speechtospeechtranslator.sharedui.generated.resources.transcription_dialog_error_audio_file_desc
 import speechtospeechtranslator.sharedui.generated.resources.transcription_dialog_error_audio_file_title
 import speechtospeechtranslator.sharedui.generated.resources.transcription_dialog_error_got_it
+import speechtospeechtranslator.sharedui.generated.resources.transcription_listening
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -217,7 +218,7 @@ fun TranscriptionContent(
             ) {
                 if (originalText.isEmpty() && inTranscription) {
                     Text(
-                        text = "Escuchando...",
+                        text = stringResource(Res.string.transcription_listening),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f)
                     )

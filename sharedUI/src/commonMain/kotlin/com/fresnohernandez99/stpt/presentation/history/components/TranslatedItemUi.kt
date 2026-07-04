@@ -13,8 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import speechtospeechtranslator.sharedui.generated.resources.Res
 import speechtospeechtranslator.sharedui.generated.resources.clock
+import speechtospeechtranslator.sharedui.generated.resources.history_clock_icon_desc
 
 @Composable
 fun SimpleTranslatedItemUi(
@@ -36,7 +38,7 @@ fun SimpleTranslatedItemUi(
 
         Icon(
             painterResource(Res.drawable.clock),
-            contentDescription = "Clock from history item",
+            contentDescription = stringResource(Res.string.history_clock_icon_desc),
             tint = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier.size(24.dp)
         )

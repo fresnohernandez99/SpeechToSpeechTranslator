@@ -42,7 +42,15 @@ import com.fresnohernandez99.stpt.presentation.home.components.LanguageSelector
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import kotlinx.collections.immutable.toImmutableList
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import speechtospeechtranslator.sharedui.generated.resources.Res
+import speechtospeechtranslator.sharedui.generated.resources.add_new_dictionary
+import speechtospeechtranslator.sharedui.generated.resources.delete
+import speechtospeechtranslator.sharedui.generated.resources.download_dictionary
+import speechtospeechtranslator.sharedui.generated.resources.error_title
+import speechtospeechtranslator.sharedui.generated.resources.installed_dictionaries
+import speechtospeechtranslator.sharedui.generated.resources.ok
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,7 +77,7 @@ fun DictsManageScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Add New Dictionary",
+                text = stringResource(Res.string.add_new_dictionary),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
@@ -105,7 +113,7 @@ fun DictsManageScreen(
                     ) {
                         Icon(Icons.Default.Add, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Download Dictionary", color = Color.White)
+                        Text(stringResource(Res.string.download_dictionary), color = Color.White)
                     }
                 }
             }
@@ -113,7 +121,7 @@ fun DictsManageScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Installed Dictionaries",
+                text = stringResource(Res.string.installed_dictionaries),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
@@ -135,7 +143,7 @@ fun DictsManageScreen(
                             IconButton(onClick = { viewModel.onDeleteLanguage(language.code) }) {
                                 Icon(
                                     Icons.Default.Delete,
-                                    contentDescription = "Delete",
+                                    contentDescription = stringResource(Res.string.delete),
                                     tint = MaterialTheme.colorScheme.error
                                 )
                             }
@@ -170,11 +178,11 @@ fun DictsManageScreen(
     state.errorMessage?.let { error ->
         AlertDialog(
             onDismissRequest = viewModel::clearError,
-            title = { Text("Error") },
+            title = { Text(stringResource(Res.string.error_title)) },
             text = { Text(error) },
             confirmButton = {
                 TextButton(onClick = viewModel::clearError) {
-                    Text("OK")
+                    Text(stringResource(Res.string.ok))
                 }
             }
         )

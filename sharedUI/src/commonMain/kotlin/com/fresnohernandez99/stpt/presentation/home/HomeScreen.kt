@@ -79,15 +79,26 @@ import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
 import speechtospeechtranslator.sharedui.generated.resources.Res
 import speechtospeechtranslator.sharedui.generated.resources.add_box
+import speechtospeechtranslator.sharedui.generated.resources.add_box_icon_desc
 import speechtospeechtranslator.sharedui.generated.resources.camera
+import speechtospeechtranslator.sharedui.generated.resources.change_theme_icon_desc
 import speechtospeechtranslator.sharedui.generated.resources.confirmation_cancel
 import speechtospeechtranslator.sharedui.generated.resources.d_mode
 import speechtospeechtranslator.sharedui.generated.resources.download_dialog_error
 import speechtospeechtranslator.sharedui.generated.resources.draw
+import speechtospeechtranslator.sharedui.generated.resources.draw_text_icon_desc
+import speechtospeechtranslator.sharedui.generated.resources.error_title
+import speechtospeechtranslator.sharedui.generated.resources.go_history_icon_desc
+import speechtospeechtranslator.sharedui.generated.resources.go_menu_icon_desc
+import speechtospeechtranslator.sharedui.generated.resources.go_settings_icon_desc
 import speechtospeechtranslator.sharedui.generated.resources.history
 import speechtospeechtranslator.sharedui.generated.resources.l_mode
 import speechtospeechtranslator.sharedui.generated.resources.menu
 import speechtospeechtranslator.sharedui.generated.resources.mic
+import speechtospeechtranslator.sharedui.generated.resources.ok
+import speechtospeechtranslator.sharedui.generated.resources.open_menu_icon_desc
+import speechtospeechtranslator.sharedui.generated.resources.record_button_desc
+import speechtospeechtranslator.sharedui.generated.resources.scan_camera_icon_desc
 import speechtospeechtranslator.sharedui.generated.resources.settings
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationStyleApi::class)
@@ -218,7 +229,7 @@ fun HomeScreen(
                                 Icon(
                                     vectorResource(Res.drawable.camera),
                                     modifier = Modifier.size(24.dp),
-                                    contentDescription = "Scan with camera icon",
+                                    contentDescription = stringResource(Res.string.scan_camera_icon_desc),
                                 )
                             }
 
@@ -234,7 +245,7 @@ fun HomeScreen(
                                 Icon(
                                     vectorResource(Res.drawable.add_box),
                                     modifier = Modifier.size(24.dp),
-                                    contentDescription = "Add box icon",
+                                    contentDescription = stringResource(Res.string.add_box_icon_desc),
                                 )
                             }
                             IconButton(
@@ -258,7 +269,7 @@ fun HomeScreen(
                                 Icon(
                                     vectorResource(Res.drawable.mic),
                                     modifier = Modifier.size(24.dp),
-                                    contentDescription = "Record button",
+                                    contentDescription = stringResource(Res.string.record_button_desc),
                                 )
                             }
                             IconButton(
@@ -273,7 +284,7 @@ fun HomeScreen(
                                 Icon(
                                     vectorResource(Res.drawable.draw),
                                     modifier = Modifier.size(24.dp),
-                                    contentDescription = "Draw text icon",
+                                    contentDescription = stringResource(Res.string.draw_text_icon_desc),
                                 )
                             }
                             IconButton(
@@ -288,7 +299,7 @@ fun HomeScreen(
                                 Icon(
                                     vectorResource(Res.drawable.history),
                                     modifier = Modifier.size(24.dp),
-                                    contentDescription = "Go history icon",
+                                    contentDescription = stringResource(Res.string.go_history_icon_desc),
                                 )
                             }
 
@@ -310,7 +321,7 @@ fun HomeScreen(
                                     Icon(
                                         vectorResource(Res.drawable.menu),
                                         modifier = Modifier.size(24.dp),
-                                        contentDescription = "Open menu icon",
+                                        contentDescription = stringResource(Res.string.open_menu_icon_desc),
                                     )
                                 }
 
@@ -336,19 +347,19 @@ fun HomeScreen(
                                                         navHostController.navigate(Destination.Settings)
                                                     }
                                                         .size(24.dp),
-                                                    contentDescription = "Go settings icon",
+                                                    contentDescription = stringResource(Res.string.go_settings_icon_desc),
                                                     tint = Color.White
                                                 )
                                                 Icon(
                                                     vectorResource(if (isDarkTheme) Res.drawable.d_mode else Res.drawable.l_mode),
                                                     modifier = Modifier.size(24.dp),
-                                                    contentDescription = "Change theme icon",
+                                                    contentDescription = stringResource(Res.string.change_theme_icon_desc),
                                                     tint = Color.White.copy(alpha = 0.7F),
                                                 )
                                                 Icon(
                                                     vectorResource(Res.drawable.menu),
                                                     modifier = Modifier.size(24.dp),
-                                                    contentDescription = "Go menu icon",
+                                                    contentDescription = stringResource(Res.string.go_menu_icon_desc),
                                                     tint = Color.White
                                                 )
                                             }
@@ -416,11 +427,11 @@ fun HomeScreen(
         uiState.errorMessage?.let { error ->
             AlertDialog(
                 onDismissRequest = viewModel::clearError,
-                title = { Text("Error") },
+                title = { Text(stringResource(Res.string.error_title)) },
                 text = { Text(error) },
                 confirmButton = {
                     TextButton(onClick = viewModel::clearError) {
-                        Text("OK")
+                        Text(stringResource(Res.string.ok))
                     }
                 }
             )

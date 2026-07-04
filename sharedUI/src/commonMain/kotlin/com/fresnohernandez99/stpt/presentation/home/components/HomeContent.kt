@@ -59,7 +59,14 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import speechtospeechtranslator.sharedui.generated.resources.Res
 import speechtospeechtranslator.sharedui.generated.resources.enter_text
+import speechtospeechtranslator.sharedui.generated.resources.history_label
+import speechtospeechtranslator.sharedui.generated.resources.no_translation_history
 import speechtospeechtranslator.sharedui.generated.resources.translate
+import speechtospeechtranslator.sharedui.generated.resources.translate_completed_icon_desc
+import speechtospeechtranslator.sharedui.generated.resources.translate_error_icon_desc
+import speechtospeechtranslator.sharedui.generated.resources.translate_icon_desc
+import speechtospeechtranslator.sharedui.generated.resources.translating
+import speechtospeechtranslator.sharedui.generated.resources.translation_label
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -163,7 +170,7 @@ fun HomeContent(
                         TranslateState.NOT_REQUESTED -> {
                             Icon(
                                 painter = painterResource(Res.drawable.translate),
-                                contentDescription = "Translate language ico",
+                                contentDescription = stringResource(Res.string.translate_icon_desc),
                                 modifier = Modifier.size(50.dp)
                             )
                         }
@@ -179,7 +186,7 @@ fun HomeContent(
                         TranslateState.SUCCESS -> {
                             Icon(
                                 Icons.Default.Check,
-                                contentDescription = "Translate language completed ico",
+                                contentDescription = stringResource(Res.string.translate_completed_icon_desc),
                                 modifier = Modifier.size(50.dp)
                             )
                         }
@@ -187,7 +194,7 @@ fun HomeContent(
                         TranslateState.ERROR -> {
                             Icon(
                                 Icons.Default.Error,
-                                contentDescription = "Translate language error ico",
+                                contentDescription = stringResource(Res.string.translate_error_icon_desc),
                                 modifier = Modifier.size(50.dp)
                             )
                         }
@@ -212,7 +219,7 @@ fun HomeContent(
                 )
                     item {
                         Text(
-                            text = "Translation:",
+                            text = stringResource(Res.string.translation_label),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.tertiary
                         )
@@ -220,7 +227,7 @@ fun HomeContent(
 
                         if (uiState.translateState == TranslateState.LOADING) {
                             Text(
-                                text = "Translating...",
+                                text = stringResource(Res.string.translating),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
                                     alpha = 0.6f
@@ -242,7 +249,7 @@ fun HomeContent(
                     HistoryState.Empty -> {
                         item {
                             Text(
-                                "No translation history, yet",
+                                stringResource(Res.string.no_translation_history),
                                 style = MaterialTheme.typography.bodyLarge.copy(fontStyle = FontStyle.Italic),
                                 color = MaterialTheme.colorScheme.tertiary
                             )
@@ -258,7 +265,7 @@ fun HomeContent(
                     is HistoryState.Success -> {
                         item {
                             Text(
-                                text = "History:",
+                                text = stringResource(Res.string.history_label),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.tertiary
                             )

@@ -14,11 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import org.jetbrains.compose.resources.stringResource
+import speechtospeechtranslator.sharedui.generated.resources.Res
+import speechtospeechtranslator.sharedui.generated.resources.preparing
 
 @Composable
 fun PreparingLoadingDialog(
     modifier: Modifier = Modifier,
-    text: String = "Preparing...",
+    text: String = stringResource(Res.string.preparing),
     onDismissRequest: (() -> Unit)? = null
 ) {
     Dialog(

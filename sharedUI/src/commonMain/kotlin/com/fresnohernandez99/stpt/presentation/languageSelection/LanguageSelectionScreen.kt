@@ -45,7 +45,13 @@ import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import speechtospeechtranslator.sharedui.generated.resources.Res
+import speechtospeechtranslator.sharedui.generated.resources.all_languages
+import speechtospeechtranslator.sharedui.generated.resources.clear
+import speechtospeechtranslator.sharedui.generated.resources.search
+import speechtospeechtranslator.sharedui.generated.resources.search_icon_desc
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,7 +89,7 @@ fun LanguageSelectionScreen(
         topBar = {
             BackTopBar(
                 onBack = { navController.navigateUp() },
-                title = "All Languages",
+                title = stringResource(Res.string.all_languages),
                 modifier = Modifier
             )
         },
@@ -124,7 +130,7 @@ fun LanguageSelectionContent(
             modifier = Modifier.fillMaxWidth(),
             placeholder = {
                 Text(
-                    "Search",
+                    stringResource(Res.string.search),
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 20.sp),
                     color = MaterialTheme.colorScheme.surface
                 )
@@ -132,7 +138,7 @@ fun LanguageSelectionContent(
             leadingIcon = {
                 Icon(
                     Icons.Default.Search,
-                    contentDescription = "search bar icon",
+                    contentDescription = stringResource(Res.string.search_icon_desc),
                     tint = MaterialTheme.colorScheme.surface
                 )
             },
@@ -140,7 +146,7 @@ fun LanguageSelectionContent(
                 {
                     IconButton(onClick = { searchQuery.clearText() }) {
                         Icon(
-                            Icons.Default.Close, contentDescription = "Clear",
+                            Icons.Default.Close, contentDescription = stringResource(Res.string.clear),
                             tint = MaterialTheme.colorScheme.surface
                         )
                     }

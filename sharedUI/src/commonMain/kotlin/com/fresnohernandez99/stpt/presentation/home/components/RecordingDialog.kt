@@ -54,6 +54,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.fresnohernandez99.stpt.presentation.home.HomeUiState
+import org.jetbrains.compose.resources.stringResource
+import speechtospeechtranslator.sharedui.generated.resources.Res
+import speechtospeechtranslator.sharedui.generated.resources.error_title
+import speechtospeechtranslator.sharedui.generated.resources.ok
+import speechtospeechtranslator.sharedui.generated.resources.pause
+import speechtospeechtranslator.sharedui.generated.resources.play
+import speechtospeechtranslator.sharedui.generated.resources.ready
+import speechtospeechtranslator.sharedui.generated.resources.rec_title
+import speechtospeechtranslator.sharedui.generated.resources.record
+import speechtospeechtranslator.sharedui.generated.resources.recording_level
+import speechtospeechtranslator.sharedui.generated.resources.recording_listening
+import speechtospeechtranslator.sharedui.generated.resources.resume
+import speechtospeechtranslator.sharedui.generated.resources.stop
 
 @OptIn(
     ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class,
@@ -189,7 +202,7 @@ fun RecordingDialog(
             ) {
                 // Title
                 Text(
-                    text = "Rec...",
+                    text = stringResource(Res.string.rec_title),
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Normal,
                     modifier = Modifier.padding(top = 84.dp)
@@ -230,7 +243,7 @@ fun RecordingDialog(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Recording Level",
+                            text = stringResource(Res.string.recording_level),
                             fontSize = 12.sp,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
@@ -296,22 +309,22 @@ fun RecordingDialog(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         AudioButton(
-                            text = "Record",
+                            text = stringResource(Res.string.record),
                             onClick = onStartRecording,
                             enabled = !uiState.isRecording && !uiState.isPlaying
                         )
                         AudioButton(
-                            text = "Pause",
+                            text = stringResource(Res.string.pause),
                             onClick = onPauseRecording,
                             enabled = uiState.isRecording && !uiState.isRecordingPaused
                         )
                         AudioButton(
-                            text = "Resume",
+                            text = stringResource(Res.string.resume),
                             onClick = onResumeRecording,
                             enabled = uiState.isRecording && uiState.isRecordingPaused
                         )
                         AudioButton(
-                            text = "Stop",
+                            text = stringResource(Res.string.stop),
                             onClick = onStopRecording,
                             enabled = uiState.isRecording
                         )
@@ -345,22 +358,22 @@ fun RecordingDialog(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         AudioButton(
-                            text = "Play",
+                            text = stringResource(Res.string.play),
                             onClick = onStartPlaying,
                             enabled = !uiState.isRecording && !uiState.isPlaying
                         )
                         AudioButton(
-                            text = "Pause",
+                            text = stringResource(Res.string.pause),
                             onClick = onPausePlaying,
                             enabled = uiState.isPlaying && !uiState.isPlayingPaused
                         )
                         AudioButton(
-                            text = "Resume",
+                            text = stringResource(Res.string.resume),
                             onClick = onResumePlaying,
                             enabled = uiState.isPlaying && uiState.isPlayingPaused
                         )
                         AudioButton(
-                            text = "Stop",
+                            text = stringResource(Res.string.stop),
                             onClick = onStopPlaying,
                             enabled = uiState.isPlaying
                         )
@@ -377,7 +390,7 @@ fun RecordingDialog(
                         )
                     ) {
                         Text(
-                            text = "Ready",
+                            text = stringResource(Res.string.ready),
                             color = if (completedEnable) Color.White else Color.Gray,
                             fontSize = 14.sp,
                             textAlign = TextAlign.Center
@@ -428,7 +441,7 @@ fun RecordingContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Listening ...",
+            text = stringResource(Res.string.recording_listening),
             style = MaterialTheme.typography.titleLarge,
             color = Color.White
         )
@@ -519,7 +532,7 @@ fun RecordingWaveButton(
         ) {
             Icon(
                 imageVector = Icons.Default.Pause,
-                contentDescription = "Stop",
+                contentDescription = stringResource(Res.string.stop),
                 tint = Color.White,
                 modifier = Modifier.size(32.dp)
             )

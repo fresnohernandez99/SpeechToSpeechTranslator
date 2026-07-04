@@ -54,7 +54,12 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import speechtospeechtranslator.sharedui.generated.resources.Res
 import speechtospeechtranslator.sharedui.generated.resources.change
+import speechtospeechtranslator.sharedui.generated.resources.change_language_icon_desc
+import speechtospeechtranslator.sharedui.generated.resources.clear
+import speechtospeechtranslator.sharedui.generated.resources.close
 import speechtospeechtranslator.sharedui.generated.resources.detect_language
+import speechtospeechtranslator.sharedui.generated.resources.search_language
+import speechtospeechtranslator.sharedui.generated.resources.select_language
 
 @Composable
 fun LanguageSelectorBtn(
@@ -151,11 +156,11 @@ fun LanguagePickerDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Select Language",
+                        text = stringResource(Res.string.select_language),
                         style = MaterialTheme.typography.titleLarge
                     )
                     IconButton(onClick = onDismiss) {
-                        Icon(Icons.Default.Close, contentDescription = "Close")
+                        Icon(Icons.Default.Close, contentDescription = stringResource(Res.string.close))
                     }
                 }
 
@@ -165,12 +170,12 @@ fun LanguagePickerDialog(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Search language...") },
+                    placeholder = { Text(stringResource(Res.string.search_language)) },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                     trailingIcon = if (searchQuery.isNotEmpty()) {
                         {
                             IconButton(onClick = { searchQuery = "" }) {
-                                Icon(Icons.Default.Close, contentDescription = "Clear")
+                                Icon(Icons.Default.Close, contentDescription = stringResource(Res.string.clear))
                             }
                         }
                     } else null,
@@ -273,7 +278,7 @@ fun LanguageSelectorTopBar(
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.change),
-                    contentDescription = "Change language ico",
+                    contentDescription = stringResource(Res.string.change_language_icon_desc),
                     modifier = Modifier.size(24.dp),
                     tint = Color.White
                 )
