@@ -1,17 +1,29 @@
 package com.fresnohernandez99.stpt.presentation.history.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.StyleStateKey
+import androidx.compose.foundation.style.rememberUpdatedStyleState
+import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.fresnohernandez99.stpt.data.local.TranslatedItem
+import com.fresnohernandez99.stpt.data.remote.model.DictionaryResponse
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import speechtospeechtranslator.sharedui.generated.resources.Res
@@ -30,7 +42,7 @@ fun SimpleTranslatedItemUi(
         Text(
             translatedItemOriginalText,
             modifier = Modifier.weight(1F).padding(end = 8.dp),
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.tertiary,
             maxLines = 1,
             overflow = TextOverflow.MiddleEllipsis
@@ -42,5 +54,68 @@ fun SimpleTranslatedItemUi(
             tint = MaterialTheme.colorScheme.tertiary,
             modifier = Modifier.size(24.dp)
         )
+    }
+}
+
+@OptIn(ExperimentalFoundationStyleApi::class)
+private val ExpandedStateKey = StyleStateKey(defaultValue = false)
+
+@OptIn(ExperimentalFoundationStyleApi::class)
+@Composable
+fun TranslatedItemUi(
+    modifier: Modifier = Modifier,
+    translatedItem: TranslatedItem,
+    getExtraData: () -> Unit,
+    isExpanded: Boolean,
+    expandedData: DictionaryResponse?,
+    onToggleExpand: () -> Unit
+) {
+    Column(modifier.clickable { onToggleExpand() }) {
+        val styleState = rememberUpdatedStyleState(interactionSource = null) { state ->
+            state[ExpandedStateKey] = isExpanded
+        }
+
+        Row(
+            Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                translatedItem.originalText,
+                modifier = Modifier.weight(1F).padding(8.dp),
+                style = MaterialTheme.typography.titleSmall,
+                color = Color.White,
+            )
+
+            Icon(
+                painterResource(Res.drawable.clock),
+                contentDescription = stringResource(Res.string.history_clock_icon_desc),
+                tint = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier.size(24.dp).styleable(styleState) {
+                    rotationZ(-45F)
+                    state(ExpandedStateKey, Style {
+                        animate(tween(durationMillis = 1600)) {
+                            rotationZ(-220F)
+                        }
+                    }) { key, state -> state[key] }
+                }
+            )
+        }
+
+        Text(
+            translatedItem.translatedText,
+            modifier = Modifier.padding(horizontal = 8.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.tertiary,
+        )
+
+        AnimatedVisibility(visible = isExpanded) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+            ) {
+
+            }
+        }
     }
 }

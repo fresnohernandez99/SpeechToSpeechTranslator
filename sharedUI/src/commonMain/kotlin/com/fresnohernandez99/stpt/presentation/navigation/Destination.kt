@@ -32,4 +32,7 @@ sealed interface Destination {
             const val TARGET = "target"
         }
     }
+    @Serializable
+    @Immutable
+    data object History : Destination
 }

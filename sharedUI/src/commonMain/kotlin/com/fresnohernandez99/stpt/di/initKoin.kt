@@ -16,6 +16,7 @@ fun KoinApplication.init(
         appModule,
         viewModelModule,
         repositoryModule,
+        networkModule,
         platformModule(listOf(translatorManagerIos, languageIdManagerIos)),
         mapperModule
     )
@@ -29,6 +30,7 @@ fun initKoinApplication(config: KoinAppDeclaration? = null) {
             appModule,
             viewModelModule,
             repositoryModule,
+            networkModule,
             platformModule(emptyList()),
             mapperModule
         )

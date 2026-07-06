@@ -8,6 +8,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -55,6 +56,8 @@ import com.fresnohernandez99.stpt.presentation.history.components.SimpleTranslat
 import com.fresnohernandez99.stpt.presentation.home.HistoryState
 import com.fresnohernandez99.stpt.presentation.home.HomeUiState
 import com.fresnohernandez99.stpt.presentation.home.TranslateState
+import com.fresnohernandez99.stpt.presentation.navigation.Destination
+import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import speechtospeechtranslator.sharedui.generated.resources.Res
@@ -80,6 +83,8 @@ fun HomeContent(
     bottomPadding: Dp
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val navHostController = LocalNavController.current
+
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -205,6 +210,9 @@ fun HomeContent(
 
         Box(
             modifier = Modifier
+                .clickable {
+                    navHostController.navigate(Destination.History)
+                }
                 .fillMaxWidth()
                 .weight(0.5F)
                 .background(

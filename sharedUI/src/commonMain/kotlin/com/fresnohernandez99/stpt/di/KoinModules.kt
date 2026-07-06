@@ -4,13 +4,16 @@ import com.fresnohernandez99.stpt.InitViewModel
 import com.fresnohernandez99.stpt.data.repository.DictRepositoryImpl
 import com.fresnohernandez99.stpt.data.repository.PreferencesRepositoryImpl
 import com.fresnohernandez99.stpt.data.repository.TranslationHistoryRepositoryImpl
+import com.fresnohernandez99.stpt.data.repository.WordDefinitionRepositoryImpl
 import com.fresnohernandez99.stpt.domain.repository.DictRepository
 import com.fresnohernandez99.stpt.domain.repository.PreferencesRepository
 import com.fresnohernandez99.stpt.domain.repository.TranslationHistoryRepository
+import com.fresnohernandez99.stpt.domain.repository.WordDefinitionRepository
 import com.fresnohernandez99.stpt.modelDownloader.ModelDownloaderViewModel
 import com.fresnohernandez99.stpt.modelDownloader.ModelSelection
 import com.fresnohernandez99.stpt.platform.presentation.PlatformViewModel
 import com.fresnohernandez99.stpt.presentation.dictsManage.DictsManageViewModel
+import com.fresnohernandez99.stpt.presentation.history.HistoryViewModel
 import com.fresnohernandez99.stpt.presentation.home.HomeViewModel
 import com.fresnohernandez99.stpt.presentation.languageSelection.LanguageSelectionViewModel
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionViewModel
@@ -32,6 +35,7 @@ val repositoryModule = module {
     single<PreferencesRepository> { PreferencesRepositoryImpl(get(), get()) }
     single<DictRepository> { DictRepositoryImpl(get(), get()) }
     single<TranslationHistoryRepository> { TranslationHistoryRepositoryImpl(get()) }
+    single<WordDefinitionRepository> { WordDefinitionRepositoryImpl(get()) }
 }
 
 val viewModelModule = module {
@@ -45,6 +49,7 @@ val viewModelModule = module {
     viewModelOf(::InitViewModel)
     viewModelOf(::OnboardingViewModel)
     viewModelOf(::LanguageSelectionViewModel)
+    viewModelOf(::HistoryViewModel)
 }
 
 val mapperModule = module {

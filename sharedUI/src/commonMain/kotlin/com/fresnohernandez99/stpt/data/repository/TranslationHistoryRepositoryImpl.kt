@@ -33,4 +33,8 @@ class TranslationHistoryRepositoryImpl(
     override suspend fun getLast3(): List<TranslatedItem> {
         return dao.getLast3()
     }
+
+    override suspend fun updateTranslation(item: TranslatedItem) {
+        dao.update(item)
+    }
 }

@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.fresnohernandez99.stpt.presentation.components.LoadingView
 import com.fresnohernandez99.stpt.presentation.dictsManage.DictsManageScreen
+import com.fresnohernandez99.stpt.presentation.history.HistoryScreen
 import com.fresnohernandez99.stpt.presentation.home.HomeScreen
 import com.fresnohernandez99.stpt.presentation.languageSelection.LanguageSelectionScreen
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelSelectionScreen
@@ -108,6 +109,13 @@ fun App(
                         val link: Destination.LanguageSelection = backStackEntry.toRoute()
 
                         LanguageSelectionScreen(
+                            link = link
+                        )
+                    }
+                    composable<Destination.History> { backStackEntry ->
+                        val link: Destination.History = backStackEntry.toRoute()
+
+                        HistoryScreen(
                             link = link
                         )
                     }

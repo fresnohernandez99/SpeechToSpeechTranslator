@@ -9,4 +9,5 @@ interface TranslationHistoryRepository {
     suspend fun addTranslation(item: TranslatedItem)
     suspend fun deleteTranslation(item: TranslatedItem)
     suspend fun getLast3(): List<TranslatedItem>
+    suspend fun updateTranslation(item: TranslatedItem)
 }
