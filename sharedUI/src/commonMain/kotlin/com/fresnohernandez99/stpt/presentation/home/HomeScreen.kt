@@ -499,7 +499,9 @@ fun HomeScreen(
         }
 
         LaunchedEffect(Unit) {
-            viewModel.onTextChanged(link.typed)
+            if (link.typed.isNotBlank()) {
+                viewModel.onTextChanged(link.typed)
+            }
 
             downloaderViewModel.effects.collect {
                 when (it.first) {
