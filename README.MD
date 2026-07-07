@@ -1,5 +1,9 @@
 # Speech-to-Speech Translator (KMP) 🎙️➡️🗣️
 
+<p align="center">
+  <img src="sharedUI/src/commonMain/composeResources/drawable/translate_logo.png" width="200" alt="Logo">
+</p>
+
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.4.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.11.1-purple.svg?style=flat&logo=jetpackcompose)](https://www.jetbrains.com/lp/compose-mpp/)
 [![AGP](https://img.shields.io/badge/AGP-9.2.1-green.svg?style=flat&logo=android)](https://developer.android.com/studio/releases/gradle-plugin)
@@ -7,17 +11,37 @@
 
 A high-performance, cross-platform mobile application built with **Kotlin Multiplatform** and **Compose Multiplatform**. The project leverages industry-standard libraries and cutting-edge versions to provide a seamless translation experience.
 
-> **Current Status:** The project is currently a robust **Speech-to-Text (STT)** and **Text-to-Text** translator. The **Text-to-Speech (TTS)** integration is under active development to complete the Speech-to-Speech loop.
-
 ---
 
 ## ✨ Features
 
 - **Real-time Transcription:** Powered by `Whisper.cpp` via Kotlin Native CInterop for high-accuracy, on-device STT.
 - **Multilingual Support:** Translation between dozens of languages using Google ML Kit.
+- **Dictionary Integration:** Search for word definitions on-the-fly via `Free Dictionary API` with local persistence.
 - **True Multiplatform:** Shared UI and logic between Android and iOS using Compose Multiplatform.
-- **Modern Architecture:** Clean Architecture principles with MVVM and Dependency Injection.
+- **Modern Architecture:** Clean Architecture principles with MVVM and Dependency Injection (Koin).
 - **Offline Capable:** Designed to handle heavy lifting (transcription/translation) on-device where possible.
+
+---
+
+## 📸 Screenshots
+
+<p align="center">
+  <img src="images/1.jpeg" width="180">
+  <img src="images/2.jpeg" width="180">
+  <img src="images/3.jpeg" width="180">
+  <img src="images/4.jpeg" width="180">
+</p>
+<p align="center">
+  <img src="images/5.jpeg" width="180">
+  <img src="images/6.jpeg" width="180">
+  <img src="images/7.jpeg" width="180">
+  <img src="images/8.jpeg" width="180">
+</p>
+<p align="center">
+  <img src="images/9.jpeg" width="180">
+  <img src="images/10.jpeg" width="180">
+</p>
 
 ---
 
@@ -60,7 +84,7 @@ Following the latest **AGP 9.0+** requirements, the project is modularized to se
    git clone https://github.com/your-username/SpeechToSpeechTranslator.git
    ```
 2. Open the project in Android Studio.
-3. Sync Gradle (The project uses Kotlin 2.4.0 and AGP 9.2.1, ensure your environment is compatible).
+3. Sync Gradle.
 4. For iOS:
    - Navigate to the `iosApp` folder.
    - Run `pod install`.
@@ -68,15 +92,16 @@ Following the latest **AGP 9.0+** requirements, the project is modularized to se
 
 ---
 
-## 🗺 Roadmap
+## ✅ Progress & TODO
 
-- [x] **Phase 1:** Core KMP Infrastructure & DI Setup.
-- [x] **Phase 2:** Whisper.cpp CInterop integration for Android & iOS.
-- [x] **Phase 3:** Speech-to-Text & Translation logic.
-- [-] **Phase 3.1** Clean Up
-- [ ] **Phase 4:** **Text-to-Speech (TTS) Integration** (Current Goal 🎯).
-- [ ] **Phase 5:** Real-time continuous translation mode.
-- [ ] **Phase 6:** UI/UX Polish & Material 3 dynamic theming.
+- [x] **Core Infrastructure:** KMP setup, DI with Koin, and Navigation.
+- [x] **Native Interop:** Whisper.cpp integration for Android & iOS.
+- [x] **Translation Engine:** ML Kit integration for multilingual support.
+- [x] **Networking:** Ktor client integration for external APIs.
+- [x] **Persistence:** Room KMP for history and dictionary data.
+- [x] **UI/UX:** Material 3 implementation and custom theming.
+- [ ] **Translated Text-to-Speech (TTS):** Generate audio from translated text.
+- [ ] **Unit Testing:** General test coverage for repositories and ViewModels.
 
 ---
 
