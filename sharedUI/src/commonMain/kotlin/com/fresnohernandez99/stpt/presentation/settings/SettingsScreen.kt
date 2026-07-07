@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,11 +20,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,27 +30,26 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.fresnohernandez99.stpt.domain.model.Language
 import com.fresnohernandez99.stpt.modelDownloader.NO_MODEL_SELECTION
 import com.fresnohernandez99.stpt.modelDownloader.OPTIMIZED_MODEL_SELECTION
+import com.fresnohernandez99.stpt.presentation.components.AppScaffold
+import com.fresnohernandez99.stpt.presentation.components.BackTopBar
 import com.fresnohernandez99.stpt.presentation.home.components.LanguagePickerDialog
 import com.fresnohernandez99.stpt.presentation.modelSelection.ModelOption
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
-import com.fresnohernandez99.stpt.theme.WindowSize
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import speechtospeechtranslator.sharedui.generated.resources.Res
-import speechtospeechtranslator.sharedui.generated.resources.close
-import speechtospeechtranslator.sharedui.generated.resources.customize_your_experience
 import speechtospeechtranslator.sharedui.generated.resources.language_and_region
 import speechtospeechtranslator.sharedui.generated.resources.language_used_for_voice_transcription
 import speechtospeechtranslator.sharedui.generated.resources.manage_dictionaries
@@ -79,17 +77,44 @@ fun SettingsScreen(
         NO_MODEL_SELECTION
     ).value
 
-    var showDialog by remember { mutableStateOf(false) }
+    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        SettingsHeader(
-            onDismiss = { navHostController.navigateUp() }
+    AppScaffold(
+        topBar = {
+            BackTopBar(
+                title = stringResource(Res.string.settings),
+                onBack = { navHostController.navigateUp() },
+                containerColor = MaterialTheme.colorScheme.primary
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.primary,
+    ) { paddingValues ->
+        SettingsContent(
+            Modifier.consumeWindowInsets(paddingValues).padding(paddingValues),
+            language = language,
+            showDialog = showDialog,
+            setShowDialog = setShowDialog,
+            modelSavedSelection = modelSavedSelection,
+            onLanguageSelected = viewModel::onLanguageSelected,
         )
+    }
+}
 
+@Composable
+fun SettingsContent(
+    modifier: Modifier = Modifier,
+    showDialog: Boolean,
+    setShowDialog: (Boolean) -> Unit,
+    language: String,
+    modelSavedSelection: Int,
+    onLanguageSelected: (Language) -> Unit
+) {
+    val navHostController = LocalNavController.current
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(24.dp),
@@ -98,13 +123,13 @@ fun SettingsScreen(
             item {
                 LanguageRegionSection(
                     navigateToLanguages = {
-                        showDialog = true
+                        setShowDialog(true)
                     },
                     selectedLanguage = language,
                     list = Language.getFilteredLanguages(
                         Language.list,
                         priorityLanguage = Language.Detect
-                    )
+                    ).toImmutableList()
                 )
             }
 
@@ -129,54 +154,10 @@ fun SettingsScreen(
                     priorityLanguage = Language.Detect
                 ).toImmutableList(),
                 onLanguageSelected = {
-                    viewModel.onLanguageSelected(it)
-                    showDialog = false
+                    onLanguageSelected(it)
+                    setShowDialog(false)
                 },
-                onDismiss = { showDialog = false }
-            )
-        }
-    }
-}
-
-@Composable
-private fun SettingsHeader(
-    onDismiss: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(24.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column {
-            Text(
-                text = stringResource(Res.string.settings),
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = stringResource(Res.string.customize_your_experience),
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-
-        IconButton(
-            onClick = { onDismiss() },
-            modifier = Modifier
-                .size(48.dp)
-                .background(
-                    MaterialTheme.colorScheme.surfaceVariant,
-                    CircleShape
-                )
-        ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = stringResource(Res.string.close),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                onDismiss = { setShowDialog(false) }
             )
         }
     }
@@ -185,7 +166,7 @@ private fun SettingsHeader(
 @Composable
 private fun LanguageRegionSection(
     navigateToLanguages: () -> Unit,
-    list: List<Language>,
+    list: ImmutableList<Language>,
     selectedLanguage: String
 ) {
     Column {
@@ -208,7 +189,7 @@ private fun LanguageRegionSection(
 @Composable
 fun TranscriptionLanguageItem(
     navigateToLanguages: () -> Unit,
-    list: List<Language>,
+    list: ImmutableList<Language>,
     selectedLanguage: String
 ) {
     Column(
@@ -239,7 +220,7 @@ fun TranscriptionLanguageItem(
                     RoundedCornerShape(12.dp)
                 ),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                containerColor = MaterialTheme.colorScheme.primaryContainer
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             shape = RoundedCornerShape(12.dp)
@@ -265,9 +246,9 @@ fun TranscriptionLanguageItem(
                     ) {
                         Text(
                             text = selectedLanguage.uppercase().take(2),
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = Color.White,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     }
 
@@ -354,7 +335,7 @@ fun DictionariesSection(
                     RoundedCornerShape(12.dp)
                 ),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                containerColor = MaterialTheme.colorScheme.primaryContainer
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
             shape = RoundedCornerShape(12.dp)
@@ -424,7 +405,7 @@ fun SettingsModelOptionCard(
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
@@ -453,7 +434,6 @@ fun SettingsModelOptionCard(
                     text = model.size,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
