@@ -87,7 +87,7 @@ class TranslatorManagerImpl: TranslatorManagerIos {
         
         translator.translate(text) { result, error in
             if let error = error {
-                completionHandler(nil, error)
+                completionHandler("Er001", error)
             } else {
                 completionHandler(result, nil)
             }

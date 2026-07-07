@@ -76,7 +76,7 @@ actual class TranslatorManager {
             val result = translator.translate(text).await()
             result
         } catch (e: Exception) {
-            "Translation Error: ${e.message}"
+            "Er001 Translation Error: ${e.message}"
         } finally {
             translator.close()
         }

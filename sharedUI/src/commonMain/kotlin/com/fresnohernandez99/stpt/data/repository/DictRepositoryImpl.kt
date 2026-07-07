@@ -29,7 +29,11 @@ class DictRepositoryImpl(
     }
 
     override suspend fun translate(text: String, source: String, target: String): String {
-        return translatorManager.translateUsingModel(text, source, target)
+        val response = translatorManager.translateUsingModel(text, source, target)
+
+        if (response.startsWith("Er001")) throw Exception("Translation error")
+
+        return response
     }
 
     override suspend fun getLanguage(text: String): Language {
