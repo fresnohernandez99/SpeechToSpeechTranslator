@@ -11,6 +11,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
     primary = Main,
@@ -21,7 +22,9 @@ private val LightColorScheme = lightColorScheme(
     background = Dark,
     primaryContainer = PrimaryContainerLight,
     secondaryContainer = SecondaryContainerLight,
-    inversePrimary = Main
+    inversePrimary = Main,
+    error = ErrorRed,
+    onError = Color.White
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -33,7 +36,9 @@ private val DarkColorScheme = darkColorScheme(
     background = Dark,
     primaryContainer = PrimaryContainerDark,
     secondaryContainer = SecondaryContainerDark,
-    inversePrimary = IconsColorDark
+    inversePrimary = IconsColorDark,
+    error = ErrorRedDark,
+    onError = Color.Black
 )
 
 internal val LocalThemeIsDark = compositionLocalOf { mutableStateOf(true) }

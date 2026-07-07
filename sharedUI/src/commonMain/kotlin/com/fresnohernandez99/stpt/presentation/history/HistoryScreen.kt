@@ -52,7 +52,8 @@ fun HistoryScreen(
             Modifier.consumeWindowInsets(paddingValues).padding(paddingValues),
             historyList = historyList,
             selectItem = viewModel::selectItem,
-            selectedItem = selectedItem
+            selectedItem = selectedItem,
+            onDelete = viewModel::deleteTranslation
         )
     }
 }
@@ -62,7 +63,8 @@ fun HistoryContent(
     modifier: Modifier = Modifier,
     historyList: LazyPagingItems<TranslatedItem>,
     selectItem: (TranslatedItem) -> Unit,
-    selectedItem: TranslatedItem?
+    selectedItem: TranslatedItem?,
+    onDelete: (TranslatedItem) -> Unit
 ) {
     val isAppendLoading by remember(historyList) {
         derivedStateOf { historyList.loadState.append is LoadState.Loading }
@@ -81,6 +83,9 @@ fun HistoryContent(
                     isExpanded = selectedItem?.id == h.id,
                     onToggleExpand = {
                         selectItem(h)
+                    },
+                    onDelete = {
+                        onDelete(h)
                     }
                 )
             }

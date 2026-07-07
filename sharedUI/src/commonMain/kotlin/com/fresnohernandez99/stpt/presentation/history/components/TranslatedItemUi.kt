@@ -17,6 +17,7 @@ import androidx.compose.foundation.style.styleable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +30,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import speechtospeechtranslator.sharedui.generated.resources.Res
 import speechtospeechtranslator.sharedui.generated.resources.clock
+import speechtospeechtranslator.sharedui.generated.resources.delete
 import speechtospeechtranslator.sharedui.generated.resources.history_clock_icon_desc
 
 @Composable
@@ -67,9 +69,10 @@ fun TranslatedItemUi(
     modifier: Modifier = Modifier,
     translatedItem: TranslatedItem,
     isExpanded: Boolean,
-    onToggleExpand: () -> Unit
+    onToggleExpand: () -> Unit,
+    onDelete: () -> Unit
 ) {
-    Column(modifier.clickable { onToggleExpand() }) {
+    Column(modifier.fillMaxWidth().clickable { onToggleExpand() }) {
         val styleState = rememberUpdatedStyleState(interactionSource = null) { state ->
             state[ExpandedStateKey] = isExpanded
         }
@@ -140,6 +143,10 @@ fun TranslatedItemUi(
                             }
                         }
                     }
+                }
+
+                TextButton(onClick = onDelete, Modifier.align(Alignment.End)) {
+                    Text(stringResource(Res.string.delete), color = MaterialTheme.colorScheme.error)
                 }
             }
         }

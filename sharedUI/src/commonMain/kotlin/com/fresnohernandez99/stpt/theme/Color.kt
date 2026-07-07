@@ -14,3 +14,7 @@ internal val PrimaryContainerDark = Color(0xFF2B3038)
 internal val SecondaryContainerLight = Color(0xFF1769FF)
 internal val SecondaryContainerDark = Color(0xFF7680E5)
 internal val IconsColorDark = Color(0xFF514388)
+
+// Error Colors
+internal val ErrorRed = Color(0xFFFF5252) // Un rojo coral vibrante que destaca sobre el azul
+internal val ErrorRedDark = Color(0xFFCF6679) // Un rosa/rojo suave para modo oscuro
