@@ -125,4 +125,6 @@
     <string name="onboarding_desc_3">anywhere, anytime</string>
     <string name="onboarding_ready">Ready!</string>
     <string name="onboarding_image_description">Image for onboarding</string>
+
+    <string name="history_title">History</string>
 </resources>

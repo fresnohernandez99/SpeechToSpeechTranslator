@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.fresnohernandez99.stpt.data.local.TranslatedItem
 import com.fresnohernandez99.stpt.domain.repository.TranslationHistoryRepository
 import com.fresnohernandez99.stpt.domain.repository.WordDefinitionRepository
+import com.fresnohernandez99.stpt.utils.isSingleWord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,13 +32,25 @@ class HistoryViewModel(
 
     fun loadWordDefinition(item: TranslatedItem) {
         viewModelScope.launch(Dispatchers.IO) {
-            val response = wordDefinitionRepository.getWordDefinition(item.translatedTo, item.translatedText)
+            if (item.dictionaryResponse != null) return@launch
 
-            // TODO
+            val response =
+                wordDefinitionRepository.getWordDefinition(item.translatedTo, item.translatedText)
+
+            if (response.isSuccess) {
+                translationHistoryRepository.updateTranslation(
+                    item.copy(
+                        dictionaryResponse = response.getOrNull()
+                    )
+                )
+            }
         }
     }
 
     fun selectItem(item: TranslatedItem) {
         _selectedItem.value = item
+
+        if (item.translatedText.isSingleWord())
+            loadWordDefinition(item)
     }
 }

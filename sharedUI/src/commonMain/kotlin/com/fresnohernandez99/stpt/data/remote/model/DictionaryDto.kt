@@ -14,9 +14,9 @@ data class DictionaryResponse(
 @Serializable
 data class EntryDto(
     val language: LanguageInfoDto,
-    val partOfSpeech: String? = null,
     val pronunciations: List<PronunciationDto> = emptyList(),
-    val meanings: List<MeaningDto> = emptyList()
+    val senses: List<SensesDto> = emptyList(),
+    val synonyms: List<String> = emptyList(),
 )
 
 @Immutable
@@ -29,22 +29,12 @@ data class LanguageInfoDto(
 @Serializable
 data class PronunciationDto(
     val type: String,
-    val value: String
+    val text: String
 )
 
 @Immutable
 @Serializable
-data class MeaningDto(
-    val glosses: List<String> = emptyList(),
+data class SensesDto(
+    val definition: String = "",
     val examples: List<String> = emptyList(),
-    val synonyms: List<String> = emptyList(),
-    val antonyms: List<String> = emptyList(),
-    val translations: List<TranslationDto> = emptyList()
-)
-
-@Immutable
-@Serializable
-data class TranslationDto(
-    val language: LanguageInfoDto,
-    val value: String
 )

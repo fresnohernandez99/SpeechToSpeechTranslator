@@ -22,7 +22,10 @@ import com.fresnohernandez99.stpt.presentation.components.BackTopBar
 import com.fresnohernandez99.stpt.presentation.history.components.TranslatedItemUi
 import com.fresnohernandez99.stpt.presentation.navigation.Destination
 import com.fresnohernandez99.stpt.presentation.navigation.LocalNavController
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import speechtospeechtranslator.sharedui.generated.resources.Res
+import speechtospeechtranslator.sharedui.generated.resources.history_title
 
 @Composable
 fun HistoryScreen(
@@ -38,6 +41,7 @@ fun HistoryScreen(
     AppScaffold(
         topBar = {
             BackTopBar(
+                title = stringResource(Res.string.history_title),
                 onBack = { navHostController.navigateUp() },
                 containerColor = MaterialTheme.colorScheme.primary
             )
@@ -60,7 +64,6 @@ fun HistoryContent(
     selectItem: (TranslatedItem) -> Unit,
     selectedItem: TranslatedItem?
 ) {
-
     val isAppendLoading by remember(historyList) {
         derivedStateOf { historyList.loadState.append is LoadState.Loading }
     }
@@ -75,9 +78,7 @@ fun HistoryContent(
             if (h != null) {
                 TranslatedItemUi(
                     Modifier, h,
-                    getExtraData = {},
                     isExpanded = selectedItem?.id == h.id,
-                    expandedData = null,
                     onToggleExpand = {
                         selectItem(h)
                     }

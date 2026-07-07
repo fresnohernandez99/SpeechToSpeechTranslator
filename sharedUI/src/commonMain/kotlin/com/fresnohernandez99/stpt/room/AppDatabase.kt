@@ -4,12 +4,15 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.fresnohernandez99.stpt.data.local.TranslatedItem
+import com.fresnohernandez99.stpt.room.converters.DictionaryResponseConverter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
-@Database(entities = [TranslatedItem::class], version = 1)
+@Database(entities = [TranslatedItem::class], version = 2)
+@TypeConverters(DictionaryResponseConverter::class)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun translatedItemDao(): TranslatedItemDao
