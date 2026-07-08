@@ -24,6 +24,7 @@ import com.fresnohernandez99.stpt.utils.Gson
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import org.koin.core.module.dsl.viewModel
 
 internal expect fun platformModule(args: List<Any> = emptyList()): Module
 
@@ -39,7 +40,7 @@ val repositoryModule = module {
 }
 
 val viewModelModule = module {
-    viewModelOf(::HomeViewModel)
+    viewModel { HomeViewModel(get(), get(), get()) }
     viewModelOf(::PlatformViewModel)
     viewModelOf(::ModelDownloaderViewModel)
     viewModelOf(::SettingsViewModel)

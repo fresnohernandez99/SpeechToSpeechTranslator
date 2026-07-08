@@ -100,8 +100,8 @@ Following the latest **AGP 9.0+** requirements, the project is modularized to se
 - [x] **Networking:** Ktor client integration for external APIs.
 - [x] **Persistence:** Room KMP for history and dictionary data.
 - [x] **UI/UX:** Material 3 implementation and custom theming.
+- [x] **Unit Testing:** General test coverage for repositories and ViewModels.
 - [ ] **Translated Text-to-Speech (TTS):** Generate audio from translated text.
-- [ ] **Unit Testing:** General test coverage for repositories and ViewModels.
 
 ---
 

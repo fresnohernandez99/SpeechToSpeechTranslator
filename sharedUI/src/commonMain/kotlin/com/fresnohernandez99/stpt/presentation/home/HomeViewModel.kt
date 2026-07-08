@@ -34,7 +34,8 @@ import kotlin.time.ExperimentalTime
 class HomeViewModel(
     private val dictRepository: DictRepository,
     private val translationHistoryRepository: TranslationHistoryRepository,
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
+    private val audioRecorderPlayer: io.github.hyochan.audio.AudioRecorderPlayer = io.github.hyochan.audio.createAudioRecorderPlayer()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -42,7 +43,7 @@ class HomeViewModel(
 
     val selectedLanguage = preferencesRepository.getLanguagePref()
 
-    private val audioRecorderPlayer = createAudioRecorderPlayer()
+    // private val audioRecorderPlayer = createAudioRecorderPlayer()
     private var recordedFilePath: String? = null
     private var timerJob: Job? = null
 
@@ -150,7 +151,7 @@ class HomeViewModel(
 
     @OptIn(ExperimentalTime::class)
     fun translate() {
-        viewModelScope.launch(Dispatchers.IO + Job()) {
+        viewModelScope.launch {
             val text = uiState.value.textToTranslate
             if (text.isBlank()) return@launch
 
@@ -159,62 +160,61 @@ class HomeViewModel(
             val source = prefs.sourceLanguage
             val target = prefs.targetLanguage
 
-            viewModelScope.launch {
-                _uiState.update {
-                    it.copy(
-                        translateState = TranslateState.LOADING
-                    )
-                }
+            _uiState.update {
+                it.copy(
+                    translateState = TranslateState.LOADING
+                )
+            }
 
-                downloadIfNeeded(target.code)
+            downloadIfNeeded(target.code)
 
-                if (source != Language.Detect) {
-                    downloadIfNeeded(source.code)
-                } else {
-                    val language = dictRepository.getLanguage(text)
+            if (source != Language.Detect) {
+                downloadIfNeeded(source.code)
+            } else {
+                val language = dictRepository.getLanguage(text)
 
-                    if (language == Language.Detect) {
-                        _uiState.update {
-                            it.copy(
-                                translateState = TranslateState.ERROR,
-                                errorMessage = "Language detection failed"
-                            )
-                        }
-                        return@launch
-                    } else {
-                        preferencesRepository.setLanguagePref(
-                            selectedLanguage.first().copy(
-                                sourceLanguage = language
-                            )
-                        )
-                    }
-                }
-
-                try {
-                    val translated = dictRepository.translate(text, source.code, target.code)
-                    _uiState.update {
-                        it.copy(
-                            translatedText = translated,
-                            translateState = TranslateState.SUCCESS
-                        )
-                    }
-
-                    translationHistoryRepository.addTranslation(
-                        TranslatedItem(
-                            originalText = uiState.value.textToTranslate,
-                            translatedText = translated,
-                            originalLanguage = selectedLanguage.first().sourceLanguage.code,
-                            translatedTo = selectedLanguage.first().targetLanguage.code,
-                            updateAt = Clock.System.now().toEpochMilliseconds()
-                        )
-                    )
-                } catch (e: Exception) {
+                if (language == Language.Detect) {
                     _uiState.update {
                         it.copy(
                             translateState = TranslateState.ERROR,
-                            errorMessage = e.message ?: "Translation failed"
+                            errorMessage = "Language detection failed"
                         )
                     }
+                    return@launch
+                } else {
+                    preferencesRepository.setLanguagePref(
+                        prefs.copy(
+                            sourceLanguage = language
+                        )
+                    )
+                }
+            }
+
+            try {
+                val translated = dictRepository.translate(text, source.code, target.code)
+
+                _uiState.update {
+                    it.copy(
+                        translatedText = translated,
+                        translateState = TranslateState.SUCCESS
+                    )
+                }
+
+                translationHistoryRepository.addTranslation(
+                    TranslatedItem(
+                        originalText = text,
+                        translatedText = translated,
+                        originalLanguage = source.code,
+                        translatedTo = target.code,
+                        updateAt = Clock.System.now().toEpochMilliseconds()
+                    )
+                )
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        translateState = TranslateState.ERROR,
+                        errorMessage = e.message ?: "Translation failed"
+                    )
                 }
             }
         }

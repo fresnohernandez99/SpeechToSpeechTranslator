@@ -12,5 +12,6 @@ fun String.isSingleWord(): Boolean {
     if (trimmed.isEmpty()) return false
 
     // Check if there are any whitespace characters within the trimmed string
-    return !trimmed.contains(Regex("\\s"))
+    // Standard white space characters include space, tab, newline, etc.
+    return !trimmed.any { it.isWhitespace() }
 }
